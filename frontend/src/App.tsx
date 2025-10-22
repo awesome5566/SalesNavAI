@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 
 interface SearchResult {
@@ -8,38 +8,49 @@ interface SearchResult {
   warnings?: string[]
 }
 
-const sampleQueries = [
-  { text: "CFOs at fintech startups in Boston", type: "leads", tag: "leads" },
-  { text: "Healthcare founders in San Francisco", type: "leads", tag: "leads" },
-  { text: "Cybersecurity companies in Austin", type: "accounts", tag: "accounts" },
-  { text: "Marketing directors at SaaS companies", type: "leads", tag: "leads" }
-]
+interface SampleQuery {
+  text: string
+  icon: string
+  description: string
+  category: string
+}
 
-const chatHistory = [
-  {
-    query: "VPs of Sales at Series B SaaS companies",
-    result: "✓ Found 2,847 leads",
-    time: "2 hours ago"
+const sampleQueries = [
+  { 
+    text: "CFOs at fintech startups in Boston", 
+    icon: "🎯",
+    description: "Find financial decision makers in the fintech space and banking sector.",
+    category: "Executive Search"
+  },
+  { 
+    text: "Healthcare founders in San Francisco", 
+    icon: "🏥",
+    description: "Connect with startup founders and healthcare executives in the Bay Area.",
+    category: "Founder Outreach"
+  },
+  { 
+    text: "Marketing directors at SaaS companies", 
+    icon: "📊",
+    description: "Discover marketing leaders at software companies for partnership opportunities.",
+    category: "B2B Marketing"
   },
   {
-    query: "Engineering managers in NYC with AI experience",
-    result: "✓ Found 1,234 leads",
-    time: "5 hours ago"
+    text: "VPs of Sales in enterprise tech firms",
+    icon: "💼",
+    description: "Target senior sales leadership at established technology companies.",
+    category: "Sales Leaders"
   },
   {
-    query: "CTOs at healthcare tech startups",
-    result: "✓ Found 892 leads",
-    time: "Yesterday"
+    text: "CTOs at AI and machine learning startups",
+    icon: "🤖",
+    description: "Find technical executives building AI-powered products and platforms.",
+    category: "Technical Leaders"
   },
   {
-    query: "Marketing directors in fintech, Boston area",
-    result: "✓ Found 456 leads",
-    time: "2 days ago"
-  },
-  {
-    query: "Product managers at e-commerce companies",
-    result: "✓ Found 3,102 leads",
-    time: "3 days ago"
+    text: "Product managers in fintech with MBA",
+    icon: "💡",
+    description: "Locate product professionals with business education in financial technology.",
+    category: "Product & Strategy"
   }
 ]
 
@@ -47,16 +58,30 @@ function App() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'leads' | 'companies'>('leads')
-  const [showFilters, setShowFilters] = useState(false)
+  const [placeholderIndex, setPlaceholderIndex] = useState(0)
 
-  const handleSubmit = async (e?: React.FormEvent) => {
+  const placeholderExamples = [
+    "CFOs at fintech startups in Boston",
+    "Healthcare founders in San Francisco",
+    "Marketing directors at SaaS companies",
+    "VPs of Sales in enterprise tech firms",
+    "CTOs at AI startups",
+    "Product managers in fintech with MBA"
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholderExamples.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const handleSubmit = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault()
-    if (!query.trim()) return
+    const queryToSubmit = searchQuery || query
+    if (!queryToSubmit.trim()) return
 
     setLoading(true)
-    setError(null)
     setResult(null)
 
     try {
@@ -65,7 +90,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: query.trim() }),
+        body: JSON.stringify({ query: queryToSubmit.trim() }),
       })
 
       if (!response.ok) {
@@ -80,7 +105,7 @@ function App() {
         window.open(data.url, '_blank')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      console.error('Error:', err)
     } finally {
       setLoading(false)
     }
@@ -88,212 +113,67 @@ function App() {
 
   const handleSampleClick = (sampleText: string) => {
     setQuery(sampleText)
-    // Auto-run the sample query
-    setTimeout(() => {
-      setQuery(sampleText)
-      handleSubmit()
-    }, 100)
-  }
-
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-    } catch (err) {
-      console.error('Failed to copy: ', err)
-    }
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      handleSubmit()
-    }
+    handleSubmit(undefined, sampleText)
   }
 
   return (
     <div className="app">
       <header className="header">
-        <div className="logo">
-          <span className="logo-main">SalesNav</span>
-          <span className="logo-ai">.AI</span>
-        </div>
-        <div className="beta-badge">
-          <span className="beta-text">Beta</span>
-          <div className="beta-icon">⚡</div>
+        <div className="header-content">
+          <div className="logo">
+            <span className="logo-text">SalesNav AI</span>
+          </div>
+          <button className="settings-button">⚙️</button>
         </div>
       </header>
 
       <main className="main">
-        <div className="hero">
-          <h1 className="hero-title">Skip the filters. Just ask.</h1>
-          <p className="hero-subtitle">
-            Your AI Sales Research Assistant for LinkedIn Sales Navigator. 
-            Type in plain English — get precise results.
-          </p>
-        </div>
-
-        <div className="search-container">
-          <div className="search-card">
-            <div className="search-header">
-              <h2 className="search-title">AI Search</h2>
-              <p className="search-description">
-                Ask like you would to a researcher. We translate it to Sales Navigator filters.
-              </p>
-            </div>
-
-            <div className="tabs">
-              <button 
-                className={`tab ${activeTab === 'leads' ? 'active' : ''}`}
-                onClick={() => setActiveTab('leads')}
-              >
-                Leads
-              </button>
-              <button 
-                className={`tab ${activeTab === 'companies' ? 'active' : ''}`}
-                onClick={() => setActiveTab('companies')}
-              >
-                Companies
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="search-form">
-              <textarea
+        <div className="chat-container">
+          <div className="greeting">Hello. How can we help you today?</div>
+          <h1 className="title">What would you like to find?</h1>
+          
+          <form onSubmit={handleSubmit} className="search-form">
+            <div className="search-input-container">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Find CFOs at fintech startups in Boston"
+                placeholder={placeholderExamples[placeholderIndex]}
                 className="search-input"
-                rows={3}
                 disabled={loading}
               />
-              
-              <div className="search-actions">
-                <div className="search-controls">
-                  <button 
-                    type="button"
-                    onClick={() => setQuery('')}
-                    className="clear-button"
-                    disabled={loading}
-                  >
-                    Clear
-                  </button>
-                  <button 
-                    type="submit" 
-                    className="search-button"
-                    disabled={loading || !query.trim()}
-                  >
-                    🔍 Run Search
-                  </button>
-                </div>
-                
-                <div className="search-options">
-                  <label className="toggle-label">
-                    <input 
-                      type="checkbox" 
-                      checked={showFilters}
-                      onChange={(e) => setShowFilters(e.target.checked)}
-                    />
-                    <span className="toggle-text">Show extracted filters for transparency</span>
-                  </label>
-                  <span className="shortcut-hint">Cmd/Ctrl+Enter to run</span>
-                </div>
-              </div>
-            </form>
-
-            {error && (
-              <div className="error-message">
-                <strong>Error:</strong> {error}
-              </div>
-            )}
-
-            {result && (
-              <div className="result-section">
-                <div className="result-header">
-                  <h3>Generated Sales Navigator URL:</h3>
-                  <button 
-                    onClick={() => copyToClipboard(result.url)}
-                    className="copy-button"
-                  >
-                    Copy Link
-                  </button>
-                </div>
-                <div className="url-display">
-                  <code className="url-text">{result.url}</code>
-                </div>
-                
-                {showFilters && result.facets && (
-                  <div className="filters-display">
-                    <h4>Applied Filters:</h4>
-                    <pre className="filters-content">{result.facets}</pre>
-                  </div>
-                )}
-
-                {result.warnings && result.warnings.length > 0 && (
-                  <div className="warnings">
-                    <h4>Warnings:</h4>
-                    <ul>
-                      {result.warnings.map((warning, index) => (
-                        <li key={index}>{warning}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="sidebar">
-            <div className="sample-card">
-              <h3 className="sample-title">Try a sample</h3>
-              <p className="sample-description">Click to auto-fill and run.</p>
-              <div className="sample-buttons">
-                {sampleQueries.map((sample, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleSampleClick(sample.text)}
-                    className="sample-button"
-                  >
-                    <span className="sample-text">
-                      {sample.type === 'leads' ? 'Leads' : 'Accounts'} • {sample.text}
-                    </span>
-                    <span className="sample-tag">{sample.tag}</span>
-                  </button>
-                ))}
-              </div>
-              <div className="pro-tip">
-                <strong>Pro tip:</strong> Try natural language like "Series B SaaS", "hiring", "ICP", or a city/state.
-              </div>
+              <button 
+                type="submit" 
+                className="submit-button"
+                disabled={loading || !query.trim()}
+              >
+                ↑
+              </button>
             </div>
+          </form>
 
-            <div className="history-card">
-              <h3 className="history-title">Recent Searches</h3>
-              <p className="history-description">Your search history</p>
-              <div className="history-list">
-                {chatHistory.map((item, index) => (
-                  <div key={index} className="history-item">
-                    <div className="history-content">
-                      <div className="history-query">{item.query}</div>
-                      <div className="history-result">{item.result}</div>
-                    </div>
-                    <div className="history-time">{item.time}</div>
+          <div className="sample-cards">
+            {sampleQueries.map((sample, index) => (
+              <button
+                key={index}
+                onClick={() => handleSampleClick(sample.text)}
+                className="sample-card"
+              >
+                <div className="card-icon">{sample.icon}</div>
+                <div className="card-content">
+                  <div className="card-title">{sample.text}</div>
+                  <div className="card-description">{sample.description}</div>
+                </div>
+                <div className="card-metadata">
+                  <div className="card-avatars">
+                    <div className="card-avatar"></div>
+                    <div className="card-avatar"></div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="features">
-          <div className="feature-card">
-            <h3 className="feature-title">Built for speed</h3>
-            <p className="feature-description">Stop fighting filters. Ask once; get a link that opens straight in Sales Navigator.</p>
-          </div>
-          <div className="feature-card">
-            <h3 className="feature-title">LLM + rules</h3>
-            <p className="feature-description">Natural language maps to deterministic filter objects for reliability.</p>
-          </div>
-          <div className="feature-card">
-            <h3 className="feature-title">Transparent by default</h3>
-            <p className="feature-description">See the filters we applied before you open the search. Edit and re-run instantly.</p>
+                  <span>Quick search • {sample.category}</span>
+                </div>
+              </button>
+            ))}
           </div>
         </div>
       </main>
