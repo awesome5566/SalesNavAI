@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Basic Usage
@@ -73,13 +73,13 @@ npx ts-node src/cli.ts "account executives at stripe from stanford" \
 ## Running Tests
 
 ```bash
-npm test
+pnpm test
 ```
 
 ## Building for Production
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Then use the compiled JavaScript:

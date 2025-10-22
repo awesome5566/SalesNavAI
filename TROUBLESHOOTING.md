@@ -15,10 +15,10 @@ This project uses ES modules (`"type": "module"` in package.json). Plain `ts-nod
 
 **Solutions:**
 
-1. **Use npm scripts (recommended):**
+1. **Use pnpm scripts (recommended):**
    ```bash
-   npm start "your query"  # Uses compiled JavaScript (fast)
-   npm run dev "your query"  # Runs TypeScript directly (slower)
+   pnpm start "your query"  # Uses compiled JavaScript (fast)
+   pnpm run dev "your query"  # Runs TypeScript directly (slower)
    ```
 
 2. **Use the ESM loader directly:**
@@ -30,7 +30,7 @@ This project uses ES modules (`"type": "module"` in package.json). Plain `ts-nod
 
 3. **Use compiled JavaScript:**
    ```bash
-   npm run build
+   pnpm run build
    node dist/src/cli.js "your query"
    ```
 
@@ -49,8 +49,8 @@ Matched Facets:
 
 1. **Outdated compiled code:**
    ```bash
-   npm run build  # Rebuild the project
-   npm start "your query"
+   pnpm run build  # Rebuild the project
+   pnpm start "your query"
    ```
 
 2. **Query doesn't match patterns:**
@@ -83,14 +83,14 @@ Fuzzy matching with Levenshtein distance can match similar-sounding words.
 
 **Problem:**
 ```bash
-npm start 'title manager'  # Doesn't work
+pnpm start 'title manager'  # Doesn't work
 ```
 
 **Solution:**
 Title patterns require quotes:
 ```bash
-npm start 'title "manager" exact'
-npm start 'title contains "manager"'
+pnpm start 'title "manager" exact'
+pnpm start 'title contains "manager"'
 ```
 
 ---
@@ -116,18 +116,18 @@ Failed to fetch company page: https://...
 
 ---
 
-### npm start Flags Not Working
+### pnpm start Flags Not Working
 
 **Problem:**
 ```bash
-npm start "query" --debug  # Doesn't work
+pnpm start "query" --debug  # Doesn't work
 ```
 
 **Solution:**
-Use `--` to separate npm flags from script flags:
+Use `--` to separate pnpm flags from script flags:
 ```bash
-npm start "query" -- --debug
-npm start "query" -- --company-url https://...
+pnpm start "query" -- --debug
+pnpm start "query" -- --company-url https://...
 ```
 
 ---
@@ -136,7 +136,7 @@ npm start "query" -- --company-url https://...
 
 ### 1. Use Debug Mode
 ```bash
-npm start "your query" -- --debug
+pnpm start "your query" -- --debug
 ```
 Shows:
 - What text patterns were matched
@@ -145,15 +145,15 @@ Shows:
 
 ### 2. Use Dry Run
 ```bash
-npm start "your query" -- --dry-run
+pnpm start "your query" -- --dry-run
 ```
 Shows matched facets without generating the URL
 
 ### 3. Check Compiled Code
-If `npm start` behaves differently than `npm run dev`:
+If `pnpm start` behaves differently than `pnpm run dev`:
 ```bash
-npm run build  # Rebuild
-npm start "your query"
+pnpm run build  # Rebuild
+pnpm start "your query"
 ```
 
 ### 4. Verify Data Files
@@ -173,20 +173,20 @@ node --version  # Should be 18.x or higher
 
 ### Slow Performance?
 
-**Development mode** (`npm run dev`) is slower because it:
+**Development mode** (`pnpm run dev`) is slower because it:
 - Compiles TypeScript on the fly
 - Doesn't cache compiled code
 
 **Solution:**
 Use production mode:
 ```bash
-npm run build
-npm start "your query"
+pnpm run build
+pnpm start "your query"
 ```
 
 **Benchmarks:**
-- `npm run dev`: ~2-3 seconds
-- `npm start`: ~0.5-1 seconds
+- `pnpm run dev`: ~2-3 seconds
+- `pnpm start`: ~0.5-1 seconds
 
 ---
 
@@ -196,7 +196,7 @@ npm start "your query"
 2. Review QUICKSTART.md for usage examples
 3. Try with `--debug` flag to see what's happening
 4. Verify your Node.js version is 18+
-5. Ensure dependencies are installed: `npm install`
+5. Ensure dependencies are installed: `pnpm install`
 
 ## Still Having Issues?
 
@@ -206,15 +206,15 @@ Run these diagnostic commands:
 node --version
 
 # Verify dependencies
-npm list
+pnpm list
 
 # Test the build
-npm run build
+pnpm run build
 
 # Run tests
-npm test
+pnpm test
 
 # Try a simple query
-npm start "software industry" -- --debug
+pnpm start "software industry" -- --debug
 ```
 

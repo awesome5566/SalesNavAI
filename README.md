@@ -13,7 +13,7 @@ A zero-API-key, local-first CLI tool that converts natural language descriptions
 ## Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Usage
@@ -21,41 +21,41 @@ npm install
 ### Basic Search
 
 ```bash
-npm run start "sales leaders in boston and nyc in the software industry"
+pnpm run start "sales leaders in boston and nyc in the software industry"
 ```
 
 Or using the dev mode (slower, runs TypeScript directly):
 
 ```bash
-npm run dev "sales leaders in boston and nyc in the software industry"
+pnpm run dev "sales leaders in boston and nyc in the software industry"
 ```
 
 ### With Title Filters
 
 ```bash
-npm start "title 'Account Executive' exact in boston"
+pnpm start "title 'Account Executive' exact in boston"
 ```
 
 ### With Company/School Resolution
 
 ```bash
-npm start "account executives at hubspot from harvard" -- \
+pnpm start "account executives at hubspot from harvard" -- \
   --company-url https://www.linkedin.com/company/hubspot/ \
   --school-url https://www.linkedin.com/school/harvard-university/
 ```
 
-Note: The `--` before flags is required when using `npm start`.
+Note: The `--` before flags is required when using `pnpm start`.
 
 ### Dry Run (Show Parsing Only)
 
 ```bash
-npm start "sales leaders in software" -- --dry-run
+pnpm start "sales leaders in software" -- --dry-run
 ```
 
 ### Debug Mode
 
 ```bash
-npm start "engineering managers in sf" -- --debug
+pnpm start "engineering managers in sf" -- --debug
 ```
 
 ## Description Patterns
@@ -92,25 +92,25 @@ The tool generates LinkedIn's internal DSL format:
 ### Build
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ### Test
 
 ```bash
-npm test
+pnpm test
 ```
 
 ### Run Locally
 
 Production mode (uses compiled JavaScript, fast):
 ```bash
-npm start "your search query here"
+pnpm start "your search query here"
 ```
 
 Development mode (runs TypeScript directly, slower):
 ```bash
-npm run dev "your search query here"
+pnpm run dev "your search query here"
 ```
 
 ## Project Structure
