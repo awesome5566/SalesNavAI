@@ -11,7 +11,7 @@
     "frontend": "vite",
     "frontend:build": "vite build",
     "server": "node server.js",
-    "dev:full": "concurrently \"npm run build\" \"npm run frontend\" \"npm run server\""
+    "dev:full": "concurrently \"pnpm run build\" \"pnpm run frontend\" \"pnpm run server\""
   },
   "keywords": [
     "linkedin",
@@ -21,20 +21,30 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "class-variance-authority": "^0.7.1",
     "cors": "^2.8.5",
     "csv-parse": "^5.5.0",
     "express": "^5.1.0",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.546.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^20.10.0",
+    "@types/node": "^20.19.22",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.0.4",
+    "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.10"
