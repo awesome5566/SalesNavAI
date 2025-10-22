@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
+import { useAuth } from './contexts/AuthContext'
+import { AuthModal } from './components/AuthModal'
+import { AccountManagement } from './components/AccountManagement'
 
 interface SearchResult {
   url: string
@@ -55,10 +58,13 @@ const sampleQueries = [
 ]
 
 function App() {
+  const { user, loading: authLoading } = useAuth()
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [placeholderIndex, setPlaceholderIndex] = useState(0)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showAccountModal, setShowAccountModal] = useState(false)
 
   const placeholderExamples = [
     "CFOs at fintech startups in Boston",
@@ -78,6 +84,13 @@ function App() {
 
   const handleSubmit = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault()
+    
+    // Check if user is logged in
+    if (!user) {
+      setShowAuthModal(true)
+      return
+    }
+
     const queryToSubmit = searchQuery || query
     if (!queryToSubmit.trim()) return
 
@@ -116,14 +129,53 @@ function App() {
     handleSubmit(undefined, sampleText)
   }
 
+  const handleAuthButtonClick = () => {
+    if (user) {
+      setShowAccountModal(true)
+    } else {
+      setShowAuthModal(true)
+    }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="app">
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <AccountManagement isOpen={showAccountModal} onClose={() => setShowAccountModal(false)} />
+      
       <header className="header">
         <div className="header-content">
           <div className="logo">
             <span className="logo-text">SalesNav AI</span>
           </div>
-          <button className="settings-button">⚙️</button>
+          <button className="auth-button" onClick={handleAuthButtonClick}>
+            {user ? (
+              <>
+                <span className="user-avatar">
+                  {user.user_metadata?.avatar_url ? (
+                    <img src={user.user_metadata.avatar_url} alt="Profile" />
+                  ) : (
+                    user.email?.[0].toUpperCase()
+                  )}
+                </span>
+                <span className="button-text">Account</span>
+              </>
+            ) : (
+              <>
+                <span className="login-icon">👤</span>
+                <span className="button-text">Sign In</span>
+              </>
+            )}
+          </button>
         </div>
       </header>
 
