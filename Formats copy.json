@@ -1,0 +1,2036 @@
+{
+  "CURRENT_COMPANY": {
+    "ids": [
+    ],
+    "texts": [
+      {
+        "text": "HubSpot",
+        "records": [
+          {
+            "text": "HubSpot",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "COMPANY_HEADCOUNT": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "1-10",
+        "records": [
+          {
+            "text": "1-10",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "11-50",
+        "records": [
+          {
+            "text": "11-50",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Self-employed",
+        "records": [
+          {
+            "text": "Self-employed",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "51-200",
+        "records": [
+          {
+            "text": "51-200",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "201-500",
+        "records": [
+          {
+            "text": "201-500",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "501-1",
+        "records": [
+          {
+            "text": "501-1",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "1",
+        "records": [
+          {
+            "text": "1",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "5",
+        "records": [
+          {
+            "text": "5",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "10",
+        "records": [
+          {
+            "text": "10",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "1001-5000",
+        "records": [
+          {
+            "text": "1001-5000",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "PAST_COMPANY": {
+    "ids": [
+      {
+        "id": 0,
+        "text": "HUB International"
+      }
+    ],
+    "texts": [
+      {
+        "text": "HUB International",
+        "records": [
+          {
+            "text": "HUB International",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "COMPANY_TYPE": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Public Company",
+        "records": [
+          {
+            "text": "Public Company",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Privately Held",
+        "records": [
+          {
+            "text": "Privately Held",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Educational Institution",
+        "records": [
+          {
+            "text": "Educational Institution",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Non Profit",
+        "records": [
+          {
+            "text": "Non Profit",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Partnership",
+        "records": [
+          {
+            "text": "Partnership",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Self Employed",
+        "records": [
+          {
+            "text": "Self Employed",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Self Owned",
+        "records": [
+          {
+            "text": "Self Owned",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Government Agency",
+        "records": [
+          {
+            "text": "Government Agency",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "COMPANY_HEADQUARTERS": {
+    "ids": [
+      {
+        "id": 102221843,
+        "text": "North America"
+      },
+      {
+        "id": 91000010,
+        "text": "Oceania"
+      },
+      {
+        "id": 91000004,
+        "text": "APJ"
+      },
+      {
+        "id": 91000003,
+        "text": "APAC"
+      },
+      {
+        "id": 91000009,
+        "text": "Nordics"
+      },
+      {
+        "id": 91000005,
+        "text": "Benelux"
+      },
+      {
+        "id": 102393603,
+        "text": "Asia"
+      },
+      {
+        "id": 91000008,
+        "text": "MENA"
+      },
+      {
+        "id": 100506914,
+        "text": "Europe"
+      },
+      {
+        "id": 91000006,
+        "text": "DACH"
+      },
+      {
+        "id": 103537801,
+        "text": "Africa"
+      },
+      {
+        "id": 104514572,
+        "text": "South America"
+      },
+      {
+        "id": 91000007,
+        "text": "EMEA"
+      }
+    ],
+    "texts": []
+  },
+  "FOLLOWS_YOUR_COMPANY": {
+    "ids": [],
+    "texts": []
+  },
+  "VIEWED_YOUR_PROFILE": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Viewed your profile recently",
+        "records": [
+          {
+            "text": "Viewed your profile recently",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "RELATIONSHIP": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "1st degree connections",
+        "records": [
+          {
+            "text": "1st degree connections",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "2nd degree connections",
+        "records": [
+          {
+            "text": "2nd degree connections",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Group members",
+        "records": [
+          {
+            "text": "Group members",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "3rd+ degree connections",
+        "records": [
+          {
+            "text": "3rd+ degree connections",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "CONNECTION_OF": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Peter Milnes",
+        "records": [
+          {
+            "text": "Peter Milnes",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "WITH_SHARED_EXPERIENCES": {
+    "ids": [],
+    "texts": []
+  },
+  "PAST_COLLEAGUE": {
+    "ids": [],
+    "texts": []
+  },
+  "RECENTLY_CHANGED_JOBS": {
+    "ids": [],
+    "texts": []
+  },
+  "POSTED_ON_LINKEDIN": {
+    "ids": [],
+    "texts": []
+  },
+  "PERSONA": {
+    "ids": [
+      {
+        "id": 1950389058,
+        "text": "CXO"
+      }
+    ],
+    "texts": []
+  },
+  "LEAD_INTERACTIONS": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Viewed profile",
+        "records": [
+          {
+            "text": "Viewed profile",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Messaged",
+        "records": [
+          {
+            "text": "Messaged",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "SCHOOL": {
+    "ids": [
+      {
+        "id": 69416019,
+        "text": "buildspace"
+      }
+    ],
+    "texts": []
+  },
+  "YEARS_OF_EXPERIENCE": {
+    "ids": [
+      {
+        "id": 3,
+        "text": "3 to 5 years"
+      },
+      {
+        "id": 1,
+        "text": "Less than 1 year"
+      },
+      {
+        "id": 2,
+        "text": "1 to 2 years"
+      },
+      {
+        "id": 4,
+        "text": "6 to 10 years"
+      },
+      {
+        "id": 5,
+        "text": "More than 10 years"
+      }
+    ],
+    "texts": []
+  },
+  "PROFILE_LANGUAGE": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Arabic",
+        "records": [
+          {
+            "text": "Arabic",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "English",
+        "records": [
+          {
+            "text": "English",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Portuguese",
+        "records": [
+          {
+            "text": "Portuguese",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Chinese",
+        "records": [
+          {
+            "text": "Chinese",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "LAST_NAME": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Milnes",
+        "records": [
+          {
+            "text": "Milnes",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "FIRST_NAME": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Andrew",
+        "records": [
+          {
+            "text": "Andrew",
+            "match": null,
+            "selectionType": "INCLUDED",
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "INDUSTRY": {
+    "ids": [
+      {
+        "id": 2048,
+        "text": "Chiropractors"
+      },
+      {
+        "id": 42,
+        "text": "Insurance"
+      },
+      {
+        "id": 14,
+        "text": "Hospitals and Health Care"
+      },
+      {
+        "id": 1,
+        "text": "Defense and Space Manufacturing"
+      }
+    ],
+    "texts": []
+  },
+  "REGION": {
+    "ids": [
+      {
+        "id": 90000084,
+        "text": "San Francisco Bay Area"
+      },
+      {
+        "id": 90000079,
+        "text": "Portland"
+      },
+      {
+        "id": 91000010,
+        "text": "Oceania"
+      },
+      {
+        "id": 102380872,
+        "text": "Boston"
+      },
+      {
+        "id": 90000091,
+        "text": "Greater Seattle Area"
+      },
+      {
+        "id": 105080838,
+        "text": "New York"
+      },
+      {
+        "id": 91000004,
+        "text": "APJ"
+      },
+      {
+        "id": 102221843,
+        "text": "North America"
+      },
+      {
+        "id": 90000070,
+        "text": "New York City Metropolitan Area"
+      },
+      {
+        "id": 102393603,
+        "text": "Asia"
+      },
+      {
+        "id": 91000008,
+        "text": "MENA"
+      },
+      {
+        "id": 103537801,
+        "text": "Africa"
+      },
+      {
+        "id": 91000007,
+        "text": "EMEA"
+      },
+      {
+        "id": 91000005,
+        "text": "Benelux"
+      },
+      {
+        "id": 91000009,
+        "text": "Nordics"
+      },
+      {
+        "id": 104514572,
+        "text": "South America"
+      },
+      {
+        "id": 91000003,
+        "text": "APAC"
+      },
+      {
+        "id": 91000006,
+        "text": "DACH"
+      },
+      {
+        "id": 100506914,
+        "text": "Europe"
+      }
+    ],
+    "texts": []
+  },
+  "POSTAL_CODE": {
+    "ids": [
+      {
+        "id": 106047903,
+        "text": "03110"
+      }
+    ],
+    "texts": []
+  }
+}
+{
+ "CURRENT_COMPANY": {
+ "ids": [
+ ],
+ "texts": [
+ {
+ "text": "HubSpot",
+ "records": [
+ {
+ "text": "HubSpot",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ }
+ ]
+ },
+ "COMPANY_HEADCOUNT": {
+ "ids": [],
+ "texts": [
+ {
+ "text": "Self-employed",
+ "records": [
+ {
+ "text": "Self-employed",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "1-10",
+ "records": [
+ {
+ "text": "1-10",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "51-200",
+ "records": [
+ {
+ "text": "51-200",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "201-500",
+ "records": [
+ {
+ "text": "201-500",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "11-50",
+ "records": [
+ {
+ "text": "11-50",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "1",
+ "records": [
+ {
+ "text": "1",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "501-1",
+ "records": [
+ {
+ "text": "501-1",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "5",
+ "records": [
+ {
+ "text": "5",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "10",
+ "records": [
+ {
+ "text": "10",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ }
+ ]
+ },
+ "PAST_COMPANY": {
+ "ids": [],
+ "texts": [
+ {
+ "text": "HubSpot Ventures",
+ "records": [
+ {
+ "text": "HubSpot Ventures",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ }
+ ]
+ },
+ "COMPANY_TYPE": {
+ "ids": [],
+ "texts": [
+ {
+ "text": "Public Company",
+ "records": [
+ {
+ "text": "Public Company",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Non Profit",
+ "records": [
+ {
+ "text": "Non Profit",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Partnership",
+ "records": [
+ {
+ "text": "Partnership",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Educational Institution",
+ "records": [
+ {
+ "text": "Educational Institution",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Self Employed",
+ "records": [
+ {
+ "text": "Self Employed",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Privately Held",
+ "records": [
+ {
+ "text": "Privately Held",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Government Agency",
+ "records": [
+ {
+ "text": "Government Agency",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ },
+ {
+ "text": "Self Owned",
+ "records": [
+ {
+ "text": "Self Owned",
+ "match": null,
+ "selectionType": "INCLUDED",
+ "scope": null,
+ "operator": null
+ }
+ ]
+ }
+ ]
+ },
+ "COMPANY_HEADQUARTERS": {
+ "ids": [
+ {
+ "id": 102221843,
+ "text": "North America"
+ }
+ ],
+ "texts": []
+ },
+ "FUNCTION": {
+ "ids": [
+ {
+ "id": 1,
+ "text": "Accounting"
+ },
+ {
+ "id": 2,
+ "text": "Administrative"
+ },
+ {
+ "id": 3,
+ "text": "Arts and Design"
+ },
+ {
+ "id": 4,
+ "text": "Business Development"
+ },
+ {
+ "id": 5,
+ "text": "Community and Social Services"
+ },
+ {
+ "id": 6,
+ "text": "Consulting"
+ },
+ {
+ "id": 7,
+ "text": "Education"
+ },
+ {
+ "id": 8,
+ "text": "Engineering"
+ },
+ {
+ "id": 9,
+ "text": "Entrepreneurship"
+ },
+ {
+ "id": 10,
+ "text": "Finance"
+ },
+ {
+ "id": 11,
+ "text": "Healthcare Services"
+ },
+ {
+ "id": 12,
+ "text": "Human Resources"
+ },
+ {
+ "id": 13,
+ "text": "Information Technology"
+ },
+ {
+ "id": 14,
+ "text": "Legal"
+ },
+ {
+ "id": 15,
+ "text": "Marketing"
+ },
+ {
+ "id": 16,
+ "text": "Media and Communication"
+ },
+ {
+ "id": 17,
+ "text": "Military and Protective Services"
+ },
+ {
+ "id": 18,
+ "text": "Operations"
+ },
+ {
+ "id": 19,
+ "text": "Product Management"
+ },
+ {
+ "id": 20,
+ "text": "Program and Project Management"
+ },
+ {
+ "id": 21,
+ "text": "Purchasing"
+ },
+ {
+ "id": 22,
+ "text": "Quality Assurance"
+ },
+ {
+ "id": 23,
+ "text": "Real Estate"
+ },
+ {
+ "id": 24,
+ "text": "Research"
+ },
+ {
+ "id": 25,
+ "text": "Sales"
+ },
+ {
+ "id": 26,
+ "text": "Customer Success and Support"
+ }
+ ],
+ "texts": []
+ },
+ "REGION": {
+ "ids": [
+ {
+ "id": 90000084,
+ "text": "San Francisco Bay Area"
+ }
+ ],
+ "texts": []
+ },
+ "INDUSTRY": {
+ "ids": [
+ {
+ "id": 1,
+ "text": "Defense and Space Manufacturing"
+ }
+ ],
+ "texts": []
+ }
+}
+{
+ "REGION": {
+ "ids": [
+ {
+ "id": 105080838,
+ "text": "New York"
+ },
+ {
+ "id": 102448103,
+ "text": "Los Angeles"
+ },
+ {
+ "id": 103112676,
+ "text": "Chicago"
+ },
+ {
+ "id": 103743442,
+ "text": "Houston"
+ },
+ {
+ "id": 100219842,
+ "text": "Phoenix"
+ },
+ {
+ "id": 104937023,
+ "text": "Philadelphia"
+ },
+ {
+ "id": 90000724,
+ "text": "San Antonio"
+ },
+ {
+ "id": 103918656,
+ "text": "San Diego"
+ },
+ {
+ "id": 104194190,
+ "text": "Dallas"
+ },
+ {
+ "id": 100868799,
+ "text": "Jacksonville"
+ },
+ {
+ "id": 100432370,
+ "text": "Fort Worth"
+ },
+ {
+ "id": 106233382,
+ "text": "San Jose"
+ },
+ {
+ "id": 90000064,
+ "text": "Austin"
+ },
+ {
+ "id": 102264677,
+ "text": "Charlotte"
+ },
+ {
+ "id": 90000184,
+ "text": "Columbus"
+ },
+ {
+ "id": 100871315,
+ "text": "Indianapolis"
+ },
+ {
+ "id": 90000084,
+ "text": "San Francisco Bay Area"
+ },
+ {
+ "id": 104116203,
+ "text": "Seattle"
+ },
+ {
+ "id": 103736294,
+ "text": "Denver"
+ },
+ {
+ "id": 101060990,
+ "text": "Oklahoma City"
+ },
+ {
+ "id": 105573479,
+ "text": "Nashville"
+ },
+ {
+ "id": 103977389,
+ "text": "Washington"
+ },
+ {
+ "id": 102994360,
+ "text": "El Paso"
+ },
+ {
+ "id": 100293800,
+ "text": "Las Vegas"
+ },
+ {
+ "id": 102380872,
+ "text": "Boston"
+ },
+ {
+ "id": 90000035,
+ "text": "Detroit Metropolitan Area"
+ },
+ {
+ "id": 108449684,
+ "text": "Louisville"
+ },
+ {
+ "id": 90000079,
+ "text": "Portland"
+ },
+ {
+ "id": 100420597,
+ "text": "Memphis"
+ },
+ {
+ "id": 106330734,
+ "text": "Baltimore"
+ },
+ {
+ "id": 105240372,
+ "text": "Milwaukee"
+ },
+ {
+ "id": 104055874,
+ "text": "Albuquerque"
+ },
+ {
+ "id": 103752383,
+ "text": "Tucson"
+ },
+ {
+ "id": 101272817,
+ "text": "Fresno"
+ },
+ {
+ "id": 101857797,
+ "text": "Sacramento"
+ },
+ {
+ "id": 106224388,
+ "text": "Atlanta"
+ },
+ {
+ "id": 100558512,
+ "text": "Mesa"
+ },
+ {
+ "id": 106142749,
+ "text": "Kansas City"
+ },
+ {
+ "id": 100197101,
+ "text": "Raleigh"
+ },
+ {
+ "id": 100182490,
+ "text": "Colorado Springs"
+ },
+ {
+ "id": 100739428,
+ "text": "Omaha"
+ },
+ {
+ "id": 102394087,
+ "text": "Miami"
+ },
+ {
+ "id": 106468467,
+ "text": "Virginia Beach"
+ },
+ {
+ "id": 106417510,
+ "text": "Long Beach"
+ },
+ {
+ "id": 105883676,
+ "text": "Oakland"
+ },
+ {
+ "id": 103039849,
+ "text": "Minneapolis"
+ },
+ {
+ "id": 103987799,
+ "text": "Bakersfield"
+ },
+ {
+ "id": 101891230,
+ "text": "Tulsa"
+ },
+ {
+ "id": 105517665,
+ "text": "Tampa"
+ },
+ {
+ "id": 101920004,
+ "text": "Arlington"
+ },
+ {
+ "id": 106606877,
+ "text": "Aurora"
+ },
+ {
+ "id": 90000904,
+ "text": "Wichita"
+ },
+ {
+ "id": 102356711,
+ "text": "Cleveland"
+ },
+ {
+ "id": 106689237,
+ "text": "New Orleans"
+ },
+ {
+ "id": 104093424,
+ "text": "Henderson"
+ },
+ {
+ "id": 105879727,
+ "text": "Honolulu"
+ },
+ {
+ "id": 103593861,
+ "text": "Anaheim"
+ },
+ {
+ "id": 105142029,
+ "text": "Orlando"
+ },
+ {
+ "id": 106258368,
+ "text": "Lexington"
+ },
+ {
+ "id": 101412965,
+ "text": "Stockton"
+ },
+ {
+ "id": 105039916,
+ "text": "Riverside County"
+ },
+ {
+ "id": 103575230,
+ "text": "Irvine"
+ },
+ {
+ "id": 105385420,
+ "text": "Corpus Christi"
+ },
+ {
+ "id": 103913444,
+ "text": "Newark"
+ },
+ {
+ "id": 104575067,
+ "text": "Santa Ana"
+ },
+ {
+ "id": 106310628,
+ "text": "Cincinnati"
+ },
+ {
+ "id": 101351937,
+ "text": "Pittsburgh"
+ },
+ {
+ "id": 90000512,
+ "text": "Greater Minneapolis-St. Paul Area"
+ },
+ {
+ "id": 90000312,
+ "text": "Greensboro--Winston-Salem--High Point Area"
+ },
+ {
+ "id": 102340689,
+ "text": "Jersey City"
+ },
+ {
+ "id": 106136246,
+ "text": "Durham"
+ },
+ {
+ "id": 90000436,
+ "text": "Lincoln"
+ },
+ {
+ "id": 102801014,
+ "text": "North Las Vegas"
+ },
+ {
+ "id": 100517351,
+ "text": "Plano"
+ },
+ {
+ "id": 101830238,
+ "text": "Anchorage"
+ },
+ {
+ "id": 104278762,
+ "text": "Gilbert"
+ },
+ {
+ "id": 106816259,
+ "text": "Madison"
+ },
+ {
+ "id": 106693758,
+ "text": "Reno"
+ },
+ {
+ "id": 106777968,
+ "text": "Chandler"
+ },
+ {
+ "id": 104853528,
+ "text": "St. Louis City County"
+ },
+ {
+ "id": 101748722,
+ "text": "Chula Vista"
+ },
+ {
+ "id": 103676418,
+ "text": "Buffalo"
+ },
+ {
+ "id": 106502857,
+ "text": "Fort Wayne"
+ },
+ {
+ "id": 104916159,
+ "text": "Lubbock"
+ },
+ {
+ "id": 101759449,
+ "text": "St. Petersburg"
+ },
+ {
+ "id": 90000840,
+ "text": "Toledo"
+ },
+ {
+ "id": 102139061,
+ "text": "Laredo"
+ },
+ {
+ "id": 106921907,
+ "text": "Port St Lucie"
+ },
+ {
+ "id": 100820980,
+ "text": "Glendale"
+ },
+ {
+ "id": 102387510,
+ "text": "Irving"
+ },
+ {
+ "id": 105231863,
+ "text": "Winston-Salem"
+ },
+ {
+ "id": 106976053,
+ "text": "Chesapeake"
+ },
+ {
+ "id": 106010780,
+ "text": "Garland"
+ },
+ {
+ "id": 100855814,
+ "text": "Scottsdale"
+ },
+ {
+ "id": 102381687,
+ "text": "Boise"
+ },
+ {
+ "id": 105027134,
+ "text": "Hialeah"
+ },
+ {
+ "id": 105918502,
+ "text": "Frisco"
+ },
+ {
+ "id": 102114334,
+ "text": "Richmond"
+ },
+ {
+ "id": 90000270,
+ "text": "Cape Coral Metropolitan Area"
+ },
+ {
+ "id": 103744951,
+ "text": "Norfolk"
+ },
+ {
+ "id": 106141823,
+ "text": "Spokane"
+ },
+ {
+ "id": 105142920,
+ "text": "Huntsville"
+ },
+ {
+ "id": 102516894,
+ "text": "Santa Clarita"
+ },
+ {
+ "id": 104976816,
+ "text": "Tacoma"
+ },
+ {
+ "id": 106138232,
+ "text": "Fremont"
+ },
+ {
+ "id": 105896187,
+ "text": "McKinney"
+ },
+ {
+ "id": 100328150,
+ "text": "San Bernardino County"
+ },
+ {
+ "id": 105831158,
+ "text": "Baton Rouge"
+ },
+ {
+ "id": 101671045,
+ "text": "Modesto"
+ },
+ {
+ "id": 107125851,
+ "text": "Fontana"
+ },
+ {
+ "id": 90000716,
+ "text": "Salt Lake City Metropolitan Area"
+ },
+ {
+ "id": 102498537,
+ "text": "Moreno Valley"
+ },
+ {
+ "id": 105056705,
+ "text": "Des Moines"
+ },
+ {
+ "id": 103599607,
+ "text": "Worcester County"
+ },
+ {
+ "id": 100076283,
+ "text": "Yonkers"
+ },
+ {
+ "id": 90000256,
+ "text": "Fayetteville"
+ },
+ {
+ "id": 103695844,
+ "text": "Sioux Falls"
+ },
+ {
+ "id": 105824153,
+ "text": "Grand Prairie"
+ },
+ {
+ "id": 90000684,
+ "text": "Rochester"
+ },
+ {
+ "id": 103826715,
+ "text": "Tallahassee"
+ },
+ {
+ "id": 104302746,
+ "text": "Little Rock"
+ },
+ {
+ "id": 101286062,
+ "text": "Amarillo"
+ },
+ {
+ "id": 104027599,
+ "text": "Overland Park"
+ },
+ {
+ "id": 101352188,
+ "text": "Augusta"
+ },
+ {
+ "id": 102725182,
+ "text": "Mobile"
+ },
+ {
+ "id": 102866614,
+ "text": "Oxnard"
+ },
+ {
+ "id": 100380745,
+ "text": "Chattanooga"
+ },
+ {
+ "id": 105858804,
+ "text": "Fort Lauderdale"
+ },
+ {
+ "id": 101526294,
+ "text": "Tempe"
+ },
+ {
+ "id": 100751619,
+ "text": "Akron"
+ },
+ {
+ "id": 100097788,
+ "text": "Clarksville"
+ },
+ {
+ "id": 105149290,
+ "text": "Ontario"
+ },
+ {
+ "id": 100789246,
+ "text": "Newport News"
+ },
+ {
+ "id": 107065252,
+ "text": "Elk Grove"
+ },
+ {
+ "id": 104987206,
+ "text": "Cary"
+ },
+ {
+ "id": 104600220,
+ "text": "Salem"
+ },
+ {
+ "id": 100547700,
+ "text": "Pembroke Pines"
+ },
+ {
+ "id": 101560118,
+ "text": "Eugene"
+ },
+ {
+ "id": 116804148,
+ "text": "Santa Rosa"
+ },
+ {
+ "id": 105128225,
+ "text": "Rancho Cucamonga"
+ },
+ {
+ "id": 106758579,
+ "text": "Shreveport"
+ },
+ {
+ "id": 101479894,
+ "text": "Garden Grove"
+ },
+ {
+ "id": 104648452,
+ "text": "Oceanside"
+ },
+ {
+ "id": 104469362,
+ "text": "Fort Collins"
+ },
+ {
+ "id": 102069526,
+ "text": "Murfreesboro"
+ },
+ {
+ "id": 104385764,
+ "text": "Surprise"
+ },
+ {
+ "id": 105608603,
+ "text": "Lancaster"
+ },
+ {
+ "id": 102283463,
+ "text": "Denton"
+ },
+ {
+ "id": 102254190,
+ "text": "Roseville"
+ },
+ {
+ "id": 103726782,
+ "text": "Palmdale"
+ },
+ {
+ "id": 105653395,
+ "text": "Corona"
+ },
+ {
+ "id": 102927973,
+ "text": "Salinas"
+ },
+ {
+ "id": 100268144,
+ "text": "Killeen"
+ },
+ {
+ "id": 102390836,
+ "text": "Paterson"
+ },
+ {
+ "id": 105315213,
+ "text": "Alexandria"
+ },
+ {
+ "id": 100035604,
+ "text": "Hollywood"
+ },
+ {
+ "id": 104146296,
+ "text": "Hayward"
+ },
+ {
+ "id": 90000144,
+ "text": "Charleston"
+ },
+ {
+ "id": 102838003,
+ "text": "Macon"
+ },
+ {
+ "id": 100599196,
+ "text": "Lakewood"
+ },
+ {
+ "id": 104119503,
+ "text": "Sunnyvale"
+ },
+ {
+ "id": 90000800,
+ "text": "Springfield"
+ },
+ {
+ "id": 106619589,
+ "text": "Bellevue"
+ },
+ {
+ "id": 104455108,
+ "text": "Naperville"
+ },
+ {
+ "id": 106801253,
+ "text": "Joliet"
+ },
+ {
+ "id": 100199330,
+ "text": "Bridgeport"
+ },
+ {
+ "id": 106133730,
+ "text": "Mesquite"
+ },
+ {
+ "id": 105252199,
+ "text": "Pasadena"
+ },
+ {
+ "id": 106874392,
+ "text": "Olathe"
+ },
+ {
+ "id": 105894845,
+ "text": "Escondido"
+ },
+ {
+ "id": 104139580,
+ "text": "Savannah"
+ },
+ {
+ "id": 101984162,
+ "text": "McAllen"
+ },
+ {
+ "id": 101080674,
+ "text": "Gainesville"
+ },
+ {
+ "id": 104304551,
+ "text": "Pomona"
+ },
+ {
+ "id": 106717984,
+ "text": "Rockford"
+ },
+ {
+ "id": 101973400,
+ "text": "Thornton"
+ },
+ {
+ "id": 103659815,
+ "text": "Waco"
+ },
+ {
+ "id": 105921085,
+ "text": "Visalia"
+ },
+ {
+ "id": 103650796,
+ "text": "Syracuse"
+ },
+ {
+ "id": 90000176,
+ "text": "Columbia"
+ },
+ {
+ "id": 104061736,
+ "text": "Midland"
+ },
+ {
+ "id": 111045488,
+ "text": "Miramar"
+ },
+ {
+ "id": 100177841,
+ "text": "Palm Bay"
+ },
+ {
+ "id": 104225719,
+ "text": "Jackson County"
+ },
+ {
+ "id": 103390928,
+ "text": "Coral Springs"
+ },
+ {
+ "id": 104271920,
+ "text": "Victorville"
+ },
+ {
+ "id": 104952875,
+ "text": "Elizabeth"
+ },
+ {
+ "id": 101192951,
+ "text": "Fullerton"
+ },
+ {
+ "id": 103623513,
+ "text": "Meridian"
+ },
+ {
+ "id": 100472399,
+ "text": "Torrance"
+ },
+ {
+ "id": 106935132,
+ "text": "Stamford"
+ },
+ {
+ "id": 104252509,
+ "text": "West Valley City"
+ },
+ {
+ "id": 105621717,
+ "text": "Orange County"
+ },
+ {
+ "id": 106585497,
+ "text": "Cedar Rapids"
+ },
+ {
+ "id": 106646796,
+ "text": "Warren"
+ },
+ {
+ "id": 90009446,
+ "text": "Hampton Roads"
+ },
+ {
+ "id": 106028400,
+ "text": "New Haven County"
+ },
+ {
+ "id": 104820895,
+ "text": "Kent"
+ },
+ {
+ "id": 102636075,
+ "text": "Dayton"
+ },
+ {
+ "id": 102300628,
+ "text": "Fargo"
+ },
+ {
+ "id": 103865263,
+ "text": "Lewisville"
+ },
+ {
+ "id": 106067336,
+ "text": "Carrollton"
+ },
+ {
+ "id": 105523803,
+ "text": "Round Rock"
+ },
+ {
+ "id": 103294075,
+ "text": "Sterling Heights"
+ },
+ {
+ "id": 105416315,
+ "text": "Santa Clara County"
+ },
+ {
+ "id": 104433326,
+ "text": "Normandy"
+ },
+ {
+ "id": 101330561,
+ "text": "Abilene"
+ },
+ {
+ "id": 103960194,
+ "text": "Pearland"
+ },
+ {
+ "id": 103077496,
+ "text": "Athens"
+ },
+ {
+ "id": 103723584,
+ "text": "College Station"
+ },
+ {
+ "id": 102923073,
+ "text": "Clovis"
+ },
+ {
+ "id": 102574077,
+ "text": "West Palm Beach"
+ },
+ {
+ "id": 106588646,
+ "text": "Allentown"
+ },
+ {
+ "id": 104481391,
+ "text": "North Charleston"
+ },
+ {
+ "id": 100581909,
+ "text": "Simi Valley"
+ },
+ {
+ "id": 104003859,
+ "text": "Topeka"
+ },
+ {
+ "id": 105138576,
+ "text": "Wilmington"
+ },
+ {
+ "id": 105946785,
+ "text": "Lakeland"
+ },
+ {
+ "id": 101566268,
+ "text": "Thousand Oaks"
+ },
+ {
+ "id": 103507657,
+ "text": "Concord"
+ },
+ {
+ "id": 105844446,
+ "text": "Vallejo"
+ },
+ {
+ "id": 102965250,
+ "text": "Ann Arbor"
+ },
+ {
+ "id": 100561768,
+ "text": "Broken Arrow"
+ },
+ {
+ "id": 105204253,
+ "text": "Redbird"
+ },
+ {
+ "id": 101297712,
+ "text": "Tulsa County"
+ },
+ {
+ "id": 101071413,
+ "text": "Delaware County"
+ },
+ {
+ "id": 104545879,
+ "text": "Collinsville"
+ },
+ {
+ "id": 106326474,
+ "text": "Beggs"
+ },
+ {
+ "id": 91000010,
+ "text": "Oceania"
+ },
+ {
+ "id": 104107141,
+ "text": "Lowell"
+ },
+ {
+ "id": 101516173,
+ "text": "Milton"
+ },
+ {
+ "id": 105830468,
+ "text": "Portsmouth"
+ },
+ {
+ "id": 100033284,
+ "text": "Newbury"
+ },
+ {
+ "id": 102076182,
+ "text": "Walpole"
+ },
+ {
+ "id": 103731020,
+ "text": "Westborough"
+ }
+ ],
+ "texts": []
+ }
+}
