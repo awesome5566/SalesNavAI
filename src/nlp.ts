@@ -377,6 +377,13 @@ export function matchTitles(text: string): FreeTextValue[] {
 export function matchCompanyNames(text: string): string[] {
   const companies: string[] = [];
 
+  // Check if the text contains school-related keywords
+  // If so, don't match companies - let school matching handle it instead
+  const schoolKeywords = /\b(university|academy|school|college|institute|university of|academy of|school of|college of|institute of)\b/gi;
+  if (schoolKeywords.test(text)) {
+    return companies; // Return empty array to let school matching handle it
+  }
+
   // Look for patterns like "at CompanyName" or "from CompanyName"
   // Case-insensitive to catch "at hubspot" or "at HubSpot"
   // Word boundaries \b ensure we don't match partial words (e.g., "in" in "international")

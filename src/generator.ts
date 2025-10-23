@@ -19,6 +19,66 @@ import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from
 import { normalizeForLookup } from "./sanitize.js";
 
 /**
+ * Try multiple URL slug variations for company/school resolution
+ */
+async function tryMultipleUrlVariations(
+  name: string,
+  type: 'company' | 'school',
+  options: GeneratorOptions
+): Promise<number | null> {
+  // Generate multiple slug variations
+  const slugVariations = [
+    // Standard: lowercase, spaces to dashes, remove special chars
+    name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
+    // No dashes: lowercase, remove all spaces and special chars
+    name.toLowerCase().replace(/\s+/g, "").replace(/[^a-z0-9]/g, "")
+  ];
+
+  // Remove duplicates
+  const uniqueSlugs = [...new Set(slugVariations)];
+
+  if (options.debug) {
+    console.log(`${type} "${name}" not found locally. Trying ${uniqueSlugs.length} URL variations:`);
+  }
+
+  // Try each variation until one succeeds
+  for (let i = 0; i < uniqueSlugs.length; i++) {
+    const slug = uniqueSlugs[i];
+    const baseUrl = type === 'company' 
+      ? `https://www.linkedin.com/company/${slug}/`
+      : `https://www.linkedin.com/school/${slug}/`;
+
+    if (options.debug) {
+      console.log(`  ${i + 1}. Trying: ${baseUrl}`);
+    }
+
+    try {
+      const resolvedId = type === 'company' 
+        ? await resolveCompanyIdFromHtml(baseUrl, options.silent)
+        : await resolveSchoolIdFromHtml(baseUrl, options.silent);
+      
+      if (resolvedId !== null) {
+        if (options.debug) {
+          console.log(`  ✓ Success with variation ${i + 1}: ${baseUrl}`);
+        }
+        return resolvedId;
+      }
+    } catch (error) {
+      // Continue to next variation
+      if (options.debug) {
+        console.log(`  ✗ Failed: ${baseUrl}`);
+      }
+    }
+  }
+
+  if (options.debug) {
+    console.log(`  ✗ All ${uniqueSlugs.length} variations failed for ${type} "${name}"`);
+  }
+
+  return null;
+}
+
+/**
  * Generate a Sales Navigator URL from a natural language description
  */
 export async function generateUrlFromDescription(
@@ -102,30 +162,18 @@ export async function generateUrlFromDescription(
             selectionType: "INCLUDED",
           });
         } else {
-          // Not found locally - try to construct LinkedIn URL and resolve
-          const companySlug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-          const guessedUrl = `https://www.linkedin.com/company/${companySlug}/`;
+          // Not found locally - try multiple URL variations
+          const resolvedId = await tryMultipleUrlVariations(name, 'company', options);
           
-          if (options.debug) {
-            console.log(`Company "${name}" not found locally. Trying: ${guessedUrl}`);
-          }
-          
-          try {
-            const resolvedId = await resolveCompanyIdFromHtml(guessedUrl, options.silent);
-            if (resolvedId !== null) {
-              companyMatches.push({
-                id: resolvedId,
-                text: name,
-                selectionType: "INCLUDED",
-              });
-            } else {
-              warnings.push(
-                `Company "${name}" not found. Tried ${guessedUrl} but could not resolve ID.`
-              );
-            }
-          } catch (error) {
+          if (resolvedId !== null) {
+            companyMatches.push({
+              id: resolvedId,
+              text: name,
+              selectionType: "INCLUDED",
+            });
+          } else {
             warnings.push(
-              `Company "${name}" not found. Could not resolve from ${guessedUrl}.`
+              `Company "${name}" not found. Tried multiple URL variations but could not resolve ID.`
             );
           }
         }
@@ -172,30 +220,18 @@ export async function generateUrlFromDescription(
             selectionType: "INCLUDED",
           });
         } else {
-          // Not found locally - try to construct LinkedIn URL and resolve
-          const schoolSlug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-          const guessedUrl = `https://www.linkedin.com/school/${schoolSlug}/`;
+          // Not found locally - try multiple URL variations
+          const resolvedId = await tryMultipleUrlVariations(name, 'school', options);
           
-          if (options.debug) {
-            console.log(`School "${name}" not found locally. Trying: ${guessedUrl}`);
-          }
-          
-          try {
-            const resolvedId = await resolveSchoolIdFromHtml(guessedUrl, options.silent);
-            if (resolvedId !== null) {
-              schoolMatches.push({
-                id: resolvedId,
-                text: name,
-                selectionType: "INCLUDED",
-              });
-            } else {
-              warnings.push(
-                `School "${name}" not found. Tried ${guessedUrl} but could not resolve ID.`
-              );
-            }
-          } catch (error) {
+          if (resolvedId !== null) {
+            schoolMatches.push({
+              id: resolvedId,
+              text: name,
+              selectionType: "INCLUDED",
+            });
+          } else {
             warnings.push(
-              `School "${name}" not found. Could not resolve from ${guessedUrl}.`
+              `School "${name}" not found. Tried multiple URL variations but could not resolve ID.`
             );
           }
         }
