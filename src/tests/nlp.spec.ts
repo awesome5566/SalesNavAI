@@ -12,6 +12,7 @@ import {
   matchTitles,
   matchCompanyNames,
   matchSchoolNames,
+  matchCompanyHeadcount,
 } from "../nlp.js";
 
 test("matchFunctions finds 'sales' variations", () => {
@@ -130,5 +131,26 @@ test("matchSchoolNames works with school keywords", () => {
   if (result3.length > 0) {
     assert.strictEqual(result3[0], "Stanford School of Business");
   }
+});
+
+test("matchCompanyHeadcount matches numeric patterns", () => {
+  const store = loadAllData();
+  
+  // Test "headcount of X"
+  const result1 = matchCompanyHeadcount("headcount of 10", store);
+  assert.ok(result1.length > 0);
+  assert.ok(result1[0].text.includes("10"));
+  
+  // Test "X employees"
+  const result2 = matchCompanyHeadcount("50 employees", store);
+  assert.ok(result2.length > 0);
+  
+  // Test range pattern
+  const result3 = matchCompanyHeadcount("51-200 employees", store);
+  assert.ok(result3.length > 0);
+  
+  // Test descriptive terms
+  const result4 = matchCompanyHeadcount("small company", store);
+  assert.ok(result4.length > 0);
 });
 

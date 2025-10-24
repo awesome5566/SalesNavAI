@@ -150,6 +150,9 @@ async function main() {
       if (result.matched.YEARS_OF_EXPERIENCE && result.matched.YEARS_OF_EXPERIENCE.length > 0) {
         facets.YEARS_OF_EXPERIENCE = result.matched.YEARS_OF_EXPERIENCE.map((y) => `${y.text} (${y.id})`).join(", ");
       }
+      if (result.matched.COMPANY_HEADCOUNT && result.matched.COMPANY_HEADCOUNT.length > 0) {
+        facets.COMPANY_HEADCOUNT = result.matched.COMPANY_HEADCOUNT.map((c) => `${c.text} (${c.id})`).join(", ");
+      }
 
       const jsonOutput = {
         url: result.url,
@@ -205,6 +208,11 @@ async function main() {
     if (result.matched.YEARS_OF_EXPERIENCE && result.matched.YEARS_OF_EXPERIENCE.length > 0) {
       const items = result.matched.YEARS_OF_EXPERIENCE.map((y) => `${y.text} (${y.id})`).join(", ");
       console.log(`YEARS_OF_EXPERIENCE: ${items}`);
+    }
+
+    if (result.matched.COMPANY_HEADCOUNT && result.matched.COMPANY_HEADCOUNT.length > 0) {
+      const items = result.matched.COMPANY_HEADCOUNT.map((c) => `${c.text} (${c.id})`).join(", ");
+      console.log(`COMPANY_HEADCOUNT: ${items}`);
     }
 
       // Check if no matches found

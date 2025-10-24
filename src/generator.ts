@@ -12,6 +12,7 @@ import {
   matchCompanyNames,
   matchSchoolNames,
   matchYearsOfExperience,
+  matchCompanyHeadcount,
 } from "./nlp.js";
 import { resolveCompanyIds, resolveSchoolIds, resolveCompanyIdFromHtml, resolveSchoolIdFromHtml } from "./resolvers.js";
 import { buildDslFromMatches, encodeQuery, buildPeopleSearchUrl } from "./dsl.js";
@@ -125,6 +126,12 @@ export async function generateUrlFromDescription(
   const yearsOfExperience = matchYearsOfExperience(description);
   if (yearsOfExperience.length > 0) {
     matched.YEARS_OF_EXPERIENCE = yearsOfExperience;
+  }
+
+  // Match company headcount
+  const companyHeadcount = matchCompanyHeadcount(description, store);
+  if (companyHeadcount.length > 0) {
+    matched.COMPANY_HEADCOUNT = companyHeadcount;
   }
 
   // Match and resolve companies

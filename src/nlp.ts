@@ -335,6 +335,129 @@ export function matchYearsOfExperience(text: string): MatchedValue[] {
 }
 
 /**
+ * Match company headcount (e.g., "headcount of 10", "50 employees", "company size 200")
+ * Maps to LinkedIn's predefined headcount ranges
+ */
+export function matchCompanyHeadcount(
+  text: string,
+  _store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const matches: MatchedValue[] = [];
+  
+  // Define headcount buckets based on LinkedIn's ranges
+  const headcountBuckets = [
+    { text: "1-10", min: 1, max: 10 },
+    { text: "11-50", min: 11, max: 50 },
+    { text: "51-200", min: 51, max: 200 },
+    { text: "201-500", min: 201, max: 500 },
+    { text: "501-1000", min: 501, max: 1000 },
+    { text: "1001-5000", min: 1001, max: 5000 },
+    { text: "5000+", min: 5001, max: 999999 },
+  ];
+  
+  // Pattern 1: "headcount of X" or "headcount X"
+  const headcountPattern = /headcount\s+(?:of\s+)?(\d+)/gi;
+  let match;
+  
+  while ((match = headcountPattern.exec(text)) !== null) {
+    const count = parseInt(match[1], 10);
+    const bucket = headcountBuckets.find(b => count >= b.min && count <= b.max);
+    if (bucket) {
+      // Since COMPANY_HEADCOUNT has no IDs, we'll create a synthetic ID based on the text
+      const syntheticId = bucket.text === "1-10" ? 1 : 
+                         bucket.text === "11-50" ? 2 :
+                         bucket.text === "51-200" ? 3 :
+                         bucket.text === "201-500" ? 4 :
+                         bucket.text === "501-1000" ? 5 :
+                         bucket.text === "1001-5000" ? 6 : 7;
+      
+      matches.push({
+        id: syntheticId,
+        text: bucket.text,
+        selectionType: "INCLUDED",
+      });
+    }
+  }
+  
+  // Pattern 2: "X employees" or "company size X"
+  const employeePattern = /(?:company\s+size|employees?)\s+(?:of\s+)?(\d+)/gi;
+  while ((match = employeePattern.exec(text)) !== null) {
+    const count = parseInt(match[1], 10);
+    const bucket = headcountBuckets.find(b => count >= b.min && count <= b.max);
+    if (bucket) {
+      const syntheticId = bucket.text === "1-10" ? 1 : 
+                         bucket.text === "11-50" ? 2 :
+                         bucket.text === "51-200" ? 3 :
+                         bucket.text === "201-500" ? 4 :
+                         bucket.text === "501-1000" ? 5 :
+                         bucket.text === "1001-5000" ? 6 : 7;
+      
+      if (!matches.some(m => m.id === syntheticId)) {
+        matches.push({
+          id: syntheticId,
+          text: bucket.text,
+          selectionType: "INCLUDED",
+        });
+      }
+    }
+  }
+  
+  // Pattern 3: Range patterns "X-Y" or "X to Y"
+  const rangePattern = /(\d+)\s*(?:-|to)\s*(\d+)\s*(?:employees?|people|headcount)?/gi;
+  while ((match = rangePattern.exec(text)) !== null) {
+    const min = parseInt(match[1], 10);
+    const max = parseInt(match[2], 10);
+    const bucket = headcountBuckets.find(b => 
+      (min >= b.min && min <= b.max) || (max >= b.min && max <= b.max)
+    );
+    if (bucket) {
+      const syntheticId = bucket.text === "1-10" ? 1 : 
+                         bucket.text === "11-50" ? 2 :
+                         bucket.text === "51-200" ? 3 :
+                         bucket.text === "201-500" ? 4 :
+                         bucket.text === "501-1000" ? 5 :
+                         bucket.text === "1001-5000" ? 6 : 7;
+      
+      if (!matches.some(m => m.id === syntheticId)) {
+        matches.push({
+          id: syntheticId,
+          text: bucket.text,
+          selectionType: "INCLUDED",
+        });
+      }
+    }
+  }
+  
+  // Pattern 4: Descriptive terms
+  const descriptivePatterns = [
+    { pattern: /\b(small|startup|tiny)\s+compan/gi, text: "1-10" },
+    { pattern: /\b(medium|mid-sized?)\s+compan/gi, text: "51-200" },
+    { pattern: /\b(large|big|enterprise)\s+compan/gi, text: "1001-5000" },
+  ];
+  
+  for (const { pattern, text: bucketText } of descriptivePatterns) {
+    if (pattern.test(text)) {
+      const syntheticId = bucketText === "1-10" ? 1 : 
+                         bucketText === "11-50" ? 2 :
+                         bucketText === "51-200" ? 3 :
+                         bucketText === "201-500" ? 4 :
+                         bucketText === "501-1000" ? 5 :
+                         bucketText === "1001-5000" ? 6 : 7;
+      
+      if (!matches.some(m => m.id === syntheticId)) {
+        matches.push({
+          id: syntheticId,
+          text: bucketText,
+          selectionType: "INCLUDED",
+        });
+      }
+    }
+  }
+  
+  return matches;
+}
+
+/**
  * Match titles (free-text, extracts quoted strings or patterns)
  */
 export function matchTitles(text: string): FreeTextValue[] {
