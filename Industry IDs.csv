@@ -6,6 +6,7 @@ Computer Hardware Manufacturing,3,Computer Hardware Manufacturing,Computer Hardw
 Software Development,4,Software Development,Software Development
 Computer Networking Products,5,Computer Networking Products,Computer Networking Products
 Transportation Equipment Manufacturing,1029,Transportation Equipment Manufacturing,Transportation Equipment Manufacturing
+"Technology, Information and Internet",6,"Technology, Information and Internet","Technology, Information and Internet"
 Internet Publishing,6,Internet Publishing,Internet Publishing
 "Physical, Occupational and Speech Therapists",2054,"Physical, Occupational and Speech Therapists","Physical, Occupational and Speech Therapists"
 Semiconductor Manufacturing,7,Semiconductor Manufacturing,Semiconductor Manufacturing
@@ -57,7 +58,9 @@ Hospitals,2081,Hospitals,Hospitals
 Spectator Sports,33,Spectator Sports,Spectator Sports
 IT System Data Services,3106,IT System Data Services,IT System Data Services
 Food and Beverage Services,34,Food and Beverage Services,Food and Beverage Services
+"Accommodation and Food Services",2190,"Accommodation and Food Services","Accommodation and Food Services"
 IT System Testing and Evaluation,3107,IT System Testing and Evaluation,IT System Testing and Evaluation
+"Movies, Videos, and Sound",35,"Movies, Videos, and Sound","Movies, Videos, and Sound"
 Movies and Sound Recording,35,Movies and Sound Recording,Movies and Sound Recording
 Broadcast Media Production and Distribution,36,Broadcast Media Production and Distribution,Broadcast Media Production and Distribution
 "Museums, Historical Sites, and Zoos",37,"Museums, Historical Sites, and Zoos","Museums, Historical Sites, and Zoos"
@@ -155,6 +158,7 @@ Strategic Management Services,102,Strategic Management Services,Strategic Manage
 Writing and Editing,103,Writing and Editing,Writing and Editing
 Staffing and Recruiting,104,Staffing and Recruiting,Staffing and Recruiting
 Wholesale Motor Vehicles and Parts,1128,Wholesale Motor Vehicles and Parts,Wholesale Motor Vehicles and Parts
+"Professional Training and Coaching",105,"Professional Training and Coaching","Professional Training and Coaching"
 Business Skills Training,105,Business Skills Training,Business Skills Training
 Venture Capital and Private Equity Principals,106,Venture Capital and Private Equity Principals,Venture Capital and Private Equity Principals
 Political Organizations,107,Political Organizations,Political Organizations
@@ -162,6 +166,7 @@ Translation and Localization,108,Translation and Localization,Translation and Lo
 Computer Games,109,Computer Games,Computer Games
 Events Services,110,Events Services,Events Services
 Retail Art Supplies,111,Retail Art Supplies,Retail Art Supplies
+"Retail Art Dealers",3186,"Retail Art Dealers","Retail Art Dealers"
 Museums,2159,Museums,Museums
 "Appliances, Electrical, and Electronics Manufacturing",112,"Appliances, Electrical, and Electronics Manufacturing","Appliances, Electrical, and Electronics Manufacturing"
 Online Audio and Video Media,113,Online Audio and Video Media,Online Audio and Video Media
@@ -170,6 +175,7 @@ Historical Sites,2161,Historical Sites,Historical Sites
 Nanotechnology Research,114,Nanotechnology Research,Nanotechnology Research
 Musicians,115,Musicians,Musicians
 Zoos and Botanical Gardens,2163,Zoos and Botanical Gardens,Zoos and Botanical Gardens
+"Transportation, Logistics, Supply Chain and Storage",116,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage"
 "Transportation, Logistics and Storage",116,"Transportation, Logistics and Storage","Transportation, Logistics and Storage"
 Plastics Manufacturing,117,Plastics Manufacturing,Plastics Manufacturing
 Computer and Network Security,118,Computer and Network Security,Computer and Network Security
@@ -218,9 +224,29 @@ Horticulture,150,Horticulture,Horticulture
 Wholesale Machinery,1187,Wholesale Machinery,Wholesale Machinery
 Caterers,2212,Caterers,Caterers
 Mobile Food Services,2214,Mobile Food Services,Mobile Food Services
+"Renewable Energy Power Generation",3240,"Renewable Energy Power Generation","Renewable Energy Power Generation"
+"Renewable Energy Equipment Manufacturing",3241,"Renewable Energy Equipment Manufacturing","Renewable Energy Equipment Manufacturing"
+"Engineering Services",3242,"Engineering Services","Engineering Services"
+"Services for Renewable Energy",3243,"Services for Renewable Energy","Services for Renewable Energy"
+"Digital Accessibility Services",3244,"Digital Accessibility Services","Digital Accessibility Services"
+"Accessible Hardware Manufacturing",3245,"Accessible Hardware Manufacturing","Accessible Hardware Manufacturing"
+"Accessible Architecture and Design",3246,"Accessible Architecture and Design","Accessible Architecture and Design"
+"Robot Manufacturing",3247,"Robot Manufacturing","Robot Manufacturing"
+"Robotics Engineering",3248,"Robotics Engineering","Robotics Engineering"
 "Bars, Taverns, and Nightclubs",2217,"Bars, Taverns, and Nightclubs","Bars, Taverns, and Nightclubs"
 Repair and Maintenance,2225,Repair and Maintenance,Repair and Maintenance
+Surveying and Mapping Services,3249,Surveying and Mapping Services,Surveying and Mapping Services
 Vehicle Repair and Maintenance,2226,Vehicle Repair and Maintenance,Vehicle Repair and Maintenance
+"Retail Pharmacies",3250,"Retail Pharmacies","Retail Pharmacies"
+"Climate Technology Product Manufacturing",3251,"Climate Technology Product Manufacturing","Climate Technology Product Manufacturing"
+"Climate Data and Analytics",3252,"Climate Data and Analytics","Climate Data and Analytics"
+"Alternative Fuel Vehicle Manufacturing",3253,"Alternative Fuel Vehicle Manufacturing","Alternative Fuel Vehicle Manufacturing"
+"Smart Meter Manufacturing",3254,"Smart Meter Manufacturing","Smart Meter Manufacturing"
+"Fuel Cell Manufacturing",3255,"Fuel Cell Manufacturing","Fuel Cell Manufacturing"
+"Regenerative Design",3256,"Regenerative Design","Regenerative Design"
+"Funeral Services",3257,"Funeral Services","Funeral Services"
+"Death Care Services",3258,"Death Care Services","Death Care Services"
+"Energy Technology",3259,"Energy Technology","Energy Technology"
 Wholesale Recyclable Materials,1206,Wholesale Recyclable Materials,Wholesale Recyclable Materials
 Wholesale Luxury Goods and Jewelry,1208,Wholesale Luxury Goods and Jewelry,Wholesale Luxury Goods and Jewelry
 Wholesale Paper Products,1212,Wholesale Paper Products,Wholesale Paper Products
