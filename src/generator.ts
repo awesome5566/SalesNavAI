@@ -8,11 +8,24 @@ import {
   matchIndustries,
   matchGeographies,
   matchSeniority,
+  matchSeniorityLevel,
   matchTitles,
   matchCompanyNames,
   matchSchoolNames,
   matchYearsOfExperience,
   matchCompanyHeadcount,
+  matchYearsAtCurrentCompany,
+  matchYearsInCurrentPosition,
+  matchCurrentTitle,
+  matchGroup,
+  matchFollowsYourCompany,
+  matchViewedYourProfile,
+  matchConnectionOf,
+  matchPastColleague,
+  matchWithSharedExperiences,
+  matchRecentlyChangedJobs,
+  matchPostedOnLinkedIn,
+  matchLeadInteractions,
 } from "./nlp.js";
 import { resolveCompanyIds, resolveSchoolIds, resolveCompanyIdFromHtml, resolveSchoolIdFromHtml } from "./resolvers.js";
 import { buildDslFromMatches, encodeQuery, buildPeopleSearchUrl } from "./dsl.js";
@@ -110,10 +123,16 @@ export async function generateUrlFromDescription(
     matched.REGION = geographies;
   }
 
-  // Match seniority (using PERSONA as a proxy since we don't have SENIORITY_LEVEL)
+  // Match seniority (using PERSONA as a proxy)
   const seniority = matchSeniority(description, store);
   if (seniority.length > 0) {
     matched.PERSONA = seniority;
+  }
+
+  // Match seniority levels (new SENIORITY_LEVEL facet)
+  const seniorityLevels = matchSeniorityLevel(description, store);
+  if (seniorityLevels.length > 0) {
+    matched.SENIORITY_LEVEL = seniorityLevels;
   }
 
   // Match titles
@@ -248,6 +267,78 @@ export async function generateUrlFromDescription(
         matched.SCHOOL = schoolMatches;
       }
     }
+  }
+
+  // Match years at current company
+  const yearsAtCompany = matchYearsAtCurrentCompany(description, store);
+  if (yearsAtCompany.length > 0) {
+    matched.YEARS_AT_CURRENT_COMPANY = yearsAtCompany;
+  }
+
+  // Match years in current position
+  const yearsInPosition = matchYearsInCurrentPosition(description, store);
+  if (yearsInPosition.length > 0) {
+    matched.YEARS_IN_CURRENT_POSITION = yearsInPosition;
+  }
+
+  // Match current title
+  const currentTitle = matchCurrentTitle(description, store);
+  if (currentTitle.length > 0) {
+    matched.CURRENT_TITLE = currentTitle;
+  }
+
+  // Match groups
+  const groups = matchGroup(description, store);
+  if (groups.length > 0) {
+    matched.GROUP = groups;
+  }
+
+  // Match follows your company
+  const followsCompany = matchFollowsYourCompany(description, store);
+  if (followsCompany.length > 0) {
+    matched.FOLLOWS_YOUR_COMPANY = followsCompany;
+  }
+
+  // Match viewed your profile
+  const viewedProfile = matchViewedYourProfile(description, store);
+  if (viewedProfile.length > 0) {
+    matched.VIEWED_YOUR_PROFILE = viewedProfile;
+  }
+
+  // Match connection of
+  const connectionOf = matchConnectionOf(description, store);
+  if (connectionOf.length > 0) {
+    matched.CONNECTION_OF = connectionOf;
+  }
+
+  // Match past colleague
+  const pastColleague = matchPastColleague(description, store);
+  if (pastColleague.length > 0) {
+    matched.PAST_COLLEAGUE = pastColleague;
+  }
+
+  // Match with shared experiences
+  const sharedExperiences = matchWithSharedExperiences(description, store);
+  if (sharedExperiences.length > 0) {
+    matched.WITH_SHARED_EXPERIENCES = sharedExperiences;
+  }
+
+  // Match recently changed jobs
+  const changedJobs = matchRecentlyChangedJobs(description, store);
+  if (changedJobs.length > 0) {
+    matched.RECENTLY_CHANGED_JOBS = changedJobs;
+  }
+
+  // Match posted on LinkedIn
+  const postedLinkedIn = matchPostedOnLinkedIn(description, store);
+  if (postedLinkedIn.length > 0) {
+    matched.POSTED_ON_LINKEDIN = postedLinkedIn;
+  }
+
+  // Match lead interactions
+  const leadInteractions = matchLeadInteractions(description, store);
+  if (leadInteractions.length > 0) {
+    matched.LEAD_INTERACTIONS = leadInteractions;
   }
 
   // Build DSL

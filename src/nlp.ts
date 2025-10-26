@@ -545,3 +545,232 @@ export function matchSchoolNames(text: string): string[] {
   return schools;
 }
 
+/**
+ * Match seniority levels (e.g., "Owner/Partner", "CXO", "Vice President", "Director")
+ * Uses the new SENIORITY_LEVEL facet with full range of levels
+ */
+export function matchSeniorityLevel(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bowner\b/gi, "owner")
+    .replace(/\bpartner\b/gi, "partner")
+    .replace(/\bvps\b/gi, "vice president")
+    .replace(/\bvice presidents?\b/gi, "vice president")
+    .replace(/\bc-level\b/gi, "cxo")
+    .replace(/\bexecutives?\b/gi, "executive")
+    .replace(/\bdirectors?\b/gi, "director")
+    .replace(/\bmanagers?\b/gi, "manager")
+    .replace(/\bentry level\b/gi, "entry level")
+    .replace(/\bsenior\b/gi, "senior")
+    .replace(/\bstrategic\b/gi, "strategic")
+    .replace(/\btraining\b/gi, "in training");
+
+  return matchFacet(augmentedText, store.SENIORITY_LEVEL, { minLength: 2 });
+}
+
+/**
+ * Match years at current company (e.g., "2 years at company", "5+ years at current company")
+ */
+export function matchYearsAtCurrentCompany(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\byears?\s+at\s+company\b/gi, "years at company")
+    .replace(/\byears?\s+at\s+current\s+company\b/gi, "years at company")
+    .replace(/\byears?\s+with\s+company\b/gi, "years at company");
+
+  return matchFacet(augmentedText, store.YEARS_AT_CURRENT_COMPANY, { minLength: 3 });
+}
+
+/**
+ * Match years in current position (e.g., "3 years in role", "2+ years in position")
+ */
+export function matchYearsInCurrentPosition(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\byears?\s+in\s+role\b/gi, "years in position")
+    .replace(/\byears?\s+in\s+position\b/gi, "years in position")
+    .replace(/\byears?\s+in\s+current\s+role\b/gi, "years in position")
+    .replace(/\byears?\s+in\s+current\s+position\b/gi, "years in position");
+
+  return matchFacet(augmentedText, store.YEARS_IN_CURRENT_POSITION, { minLength: 3 });
+}
+
+/**
+ * Match current title (e.g., "Account Manager", "Software Engineer")
+ */
+export function matchCurrentTitle(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  // Look for patterns like "current title Account Manager" or "title: Software Engineer"
+  const titlePattern = /(?:current\s+title|title[:\s]+)([A-Za-z][A-Za-z0-9\s&]+?)(?:\s+\b(?:in|from|and|or|with)\b|\.|,|$)/gi;
+  const titles: string[] = [];
+  let match;
+
+  while ((match = titlePattern.exec(text)) !== null) {
+    const title = match[1].trim();
+    if (title.length > 2 && !titles.includes(title)) {
+      titles.push(title);
+    }
+  }
+
+  // If no explicit title patterns found, try to match against the facet data
+  if (titles.length === 0) {
+    return matchFacet(text, store.CURRENT_TITLE, { minLength: 3 });
+  }
+
+  // Match found titles against the facet data
+  const matches: MatchedValue[] = [];
+  for (const title of titles) {
+    const titleMatches = matchFacet(title, store.CURRENT_TITLE, { minLength: 3 });
+    matches.push(...titleMatches);
+  }
+
+  return matches;
+}
+
+/**
+ * Match LinkedIn groups (e.g., "Harvard Business Review Discussion Group")
+ */
+export function matchGroup(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bgroup\s+member\b/gi, "group")
+    .replace(/\bmember\s+of\s+group\b/gi, "group")
+    .replace(/\bjoined\s+group\b/gi, "group");
+
+  return matchFacet(augmentedText, store.GROUP, { minLength: 4 });
+}
+
+/**
+ * Match people who follow your company
+ */
+export function matchFollowsYourCompany(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bfollows?\s+your\s+company\b/gi, "following your company")
+    .replace(/\bfollowing\s+your\s+company\b/gi, "following your company")
+    .replace(/\bfollows?\s+company\b/gi, "following your company");
+
+  return matchFacet(augmentedText, store.FOLLOWS_YOUR_COMPANY, { minLength: 4 });
+}
+
+/**
+ * Match people who viewed your profile recently
+ */
+export function matchViewedYourProfile(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bviewed\s+your\s+profile\b/gi, "viewed your profile recently")
+    .replace(/\bviewed\s+profile\b/gi, "viewed your profile recently")
+    .replace(/\bprofile\s+views?\b/gi, "viewed your profile recently");
+
+  return matchFacet(augmentedText, store.VIEWED_YOUR_PROFILE, { minLength: 4 });
+}
+
+/**
+ * Match connections of specific people
+ */
+export function matchConnectionOf(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bconnection\s+of\b/gi, "connection of")
+    .replace(/\bconnected\s+to\b/gi, "connection of")
+    .replace(/\bfriend\s+of\b/gi, "connection of");
+
+  return matchFacet(augmentedText, store.CONNECTION_OF, { minLength: 3 });
+}
+
+/**
+ * Match past colleagues
+ */
+export function matchPastColleague(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bpast\s+colleague\b/gi, "past colleague")
+    .replace(/\bformer\s+colleague\b/gi, "past colleague")
+    .replace(/\bworked\s+with\b/gi, "past colleague")
+    .replace(/\bcolleague\s+from\b/gi, "past colleague");
+
+  return matchFacet(augmentedText, store.PAST_COLLEAGUE, { minLength: 4 });
+}
+
+/**
+ * Match people with shared experiences
+ */
+export function matchWithSharedExperiences(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bshared\s+experience\b/gi, "shared experiences")
+    .replace(/\bcommon\s+experience\b/gi, "shared experiences")
+    .replace(/\bsimilar\s+background\b/gi, "shared experiences");
+
+  return matchFacet(augmentedText, store.WITH_SHARED_EXPERIENCES, { minLength: 4 });
+}
+
+/**
+ * Match people who recently changed jobs
+ */
+export function matchRecentlyChangedJobs(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\brecently\s+changed\s+jobs?\b/gi, "recently changed jobs")
+    .replace(/\bnew\s+job\b/gi, "recently changed jobs")
+    .replace(/\bjob\s+change\b/gi, "recently changed jobs")
+    .replace(/\bcareer\s+change\b/gi, "recently changed jobs");
+
+  return matchFacet(augmentedText, store.RECENTLY_CHANGED_JOBS, { minLength: 4 });
+}
+
+/**
+ * Match people who posted on LinkedIn
+ */
+export function matchPostedOnLinkedIn(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bposted\s+on\s+linkedin\b/gi, "posted on linkedin")
+    .replace(/\blinkedin\s+post\b/gi, "posted on linkedin")
+    .replace(/\bactive\s+on\s+linkedin\b/gi, "posted on linkedin")
+    .replace(/\blinkedin\s+activity\b/gi, "posted on linkedin");
+
+  return matchFacet(augmentedText, store.POSTED_ON_LINKEDIN, { minLength: 4 });
+}
+
+/**
+ * Match lead interactions (viewed profile, messaged)
+ */
+export function matchLeadInteractions(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  const augmentedText = text
+    .replace(/\bviewed\s+profile\b/gi, "viewed profile")
+    .replace(/\bmessaged\b/gi, "messaged")
+    .replace(/\bsent\s+message\b/gi, "messaged")
+    .replace(/\binteracted\s+with\b/gi, "messaged");
+
+  return matchFacet(augmentedText, store.LEAD_INTERACTIONS, { minLength: 4 });
+}
+

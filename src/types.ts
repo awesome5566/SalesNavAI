@@ -38,7 +38,19 @@ export type FacetName =
   | "POSTAL_CODE"
   | "TITLE"
   | "FIRST_NAME"
-  | "LAST_NAME";
+  | "LAST_NAME"
+  | "CURRENT_TITLE"
+  | "YEARS_AT_CURRENT_COMPANY"
+  | "YEARS_IN_CURRENT_POSITION"
+  | "GROUP"
+  | "FOLLOWS_YOUR_COMPANY"
+  | "VIEWED_YOUR_PROFILE"
+  | "CONNECTION_OF"
+  | "PAST_COLLEAGUE"
+  | "WITH_SHARED_EXPERIENCES"
+  | "RECENTLY_CHANGED_JOBS"
+  | "POSTED_ON_LINKEDIN"
+  | "LEAD_INTERACTIONS";
 
 // Normalized facet store
 export type NormalizedFacetStore = Record<FacetName, FacetIndex>;
@@ -82,6 +94,18 @@ export interface NLPMatches {
   COMPANY_HEADQUARTERS: MatchedValue[];
   YEARS_OF_EXPERIENCE: MatchedValue[];
   PERSONA: MatchedValue[];
+  CURRENT_TITLE: MatchedValue[];
+  YEARS_AT_CURRENT_COMPANY: MatchedValue[];
+  YEARS_IN_CURRENT_POSITION: MatchedValue[];
+  GROUP: MatchedValue[];
+  FOLLOWS_YOUR_COMPANY: MatchedValue[];
+  VIEWED_YOUR_PROFILE: MatchedValue[];
+  CONNECTION_OF: MatchedValue[];
+  PAST_COLLEAGUE: MatchedValue[];
+  WITH_SHARED_EXPERIENCES: MatchedValue[];
+  RECENTLY_CHANGED_JOBS: MatchedValue[];
+  POSTED_ON_LINKEDIN: MatchedValue[];
+  LEAD_INTERACTIONS: MatchedValue[];
 }
 
 // URL generation options

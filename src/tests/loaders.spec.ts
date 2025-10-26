@@ -4,10 +4,10 @@
 
 import { test } from "node:test";
 import assert from "node:assert";
-import { loadFormatsCopy, loadIndustriesCsv } from "../loaders.js";
+import { loadFacetStore, loadIndustriesCsv } from "../loaders.js";
 
-test("loadFormatsCopy loads and normalizes JSON data", () => {
-  const store = loadFormatsCopy("Formats copy.json");
+test("loadFacetStore loads and normalizes JSON data", () => {
+  const store = loadFacetStore("facet-store.json");
   
   // Check that some facets exist
   assert.ok(Object.keys(store).length > 0);
@@ -29,8 +29,8 @@ test("loadFormatsCopy loads and normalizes JSON data", () => {
   }
 });
 
-test("loadFormatsCopy handles REGION data", () => {
-  const store = loadFormatsCopy("Formats copy.json");
+test("loadFacetStore handles REGION data", () => {
+  const store = loadFacetStore("facet-store.json");
   
   // Check if REGION exists in the data
   if (store.REGION) {

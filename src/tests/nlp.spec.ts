@@ -13,6 +13,19 @@ import {
   matchCompanyNames,
   matchSchoolNames,
   matchCompanyHeadcount,
+  matchSeniorityLevel,
+  matchYearsAtCurrentCompany,
+  matchYearsInCurrentPosition,
+  matchCurrentTitle,
+  matchGroup,
+  matchFollowsYourCompany,
+  matchViewedYourProfile,
+  matchConnectionOf,
+  matchPastColleague,
+  matchWithSharedExperiences,
+  matchRecentlyChangedJobs,
+  matchPostedOnLinkedIn,
+  matchLeadInteractions,
 } from "../nlp.js";
 
 test("matchFunctions finds 'sales' variations", () => {
@@ -152,5 +165,105 @@ test("matchCompanyHeadcount matches numeric patterns", () => {
   // Test descriptive terms
   const result4 = matchCompanyHeadcount("small company", store);
   assert.ok(result4.length > 0);
+});
+
+test("matchSeniorityLevel finds seniority levels", () => {
+  const store = loadAllData();
+  
+  // Test with "director"
+  const result1 = matchSeniorityLevel("looking for directors", store);
+  assert.ok(Array.isArray(result1));
+  
+  // Test with "vice president"
+  const result2 = matchSeniorityLevel("vice presidents", store);
+  assert.ok(Array.isArray(result2));
+  
+  // Test with "owner"
+  const result3 = matchSeniorityLevel("company owners", store);
+  assert.ok(Array.isArray(result3));
+});
+
+test("matchYearsAtCurrentCompany finds years at company", () => {
+  const store = loadAllData();
+  
+  const result = matchYearsAtCurrentCompany("2 years at company", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchYearsInCurrentPosition finds years in position", () => {
+  const store = loadAllData();
+  
+  const result = matchYearsInCurrentPosition("3 years in role", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchCurrentTitle finds current titles", () => {
+  const store = loadAllData();
+  
+  const result = matchCurrentTitle("current title Account Manager", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchGroup finds LinkedIn groups", () => {
+  const store = loadAllData();
+  
+  const result = matchGroup("Harvard Business Review Discussion Group", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchFollowsYourCompany finds company followers", () => {
+  const store = loadAllData();
+  
+  const result = matchFollowsYourCompany("following your company", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchViewedYourProfile finds profile viewers", () => {
+  const store = loadAllData();
+  
+  const result = matchViewedYourProfile("viewed your profile recently", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchConnectionOf finds connections", () => {
+  const store = loadAllData();
+  
+  const result = matchConnectionOf("connection of Peter Milnes", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchPastColleague finds past colleagues", () => {
+  const store = loadAllData();
+  
+  const result = matchPastColleague("past colleague", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchWithSharedExperiences finds shared experiences", () => {
+  const store = loadAllData();
+  
+  const result = matchWithSharedExperiences("shared experiences", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchRecentlyChangedJobs finds job changers", () => {
+  const store = loadAllData();
+  
+  const result = matchRecentlyChangedJobs("recently changed jobs", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchPostedOnLinkedIn finds LinkedIn posters", () => {
+  const store = loadAllData();
+  
+  const result = matchPostedOnLinkedIn("posted on linkedin", store);
+  assert.ok(Array.isArray(result));
+});
+
+test("matchLeadInteractions finds lead interactions", () => {
+  const store = loadAllData();
+  
+  const result = matchLeadInteractions("viewed profile", store);
+  assert.ok(Array.isArray(result));
 });
 

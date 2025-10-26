@@ -1,70 +1,74 @@
 /**
- * Data loaders for Formats copy.json and Industry IDs.csv
+ * Data loaders for facet-store.json and Industry IDs.csv
  */
 
 import { readFileSync } from "fs";
 import { parse } from "csv-parse/sync";
-import type { FacetIndex, NormalizedFacetStore, RawFacetData, FacetName } from "./types.js";
+import type { FacetIndex, NormalizedFacetStore, FacetName } from "./types.js";
 import { sanitizeText, normalizeForLookup } from "./sanitize.js";
 
 /**
- * Load and normalize Formats copy.json
- * Note: The file contains multiple JSON objects separated by newlines, not a JSON array
+ * Load and normalize facet-store.json
+ * New structure with facets containing ids arrays with records
  */
-export function loadFormatsCopy(path = "Formats copy.json"): Partial<NormalizedFacetStore> {
+export function loadFacetStore(path = "facet-store.json"): Partial<NormalizedFacetStore> {
   const content = readFileSync(path, "utf-8");
   const sanitized = sanitizeText(content);
-
-  // Split JSON objects by pattern }\n{ (close brace, newline, open brace)
-  // Replace }\n{ with }\n---SPLIT---\n{ to mark boundaries
-  const marked = sanitized.replace(/\}\s*\n\s*\{/g, "}\n---SPLIT---\n{");
-  const chunks = marked.split("---SPLIT---");
   
-  const jsonObjects: Record<string, RawFacetData>[] = [];
-  
-  for (const chunk of chunks) {
-    const trimmed = chunk.trim();
-    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
-      try {
-        jsonObjects.push(JSON.parse(trimmed));
-      } catch (e) {
-        console.error("Failed to parse JSON chunk:", e);
-      }
-    }
-  }
-
-  // Merge all facets from all objects
+  const facetData = JSON.parse(sanitized);
   const store: Partial<NormalizedFacetStore> = {};
 
-  for (const obj of jsonObjects) {
-    for (const [facetName, facetData] of Object.entries(obj)) {
-      const normalizedName = facetName as FacetName;
-      
-      if (!store[normalizedName]) {
-        store[normalizedName] = {
-          byId: new Map(),
-          byText: new Map(),
-        };
-      }
+  for (const [facetName, facetInfo] of Object.entries(facetData)) {
+    const normalizedName = facetName as FacetName;
+    
+    if (!store[normalizedName]) {
+      store[normalizedName] = {
+        byId: new Map(),
+        byText: new Map(),
+      };
+    }
 
-      const index = store[normalizedName]!;
+    const index = store[normalizedName]!;
+    const facetDataTyped = facetInfo as any;
 
-      // Add ID-based entries
-      for (const { id, text } of facetData.ids) {
-        const cleanText = sanitizeText(text);
-        const lookupKey = normalizeForLookup(cleanText);
-        
-        // Only add if not already present (first wins for deduplication)
-        if (!index.byId.has(id)) {
-          index.byId.set(id, cleanText);
+    // Process IDs array - each ID has records with text values
+    if (facetDataTyped.ids && Array.isArray(facetDataTyped.ids)) {
+      for (const idEntry of facetDataTyped.ids) {
+        const id = idEntry.id;
+        if (idEntry.records && Array.isArray(idEntry.records)) {
+          for (const record of idEntry.records) {
+            if (record.text) {
+              const cleanText = sanitizeText(record.text);
+              const lookupKey = normalizeForLookup(cleanText);
+              
+              // Only add if not already present (first wins for deduplication)
+              if (!index.byId.has(id)) {
+                index.byId.set(id, cleanText);
+              }
+              if (!index.byText.has(lookupKey)) {
+                index.byText.set(lookupKey, id);
+              }
+            }
+          }
         }
-        if (!index.byText.has(lookupKey)) {
-          index.byText.set(lookupKey, id);
+      }
+    }
+
+    // Process texts array for text-based facets
+    if (facetDataTyped.texts && Array.isArray(facetDataTyped.texts)) {
+      for (const textEntry of facetDataTyped.texts) {
+        if (textEntry.text) {
+          const cleanText = sanitizeText(textEntry.text);
+          const lookupKey = normalizeForLookup(cleanText);
+          
+          // For text-based facets, we don't have IDs, so we use a synthetic ID
+          if (!index.byText.has(lookupKey)) {
+            const syntheticId = cleanText.length; // Use text length as synthetic ID
+            index.byText.set(lookupKey, syntheticId);
+            index.byId.set(syntheticId, cleanText);
+          }
         }
       }
-
-      // For text-based facets, we can also extract IDs from the texts array if needed
-      // but typically those don't have IDs
     }
   }
 
@@ -114,10 +118,10 @@ export function loadIndustriesCsv(path = "Industry IDs.csv"): FacetIndex {
  * Load all data and merge into a complete store
  */
 export function loadAllData(
-  formatsPath = "Formats copy.json",
+  facetStorePath = "facet-store.json",
   industriesPath = "Industry IDs.csv"
 ): Partial<NormalizedFacetStore> {
-  const store = loadFormatsCopy(formatsPath);
+  const store = loadFacetStore(facetStorePath);
   const industries = loadIndustriesCsv(industriesPath);
 
   // Merge industries into store (or replace if exists)

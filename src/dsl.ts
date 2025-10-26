@@ -84,6 +84,18 @@ export function buildDslFromMatches(matches: {
   COMPANY_HEADQUARTERS?: MatchedValue[];
   YEARS_OF_EXPERIENCE?: MatchedValue[];
   PERSONA?: MatchedValue[];
+  CURRENT_TITLE?: MatchedValue[];
+  YEARS_AT_CURRENT_COMPANY?: MatchedValue[];
+  YEARS_IN_CURRENT_POSITION?: MatchedValue[];
+  GROUP?: MatchedValue[];
+  FOLLOWS_YOUR_COMPANY?: MatchedValue[];
+  VIEWED_YOUR_PROFILE?: MatchedValue[];
+  CONNECTION_OF?: MatchedValue[];
+  PAST_COLLEAGUE?: MatchedValue[];
+  WITH_SHARED_EXPERIENCES?: MatchedValue[];
+  RECENTLY_CHANGED_JOBS?: MatchedValue[];
+  POSTED_ON_LINKEDIN?: MatchedValue[];
+  LEAD_INTERACTIONS?: MatchedValue[];
 }): string {
   const blocks: string[] = [];
 
@@ -126,6 +138,42 @@ export function buildDslFromMatches(matches: {
   }
   if (matches.PERSONA && matches.PERSONA.length > 0) {
     blocks.push(facetBlockIdBased("PERSONA", matches.PERSONA));
+  }
+  if (matches.CURRENT_TITLE && matches.CURRENT_TITLE.length > 0) {
+    blocks.push(facetBlockIdBased("CURRENT_TITLE", matches.CURRENT_TITLE));
+  }
+  if (matches.YEARS_AT_CURRENT_COMPANY && matches.YEARS_AT_CURRENT_COMPANY.length > 0) {
+    blocks.push(facetBlockIdBased("YEARS_AT_CURRENT_COMPANY", matches.YEARS_AT_CURRENT_COMPANY));
+  }
+  if (matches.YEARS_IN_CURRENT_POSITION && matches.YEARS_IN_CURRENT_POSITION.length > 0) {
+    blocks.push(facetBlockIdBased("YEARS_IN_CURRENT_POSITION", matches.YEARS_IN_CURRENT_POSITION));
+  }
+  if (matches.GROUP && matches.GROUP.length > 0) {
+    blocks.push(facetBlockIdBased("GROUP", matches.GROUP));
+  }
+  if (matches.FOLLOWS_YOUR_COMPANY && matches.FOLLOWS_YOUR_COMPANY.length > 0) {
+    blocks.push(facetBlockIdBased("FOLLOWS_YOUR_COMPANY", matches.FOLLOWS_YOUR_COMPANY));
+  }
+  if (matches.VIEWED_YOUR_PROFILE && matches.VIEWED_YOUR_PROFILE.length > 0) {
+    blocks.push(facetBlockIdBased("VIEWED_YOUR_PROFILE", matches.VIEWED_YOUR_PROFILE));
+  }
+  if (matches.CONNECTION_OF && matches.CONNECTION_OF.length > 0) {
+    blocks.push(facetBlockIdBased("CONNECTION_OF", matches.CONNECTION_OF));
+  }
+  if (matches.PAST_COLLEAGUE && matches.PAST_COLLEAGUE.length > 0) {
+    blocks.push(facetBlockIdBased("PAST_COLLEAGUE", matches.PAST_COLLEAGUE));
+  }
+  if (matches.WITH_SHARED_EXPERIENCES && matches.WITH_SHARED_EXPERIENCES.length > 0) {
+    blocks.push(facetBlockIdBased("WITH_SHARED_EXPERIENCES", matches.WITH_SHARED_EXPERIENCES));
+  }
+  if (matches.RECENTLY_CHANGED_JOBS && matches.RECENTLY_CHANGED_JOBS.length > 0) {
+    blocks.push(facetBlockIdBased("RECENTLY_CHANGED_JOBS", matches.RECENTLY_CHANGED_JOBS));
+  }
+  if (matches.POSTED_ON_LINKEDIN && matches.POSTED_ON_LINKEDIN.length > 0) {
+    blocks.push(facetBlockIdBased("POSTED_ON_LINKEDIN", matches.POSTED_ON_LINKEDIN));
+  }
+  if (matches.LEAD_INTERACTIONS && matches.LEAD_INTERACTIONS.length > 0) {
+    blocks.push(facetBlockIdBased("LEAD_INTERACTIONS", matches.LEAD_INTERACTIONS));
   }
 
   // Text-based facets

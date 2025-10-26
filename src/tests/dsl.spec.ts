@@ -99,3 +99,35 @@ test("buildDslFromMatches creates complete DSL", () => {
   assert.ok(result.includes("text:Account Executive"));
 });
 
+test("buildDslFromMatches handles new facets", () => {
+  const matches = {
+    SENIORITY_LEVEL: [{ id: 320, text: "Owner / Partner", selectionType: "INCLUDED" }],
+    YEARS_AT_CURRENT_COMPANY: [{ id: 2, text: "1 to 2 years", selectionType: "INCLUDED" }],
+    CURRENT_TITLE: [{ id: 11, text: "Account Manager", selectionType: "INCLUDED" }],
+    GROUP: [{ id: 1817569, text: "CBA Law Practice Management & Technology Section", selectionType: "INCLUDED" }],
+    FOLLOWS_YOUR_COMPANY: [{ id: "CF", text: "Following your company", selectionType: "INCLUDED" }],
+    VIEWED_YOUR_PROFILE: [{ id: "VYP", text: "Viewed your profile recently", selectionType: "INCLUDED" }],
+    PAST_COLLEAGUE: [{ id: "PCOLL", text: "Past colleague", selectionType: "INCLUDED" }],
+    RECENTLY_CHANGED_JOBS: [{ id: "RPC", text: "Recently changed jobs", selectionType: "INCLUDED" }],
+    POSTED_ON_LINKEDIN: [{ id: "RPOL", text: "Posted on LinkedIn", selectionType: "INCLUDED" }],
+    LEAD_INTERACTIONS: [{ id: "LIVP", text: "Viewed profile", selectionType: "INCLUDED" }],
+  };
+  
+  const result = buildDslFromMatches(matches as any);
+  
+  assert.ok(result.includes("type:SENIORITY_LEVEL"));
+  assert.ok(result.includes("type:YEARS_AT_CURRENT_COMPANY"));
+  assert.ok(result.includes("type:CURRENT_TITLE"));
+  assert.ok(result.includes("type:GROUP"));
+  assert.ok(result.includes("type:FOLLOWS_YOUR_COMPANY"));
+  assert.ok(result.includes("type:VIEWED_YOUR_PROFILE"));
+  assert.ok(result.includes("type:PAST_COLLEAGUE"));
+  assert.ok(result.includes("type:RECENTLY_CHANGED_JOBS"));
+  assert.ok(result.includes("type:POSTED_ON_LINKEDIN"));
+  assert.ok(result.includes("type:LEAD_INTERACTIONS"));
+  assert.ok(result.includes("id:320"));
+  assert.ok(result.includes("id:2"));
+  assert.ok(result.includes("id:11"));
+  assert.ok(result.includes("id:1817569"));
+});
+
