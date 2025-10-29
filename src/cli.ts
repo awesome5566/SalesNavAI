@@ -14,9 +14,9 @@ USAGE:
   npx ts-node src/cli.ts "your search description"
 
 EXAMPLES:
-  npx ts-node src/cli.ts "sales leaders in boston and nyc in the software industry"
+  npx ts-node src/cli.ts "Function: Sales in boston and nyc in the software industry"
   
-  npx ts-node src/cli.ts "account executives at hubspot from harvard" \\
+  npx ts-node src/cli.ts "Function: Sales Current Company: hubspot from harvard" \\
     --company-url https://www.linkedin.com/company/hubspot/ \\
     --school-url https://www.linkedin.com/school/harvard-university/
 
@@ -29,7 +29,7 @@ FLAGS:
   --help, -h            Show this help message
 
 DESCRIPTION PATTERNS:
-  Functions:      "sales", "engineering", "operations"
+  Functions:      "Function: Sales", "Function: Engineering, Operations", "Function: Exclude Marketing"
   Industries:     "software industry", "healthcare", "finance"
   Geographies:    "in boston", "nyc", "san francisco"
   Titles:         title "Account Executive" exact
@@ -153,6 +153,12 @@ async function main() {
       if (result.matched.COMPANY_HEADCOUNT && result.matched.COMPANY_HEADCOUNT.length > 0) {
         facets.COMPANY_HEADCOUNT = result.matched.COMPANY_HEADCOUNT.map((c) => `${c.text} (${c.id})`).join(", ");
       }
+      if (result.matched.COMPANY_TYPE && result.matched.COMPANY_TYPE.length > 0) {
+        facets.COMPANY_TYPE = result.matched.COMPANY_TYPE.map((c) => `${c.text} (${c.id})`).join(", ");
+      }
+      if (result.matched.SENIORITY_LEVEL && result.matched.SENIORITY_LEVEL.length > 0) {
+        facets.SENIORITY_LEVEL = result.matched.SENIORITY_LEVEL.map((s) => `${s.text} (${s.id}) [${s.selectionType}]`).join(", ");
+      }
 
       const jsonOutput = {
         url: result.url,
@@ -213,6 +219,16 @@ async function main() {
     if (result.matched.COMPANY_HEADCOUNT && result.matched.COMPANY_HEADCOUNT.length > 0) {
       const items = result.matched.COMPANY_HEADCOUNT.map((c) => `${c.text} (${c.id})`).join(", ");
       console.log(`COMPANY_HEADCOUNT: ${items}`);
+    }
+
+    if (result.matched.COMPANY_TYPE && result.matched.COMPANY_TYPE.length > 0) {
+      const items = result.matched.COMPANY_TYPE.map((c) => `${c.text} (${c.id})`).join(", ");
+      console.log(`COMPANY_TYPE: ${items}`);
+    }
+
+    if (result.matched.SENIORITY_LEVEL && result.matched.SENIORITY_LEVEL.length > 0) {
+      const items = result.matched.SENIORITY_LEVEL.map((s) => `${s.text} (${s.id}) [${s.selectionType}]`).join(", ");
+      console.log(`SENIORITY_LEVEL: ${items}`);
     }
 
       // Check if no matches found

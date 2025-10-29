@@ -11,37 +11,37 @@ pnpm install
 ### Simple Search
 
 ```bash
-npx ts-node src/cli.ts "software engineers in boston"
+pnpm start "software engineers in boston"
 ```
 
 ### Search with Title Filter
 
 ```bash
-npx ts-node src/cli.ts 'software industry in boston title "Account Executive" exact'
+pnpm start 'software industry in boston title "Account Executive" exact'
 ```
 
 ### Search with Contains Title
 
 ```bash
-npx ts-node src/cli.ts 'software industry in boston title contains "manager"'
+pnpm start 'software industry in boston title contains "manager"'
 ```
 
 ### Multiple Locations
 
 ```bash
-npx ts-node src/cli.ts "sales leaders in boston or nyc in software industry"
+pnpm start "sales leaders in boston or nyc in software industry"
 ```
 
 ### With Debug Output (see DSL)
 
 ```bash
-npx ts-node src/cli.ts "software engineers in boston" --debug
+pnpm start "software engineers in boston" -- --debug
 ```
 
 ### Dry Run (no URL output)
 
 ```bash
-npx ts-node src/cli.ts "software engineers in boston" --dry-run
+pnpm start "software engineers in boston" -- --dry-run
 ```
 
 ## Advanced Usage with Company/School Resolvers
@@ -51,21 +51,21 @@ npx ts-node src/cli.ts "software engineers in boston" --dry-run
 ### Resolve Company ID
 
 ```bash
-npx ts-node src/cli.ts "account executives at hubspot" \
+pnpm start "account executives at hubspot" -- \
   --company-url https://www.linkedin.com/company/hubspot/
 ```
 
 ### Resolve School ID
 
 ```bash
-npx ts-node src/cli.ts "engineers from harvard" \
+pnpm start "engineers from harvard" -- \
   --school-url https://www.linkedin.com/school/harvard-university/
 ```
 
 ### Both Company and School
 
 ```bash
-npx ts-node src/cli.ts "account executives at stripe from stanford" \
+pnpm start "account executives at stripe from stanford" -- \
   --company-url https://www.linkedin.com/company/stripe/ \
   --school-url https://www.linkedin.com/school/stanford-university/
 ```
@@ -127,7 +127,7 @@ node dist/src/cli.js "your search query"
 ### Wrong matches
 - Be more specific with your query
 - Use exact match for titles: `title "..." exact`
-- Check available data in `Formats copy.json` and `Industry IDs.csv`
+- Check available data in `facet-store.json` and `Industry IDs.csv`
 
 ### Fuzzy matching too broad
 - The matcher uses Levenshtein distance

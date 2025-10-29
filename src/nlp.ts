@@ -49,7 +49,7 @@ export function matchFacetStrict(
   const { minLength = 3 } = options;
   const normalizedText = normalizeForLookup(text);
   const matches: MatchedValue[] = [];
-  const seenIds = new Set<number>();
+  const seenIds = new Set<number | string>();
 
   // Only exact matches - no partial consecutive word matching
   for (const [lookupKey, id] of index.byText.entries()) {
@@ -95,7 +95,7 @@ function matchFacet(
   const { fuzzyThreshold = 0, minLength = 3 } = options;
   const normalizedText = normalizeForLookup(text);
   const matches: MatchedValue[] = [];
-  const seenIds = new Set<number>();
+  const seenIds = new Set<number | string>();
 
   // Exact matches first (whole word or substring)
   for (const [lookupKey, id] of index.byText.entries()) {
@@ -205,34 +205,181 @@ function matchFacet(
 }
 
 /**
- * Match functions (e.g., "sales", "engineering", "operations")
+ * Match functions using structured syntax (e.g., "Function: Accounting", "Function: Sales, Marketing")
+ * Supports exclude logic: "Function: Exclude Sales, Exclude Marketing"
  */
 export function matchFunctions(
   text: string,
   store: Partial<NormalizedFacetStore>
 ): MatchedValue[] {
-  // Add common synonyms
-  const augmentedText = text
-    .replace(/\bsalespeople\b/gi, "sales")
-    .replace(/\bengineers\b/gi, "engineering")
-    .replace(/\bops\b/gi, "operations");
+  // Use facet store data for functions
+  if (!store.FUNCTION) {
+    return [];
+  }
+  
+  // Pattern: "Function: X" (case-insensitive)
+  // Match everything after "Function:" until another "Function:" keyword
+  const functionPattern = /function\s*:\s*(.+)(?=\s+function\s*:|$)/gis;
+  let match;
 
-  return matchFacet(augmentedText, store.FUNCTION, { minLength: 4 });
+  // Reset regex state to avoid issues between test runs
+  functionPattern.lastIndex = 0;
+
+  const allMatches: MatchedValue[] = [];
+
+  while ((match = functionPattern.exec(text)) !== null) {
+    const functionList = match[1].trim();
+    
+    // Split by comma and process each function value
+    const functionValues = functionList.split(',').map(value => value.trim()).filter(value => value.length > 0);
+    
+    for (const functionValue of functionValues) {
+      const isExclude = functionValue.toLowerCase().startsWith('exclude ');
+      const actualValue = isExclude ? functionValue.substring(8).trim() : functionValue;
+      
+      // Map text values to facet store values (case-insensitive)
+      const normalizedValue = actualValue.toLowerCase();
+      let facetText: string;
+      
+      // Add common synonym mappings
+      if (normalizedValue === "sales" || normalizedValue === "salespeople") {
+        facetText = "Sales";
+      } else if (normalizedValue === "engineering" || normalizedValue === "engineers") {
+        facetText = "Engineering";
+      } else if (normalizedValue === "operations" || normalizedValue === "ops") {
+        facetText = "Operations";
+      } else if (normalizedValue === "marketing" || normalizedValue === "marketing managers") {
+        facetText = "Marketing";
+      } else if (normalizedValue === "finance" || normalizedValue === "financial") {
+        facetText = "Finance";
+      } else if (normalizedValue === "accounting" || normalizedValue === "accountants") {
+        facetText = "Accounting";
+      } else if (normalizedValue === "hr" || normalizedValue === "human resources") {
+        facetText = "Human Resources";
+      } else if (normalizedValue === "it" || normalizedValue === "information technology") {
+        facetText = "Information Technology";
+      } else if (normalizedValue === "legal" || normalizedValue === "law") {
+        facetText = "Legal";
+      } else if (normalizedValue === "consulting" || normalizedValue === "consultants") {
+        facetText = "Consulting";
+      } else {
+        // Try direct match with facet store
+        facetText = actualValue;
+      }
+      
+      // Use the facet store to find the exact function
+      const functionMatches = matchFacet(facetText, store.FUNCTION, { minLength: 2 });
+      
+      // Set selection type based on exclude flag
+      functionMatches.forEach(match => {
+        match.selectionType = isExclude ? "EXCLUDED" : "INCLUDED";
+      });
+      
+      allMatches.push(...functionMatches);
+    }
+  }
+
+  // Deduplicate by ID
+  const seen = new Set<string | number>();
+  const uniqueMatches: MatchedValue[] = [];
+
+  for (const match of allMatches) {
+    if (match.id !== undefined && !seen.has(match.id)) {
+      seen.add(match.id);
+      uniqueMatches.push(match);
+    }
+  }
+
+  return uniqueMatches;
 }
 
 /**
- * Match industries (e.g., "software", "healthcare", "finance")
+ * Match industries using structured syntax (e.g., "Industry: Software", "Industry: Healthcare, Finance")
+ * Supports exclude logic: "Industry: Exclude Healthcare"
  */
 export function matchIndustries(
   text: string,
   store: Partial<NormalizedFacetStore>
 ): MatchedValue[] {
-  const augmentedText = text
-    .replace(/\bsoftware industry\b/gi, "software development")
-    .replace(/\btech industry\b/gi, "technology")
-    .replace(/\btech\b/gi, "technology");
+  // Use facet store data for industries
+  if (!store.INDUSTRY) {
+    return [];
+  }
+  
+  // Pattern: "Industry: X" (case-insensitive)
+  // Match everything after "Industry:" until another "Industry:" keyword
+  const industryPattern = /industry\s*:\s*(.+)(?=\s+industry\s*:|$)/gis;
+  let match;
 
-  return matchFacet(augmentedText, store.INDUSTRY, { minLength: 4 });
+  // Reset regex state to avoid issues between test runs
+  industryPattern.lastIndex = 0;
+
+  const allMatches: MatchedValue[] = [];
+
+  while ((match = industryPattern.exec(text)) !== null) {
+    const industryList = match[1].trim();
+    
+    // Split by comma and process each industry value
+    const industryValues = industryList.split(',').map(value => value.trim()).filter(value => value.length > 0);
+    
+    for (const industryValue of industryValues) {
+      const isExclude = industryValue.toLowerCase().startsWith('exclude ');
+      const actualValue = isExclude ? industryValue.substring(8).trim() : industryValue;
+      
+      // Map text values to facet store values (case-insensitive)
+      const normalizedValue = actualValue.toLowerCase();
+      let facetText: string;
+      
+      // Add common synonym mappings
+      if (normalizedValue === "software" || normalizedValue === "software industry") {
+        facetText = "Software Development";
+      } else if (normalizedValue === "tech" || normalizedValue === "technology" || normalizedValue === "tech industry") {
+        facetText = "Technology";
+      } else if (normalizedValue === "healthcare" || normalizedValue === "health care") {
+        facetText = "Health Care";
+      } else if (normalizedValue === "finance" || normalizedValue === "financial services") {
+        facetText = "Financial Services";
+      } else if (normalizedValue === "education" || normalizedValue === "educational services") {
+        facetText = "Education";
+      } else if (normalizedValue === "retail" || normalizedValue === "retail trade") {
+        facetText = "Retail";
+      } else if (normalizedValue === "manufacturing") {
+        facetText = "Manufacturing";
+      } else if (normalizedValue === "construction") {
+        facetText = "Construction";
+      } else if (normalizedValue === "real estate") {
+        facetText = "Real Estate";
+      } else if (normalizedValue === "consulting" || normalizedValue === "consulting services") {
+        facetText = "Consulting";
+      } else {
+        // Try direct match with facet store
+        facetText = actualValue;
+      }
+      
+      // Use the facet store to find the exact industry
+      const industryMatches = matchFacet(facetText, store.INDUSTRY, { minLength: 2 });
+      
+      // Set selection type based on exclude flag
+      industryMatches.forEach(match => {
+        match.selectionType = isExclude ? "EXCLUDED" : "INCLUDED";
+      });
+      
+      allMatches.push(...industryMatches);
+    }
+  }
+
+  // Deduplicate by ID
+  const seen = new Set<string | number>();
+  const uniqueMatches: MatchedValue[] = [];
+
+  for (const match of allMatches) {
+    if (match.id !== undefined && !seen.has(match.id)) {
+      seen.add(match.id);
+      uniqueMatches.push(match);
+    }
+  }
+
+  return uniqueMatches;
 }
 
 /**
@@ -252,7 +399,7 @@ export function matchGeographies(
   const geoMatches = matchFacet(augmentedText, store.GEOGRAPHY, { minLength: 3 });
 
   // Deduplicate by ID
-  const seen = new Set<number>();
+  const seen = new Set<number | string>();
   const combined: MatchedValue[] = [];
 
   for (const match of [...regionMatches, ...geoMatches]) {
@@ -335,126 +482,97 @@ export function matchYearsOfExperience(text: string): MatchedValue[] {
 }
 
 /**
- * Match company headcount (e.g., "headcount of 10", "50 employees", "company size 200")
- * Maps to LinkedIn's predefined headcount ranges
+ * Match company headcount using "Company Headcount: X" syntax
+ * Maps to LinkedIn's predefined headcount ranges using facet store data
  */
 export function matchCompanyHeadcount(
   text: string,
-  _store: Partial<NormalizedFacetStore>
+  store: Partial<NormalizedFacetStore>
 ): MatchedValue[] {
-  const matches: MatchedValue[] = [];
+  // Use facet store data for headcount ranges
+  if (!store.COMPANY_HEADCOUNT) {
+    return [];
+  }
   
-  // Define headcount buckets based on LinkedIn's ranges
-  const headcountBuckets = [
-    { text: "1-10", min: 1, max: 10 },
-    { text: "11-50", min: 11, max: 50 },
-    { text: "51-200", min: 51, max: 200 },
-    { text: "201-500", min: 201, max: 500 },
-    { text: "501-1000", min: 501, max: 1000 },
-    { text: "1001-5000", min: 1001, max: 5000 },
-    { text: "5000+", min: 5001, max: 999999 },
-  ];
-  
-  // Pattern 1: "headcount of X" or "headcount X"
-  const headcountPattern = /headcount\s+(?:of\s+)?(\d+)/gi;
+  // Pattern: "Company Headcount: X" (case-insensitive)
+  // Match everything after "Company Headcount:" until another "Company Headcount:" keyword
+  const companyHeadcountPattern = /company\s+headcount\s*:\s*(.+)(?=\s+company\s+headcount\s*:|$)/gis;
   let match;
-  
-  while ((match = headcountPattern.exec(text)) !== null) {
-    const count = parseInt(match[1], 10);
-    const bucket = headcountBuckets.find(b => count >= b.min && count <= b.max);
-    if (bucket) {
-      // Since COMPANY_HEADCOUNT has no IDs, we'll create a synthetic ID based on the text
-      const syntheticId = bucket.text === "1-10" ? 1 : 
-                         bucket.text === "11-50" ? 2 :
-                         bucket.text === "51-200" ? 3 :
-                         bucket.text === "201-500" ? 4 :
-                         bucket.text === "501-1000" ? 5 :
-                         bucket.text === "1001-5000" ? 6 : 7;
+
+  // Reset regex state to avoid issues between test runs
+  companyHeadcountPattern.lastIndex = 0;
+
+  const allMatches: MatchedValue[] = [];
+
+  while ((match = companyHeadcountPattern.exec(text)) !== null) {
+    const headcountList = match[1].trim();
+    
+    // Split by comma and process each headcount value
+    const headcountValues = headcountList.split(',').map(value => value.trim()).filter(value => value.length > 0);
+    
+    for (const headcountValue of headcountValues) {
+      // Handle "Self Employed" variations (case-insensitive)
+      if (headcountValue.toLowerCase() === "self employed" || headcountValue.toLowerCase() === "self-employed") {
+        // Use the facet store to find "Self-employed"
+        const selfEmployedMatches = matchFacet("Self-employed", store.COMPANY_HEADCOUNT, { minLength: 2 });
+        allMatches.push(...selfEmployedMatches);
+        continue;
+      }
       
-      matches.push({
-        id: syntheticId,
-        text: bucket.text,
-        selectionType: "INCLUDED",
-      });
-    }
-  }
-  
-  // Pattern 2: "X employees" or "company size X"
-  const employeePattern = /(?:company\s+size|employees?)\s+(?:of\s+)?(\d+)/gi;
-  while ((match = employeePattern.exec(text)) !== null) {
-    const count = parseInt(match[1], 10);
-    const bucket = headcountBuckets.find(b => count >= b.min && count <= b.max);
-    if (bucket) {
-      const syntheticId = bucket.text === "1-10" ? 1 : 
-                         bucket.text === "11-50" ? 2 :
-                         bucket.text === "51-200" ? 3 :
-                         bucket.text === "201-500" ? 4 :
-                         bucket.text === "501-1000" ? 5 :
-                         bucket.text === "1001-5000" ? 6 : 7;
+      // Handle numeric ranges like "1-10", "11-50", etc.
+      const rangeMatch = headcountValue.match(/^(\d+)-(\d+)/);
+      if (rangeMatch) {
+        const rangeText = `${rangeMatch[1]}-${rangeMatch[2]}`;
+        // Use the facet store to find the exact range
+        const rangeMatches = matchFacet(rangeText, store.COMPANY_HEADCOUNT, { minLength: 2 });
+        allMatches.push(...rangeMatches);
+        continue;
+      }
       
-      if (!matches.some(m => m.id === syntheticId)) {
-        matches.push({
-          id: syntheticId,
-          text: bucket.text,
-          selectionType: "INCLUDED",
-        });
+      // Handle single numbers (map to appropriate bucket)
+      const singleNumberMatch = headcountValue.match(/^(\d+)$/);
+      if (singleNumberMatch) {
+        const count = parseInt(singleNumberMatch[1], 10);
+        
+        // Map single numbers to appropriate ranges
+        let rangeText: string;
+        if (count <= 10) {
+          rangeText = "1-10";
+        } else if (count <= 50) {
+          rangeText = "11-50";
+        } else if (count <= 200) {
+          rangeText = "51-200";
+        } else if (count <= 500) {
+          rangeText = "201-500";
+        } else if (count <= 1000) {
+          rangeText = "501-1,000";
+        } else if (count <= 5000) {
+          rangeText = "1,001-5,000";
+        } else if (count <= 10000) {
+          rangeText = "5,001-10,000";
+        } else {
+          rangeText = "10,001+";
+        }
+        
+        const rangeMatches = matchFacet(rangeText, store.COMPANY_HEADCOUNT, { minLength: 2 });
+        allMatches.push(...rangeMatches);
+        continue;
       }
     }
   }
-  
-  // Pattern 3: Range patterns "X-Y" or "X to Y"
-  const rangePattern = /(\d+)\s*(?:-|to)\s*(\d+)\s*(?:employees?|people|headcount)?/gi;
-  while ((match = rangePattern.exec(text)) !== null) {
-    const min = parseInt(match[1], 10);
-    const max = parseInt(match[2], 10);
-    const bucket = headcountBuckets.find(b => 
-      (min >= b.min && min <= b.max) || (max >= b.min && max <= b.max)
-    );
-    if (bucket) {
-      const syntheticId = bucket.text === "1-10" ? 1 : 
-                         bucket.text === "11-50" ? 2 :
-                         bucket.text === "51-200" ? 3 :
-                         bucket.text === "201-500" ? 4 :
-                         bucket.text === "501-1000" ? 5 :
-                         bucket.text === "1001-5000" ? 6 : 7;
-      
-      if (!matches.some(m => m.id === syntheticId)) {
-        matches.push({
-          id: syntheticId,
-          text: bucket.text,
-          selectionType: "INCLUDED",
-        });
-      }
+
+  // Deduplicate by ID
+  const seen = new Set<string | number>();
+  const uniqueMatches: MatchedValue[] = [];
+
+  for (const match of allMatches) {
+    if (match.id && !seen.has(match.id)) {
+      uniqueMatches.push(match);
+      seen.add(match.id);
     }
   }
-  
-  // Pattern 4: Descriptive terms
-  const descriptivePatterns = [
-    { pattern: /\b(small|startup|tiny)\s+compan/gi, text: "1-10" },
-    { pattern: /\b(medium|mid-sized?)\s+compan/gi, text: "51-200" },
-    { pattern: /\b(large|big|enterprise)\s+compan/gi, text: "1001-5000" },
-  ];
-  
-  for (const { pattern, text: bucketText } of descriptivePatterns) {
-    if (pattern.test(text)) {
-      const syntheticId = bucketText === "1-10" ? 1 : 
-                         bucketText === "11-50" ? 2 :
-                         bucketText === "51-200" ? 3 :
-                         bucketText === "201-500" ? 4 :
-                         bucketText === "501-1000" ? 5 :
-                         bucketText === "1001-5000" ? 6 : 7;
-      
-      if (!matches.some(m => m.id === syntheticId)) {
-        matches.push({
-          id: syntheticId,
-          text: bucketText,
-          selectionType: "INCLUDED",
-        });
-      }
-    }
-  }
-  
-  return matches;
+
+  return uniqueMatches;
 }
 
 /**
@@ -495,10 +613,10 @@ export function matchTitles(text: string): FreeTextValue[] {
 }
 
 /**
- * Match company names (free-text extraction)
+ * Match company names using "Current Company:" syntax
  */
-export function matchCompanyNames(text: string): string[] {
-  const companies: string[] = [];
+export function matchCompanyNames(text: string): Array<{ name: string, selectionType: 'INCLUDED' | 'EXCLUDED' }> {
+  const companies: Array<{ name: string, selectionType: 'INCLUDED' | 'EXCLUDED' }> = [];
 
   // Check if the text contains school-related keywords
   // If so, don't match companies - let school matching handle it instead
@@ -507,16 +625,93 @@ export function matchCompanyNames(text: string): string[] {
     return companies; // Return empty array to let school matching handle it
   }
 
-  // Look for patterns like "at CompanyName" or "from CompanyName"
-  // Case-insensitive to catch "at hubspot" or "at HubSpot"
-  // Word boundaries \b ensure we don't match partial words (e.g., "in" in "international")
-  const pattern = /(?:at|from|company|works at)\s+([A-Za-z][A-Za-z0-9\s&]+?)(?:\s+\b(?:in|from|and|or|with)\b|\.|,|$)/gi;
+  // Look for "Current Company:" pattern (case-insensitive)
+  // Stop at next "Current Company:", "Past Company:", or "/" separator
+  const currentCompanyPattern = /current\s+company\s*:\s*(.+?)(?=\s+current\s+company\s*:|\s+past\s+company\s*:|\s*\/\s*|$)/gi;
   let match;
 
-  while ((match = pattern.exec(text)) !== null) {
-    const company = match[1].trim();
-    if (company.length > 2 && !companies.includes(company)) {
-      companies.push(company);
+  // Reset regex state to avoid issues between test runs
+  currentCompanyPattern.lastIndex = 0;
+  
+  while ((match = currentCompanyPattern.exec(text)) !== null) {
+    const companyList = match[1].trim();
+    
+    // Split by comma and process each company
+    const companyNames = companyList.split(',').map(name => name.trim()).filter(name => name.length > 0);
+    
+    for (const companyName of companyNames) {
+      // Check for "Exclude" keyword (case-insensitive)
+      const excludeMatch = companyName.match(/^exclude\s+(.+)$/i);
+      if (excludeMatch) {
+        const company = excludeMatch[1].trim();
+        if (company.length > 2) {
+          companies.push({
+            name: company,
+            selectionType: 'EXCLUDED'
+          });
+        }
+      } else {
+        // Regular inclusion
+        if (companyName.length > 2) {
+          companies.push({
+            name: companyName,
+            selectionType: 'INCLUDED'
+          });
+        }
+      }
+    }
+  }
+
+  return companies;
+}
+
+/**
+ * Match past company names using "Past Company:" syntax
+ */
+export function matchPastCompanyNames(text: string): Array<{ name: string, selectionType: 'INCLUDED' | 'EXCLUDED' }> {
+  const companies: Array<{ name: string, selectionType: 'INCLUDED' | 'EXCLUDED' }> = [];
+
+  // Check if the text contains school-related keywords
+  // If so, don't match companies - let school matching handle it instead
+  const schoolKeywords = /\b(university|academy|school|college|institute|university of|academy of|school of|college of|institute of)\b/gi;
+  if (schoolKeywords.test(text)) {
+    return companies; // Return empty array to let school matching handle it
+  }
+
+  // Look for "Past Company:" pattern (case-insensitive)
+  // Stop at next "Past Company:", "Current Company:", or "/" separator
+  const pastCompanyPattern = /past\s+company\s*:\s*(.+?)(?=\s+past\s+company\s*:|\s+current\s+company\s*:|\s*\/\s*|$)/gi;
+  let match;
+
+  // Reset regex state to avoid issues between test runs
+  pastCompanyPattern.lastIndex = 0;
+  
+  while ((match = pastCompanyPattern.exec(text)) !== null) {
+    const companyList = match[1].trim();
+    
+    // Split by comma and process each company
+    const companyNames = companyList.split(',').map(name => name.trim()).filter(name => name.length > 0);
+    
+    for (const companyName of companyNames) {
+      // Check for "Exclude" keyword (case-insensitive)
+      const excludeMatch = companyName.match(/^exclude\s+(.+)$/i);
+      if (excludeMatch) {
+        const company = excludeMatch[1].trim();
+        if (company.length > 2) {
+          companies.push({
+            name: company,
+            selectionType: 'EXCLUDED'
+          });
+        }
+      } else {
+        // Regular inclusion
+        if (companyName.length > 2) {
+          companies.push({
+            name: companyName,
+            selectionType: 'INCLUDED'
+          });
+        }
+      }
     }
   }
 
@@ -546,28 +741,166 @@ export function matchSchoolNames(text: string): string[] {
 }
 
 /**
- * Match seniority levels (e.g., "Owner/Partner", "CXO", "Vice President", "Director")
- * Uses the new SENIORITY_LEVEL facet with full range of levels
+ * Match company types using structured syntax (e.g., "Company Type: privately held")
+ */
+export function matchCompanyType(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  // Use facet store data for company types
+  if (!store.COMPANY_TYPE) {
+    return [];
+  }
+  
+  // Pattern: "Company Type: X" (case-insensitive)
+  // Match everything after "Company Type:" until another "Company Type:" keyword
+  const companyTypePattern = /company\s+type\s*:\s*(.+)(?=\s+company\s+type\s*:|$)/gis;
+  let match;
+
+  // Reset regex state to avoid issues between test runs
+  companyTypePattern.lastIndex = 0;
+
+  const allMatches: MatchedValue[] = [];
+
+  while ((match = companyTypePattern.exec(text)) !== null) {
+    const typeList = match[1].trim();
+    
+    // Split by comma and process each type value
+    const typeValues = typeList.split(',').map(value => value.trim()).filter(value => value.length > 0);
+    
+    for (const typeValue of typeValues) {
+      // Map text values to facet store values (case-insensitive)
+      const normalizedValue = typeValue.toLowerCase();
+      let facetText: string;
+      
+      if (normalizedValue === "public company") {
+        facetText = "Public Company";
+      } else if (normalizedValue === "privately held") {
+        facetText = "Privately Held";
+      } else if (normalizedValue === "educational institution") {
+        facetText = "Educational Institution";
+      } else if (normalizedValue === "non profit" || normalizedValue === "nonprofit") {
+        facetText = "Non Profit";
+      } else if (normalizedValue === "self employed") {
+        facetText = "Self Employed";
+      } else if (normalizedValue === "partnership") {
+        facetText = "Partnership";
+      } else if (normalizedValue === "government agency") {
+        facetText = "Government Agency";
+      } else if (normalizedValue === "self owned") {
+        facetText = "Self Owned";
+      } else {
+        // Try direct match with facet store
+        facetText = typeValue;
+      }
+      
+      // Use the facet store to find the exact type
+      const typeMatches = matchFacet(facetText, store.COMPANY_TYPE, { minLength: 2 });
+      allMatches.push(...typeMatches);
+    }
+  }
+
+  // Deduplicate by ID
+  const seen = new Set<string | number>();
+  const uniqueMatches: MatchedValue[] = [];
+
+  for (const match of allMatches) {
+    if (match.id !== undefined && !seen.has(match.id)) {
+      seen.add(match.id);
+      uniqueMatches.push(match);
+    }
+  }
+
+  return uniqueMatches;
+}
+
+/**
+ * Match seniority levels using structured syntax (e.g., "Seniority Level: director")
+ * Supports exclude logic: "Seniority Level: Exclude CXO, Exclude Director"
  */
 export function matchSeniorityLevel(
   text: string,
   store: Partial<NormalizedFacetStore>
 ): MatchedValue[] {
-  const augmentedText = text
-    .replace(/\bowner\b/gi, "owner")
-    .replace(/\bpartner\b/gi, "partner")
-    .replace(/\bvps\b/gi, "vice president")
-    .replace(/\bvice presidents?\b/gi, "vice president")
-    .replace(/\bc-level\b/gi, "cxo")
-    .replace(/\bexecutives?\b/gi, "executive")
-    .replace(/\bdirectors?\b/gi, "director")
-    .replace(/\bmanagers?\b/gi, "manager")
-    .replace(/\bentry level\b/gi, "entry level")
-    .replace(/\bsenior\b/gi, "senior")
-    .replace(/\bstrategic\b/gi, "strategic")
-    .replace(/\btraining\b/gi, "in training");
+  // Use facet store data for seniority levels
+  if (!store.SENIORITY_LEVEL) {
+    return [];
+  }
+  
+  // Pattern: "Seniority Level: X" (case-insensitive)
+  // Match everything after "Seniority Level:" until another "Seniority Level:" keyword
+  const seniorityLevelPattern = /seniority\s+level\s*:\s*(.+)(?=\s+seniority\s+level\s*:|$)/gis;
+  let match;
 
-  return matchFacet(augmentedText, store.SENIORITY_LEVEL, { minLength: 2 });
+  // Reset regex state to avoid issues between test runs
+  seniorityLevelPattern.lastIndex = 0;
+
+  const allMatches: MatchedValue[] = [];
+
+  while ((match = seniorityLevelPattern.exec(text)) !== null) {
+    const levelList = match[1].trim();
+    
+    // Split by comma and process each level value
+    const levelValues = levelList.split(',').map(value => value.trim()).filter(value => value.length > 0);
+    
+    for (const levelValue of levelValues) {
+      const isExclude = levelValue.toLowerCase().startsWith('exclude ');
+      const actualValue = isExclude ? levelValue.substring(8).trim() : levelValue;
+      
+      // Map text values to facet store values (case-insensitive)
+      const normalizedValue = actualValue.toLowerCase();
+      let facetText: string;
+      
+      if (normalizedValue === "owner" || normalizedValue === "partner" || normalizedValue === "owner / partner") {
+        facetText = "Owner / Partner";
+      } else if (normalizedValue === "cxo" || normalizedValue === "c-level" || normalizedValue === "executive") {
+        facetText = "CXO";
+      } else if (normalizedValue === "vice president" || normalizedValue === "vp") {
+        facetText = "Vice President";
+      } else if (normalizedValue === "director") {
+        facetText = "Director";
+      } else if (normalizedValue === "experienced manager" || normalizedValue === "manager") {
+        facetText = "Experienced Manager";
+      } else if (normalizedValue === "entry level manager") {
+        facetText = "Entry Level Manager";
+      } else if (normalizedValue === "strategic") {
+        facetText = "Strategic";
+      } else if (normalizedValue === "senior") {
+        facetText = "Senior";
+      } else if (normalizedValue === "entry level") {
+        facetText = "Entry Level";
+      } else if (normalizedValue === "in training" || normalizedValue === "training") {
+        facetText = "In Training";
+      } else {
+        // Try direct match with facet store
+        facetText = actualValue;
+      }
+      
+      // Use the facet store to find the exact level
+      const levelMatches = matchFacet(facetText, store.SENIORITY_LEVEL, { minLength: 2 });
+      
+      // Set selection type based on exclude flag
+      const matchesWithSelectionType = levelMatches.map(match => ({
+        ...match,
+        selectionType: isExclude ? "EXCLUDED" as const : "INCLUDED" as const
+      }));
+      
+      allMatches.push(...matchesWithSelectionType);
+    }
+  }
+
+  // Deduplicate by ID
+  const seen = new Set<string | number>();
+  const uniqueMatches: MatchedValue[] = [];
+
+  for (const match of allMatches) {
+    if (match.id !== undefined && !seen.has(match.id)) {
+      seen.add(match.id);
+      uniqueMatches.push(match);
+    }
+  }
+
+  return uniqueMatches;
 }
 
 /**

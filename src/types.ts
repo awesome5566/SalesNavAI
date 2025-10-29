@@ -8,8 +8,8 @@ export type SelectionType = "INCLUDED" | "EXCLUDED";
 
 // Facet index for bi-directional lookups
 export interface FacetIndex {
-  byId: Map<number, string>;
-  byText: Map<string, number>;
+  byId: Map<number | string, string>;
+  byText: Map<string, number | string>;
 }
 
 // Free-text facet (like TITLE)
@@ -72,7 +72,7 @@ export interface RawFacetData {
 
 // Matched facet value
 export interface MatchedValue {
-  id?: number;
+  id?: number | string;
   text: string;
   match?: MatchType;
   selectionType?: SelectionType;

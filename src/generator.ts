@@ -11,9 +11,11 @@ import {
   matchSeniorityLevel,
   matchTitles,
   matchCompanyNames,
+  matchPastCompanyNames,
   matchSchoolNames,
   matchYearsOfExperience,
   matchCompanyHeadcount,
+  matchCompanyType,
   matchYearsAtCurrentCompany,
   matchYearsInCurrentPosition,
   matchCurrentTitle,
@@ -153,6 +155,12 @@ export async function generateUrlFromDescription(
     matched.COMPANY_HEADCOUNT = companyHeadcount;
   }
 
+  // Match company type
+  const companyType = matchCompanyType(description, store);
+  if (companyType.length > 0) {
+    matched.COMPANY_TYPE = companyType;
+  }
+
   // Match and resolve companies
   if (options.resolveCompanies && options.resolveCompanies.length > 0) {
     const companyIds = await resolveCompanyIds(options.resolveCompanies, 2, options.silent);
@@ -176,17 +184,36 @@ export async function generateUrlFromDescription(
     if (companyNames.length > 0) {
       const companyMatches: MatchedValue[] = [];
       
-      for (const name of companyNames) {
+      for (const { name, selectionType } of companyNames) {
         const lookupKey = normalizeForLookup(name);
         const id = store.CURRENT_COMPANY?.byText.get(lookupKey);
         
         if (id !== undefined) {
-          // Found in local data
-          companyMatches.push({
-            id,
-            text: store.CURRENT_COMPANY?.byId.get(id) || name,
-            selectionType: "INCLUDED",
-          });
+          // Check if the ID is numeric (valid for LinkedIn DSL)
+          const numericId = parseInt(id.toString(), 10);
+          if (!isNaN(numericId)) {
+            // Found valid numeric ID in local data
+            companyMatches.push({
+              id: numericId,
+              text: store.CURRENT_COMPANY?.byId.get(id) || name,
+              selectionType: selectionType,
+            });
+          } else {
+            // ID is not numeric (e.g., "urn"), fall back to URL resolution
+            const resolvedId = await tryMultipleUrlVariations(name, 'company', options);
+            
+            if (resolvedId !== null) {
+              companyMatches.push({
+                id: resolvedId,
+                text: name,
+                selectionType: selectionType,
+              });
+            } else {
+              warnings.push(
+                `Company "${name}" has non-numeric ID "${id}" in local data and could not be resolved via URL lookup.`
+              );
+            }
+          }
         } else {
           // Not found locally - try multiple URL variations
           const resolvedId = await tryMultipleUrlVariations(name, 'company', options);
@@ -195,7 +222,7 @@ export async function generateUrlFromDescription(
             companyMatches.push({
               id: resolvedId,
               text: name,
-              selectionType: "INCLUDED",
+              selectionType: selectionType,
             });
           } else {
             warnings.push(
@@ -208,6 +235,64 @@ export async function generateUrlFromDescription(
       if (companyMatches.length > 0) {
         matched.CURRENT_COMPANY = companyMatches;
       }
+    }
+  }
+
+  // Match and resolve past companies
+  const pastCompanyNames = matchPastCompanyNames(description);
+  if (pastCompanyNames.length > 0) {
+    const pastCompanyMatches: MatchedValue[] = [];
+    
+    for (const { name, selectionType } of pastCompanyNames) {
+      const lookupKey = normalizeForLookup(name);
+      const id = store.PAST_COMPANY?.byText.get(lookupKey);
+      
+      if (id !== undefined) {
+        // Check if the ID is numeric (valid for LinkedIn DSL)
+        const numericId = parseInt(id.toString(), 10);
+        if (!isNaN(numericId)) {
+          // Found valid numeric ID in local data - format with URN prefix
+          pastCompanyMatches.push({
+            id: `urn:li:organization:${numericId}`,
+            text: store.PAST_COMPANY?.byId.get(id) || name,
+            selectionType: selectionType,
+          });
+        } else {
+          // ID is not numeric (e.g., "urn"), fall back to URL resolution
+          const resolvedId = await tryMultipleUrlVariations(name, 'company', options);
+          
+          if (resolvedId !== null) {
+            pastCompanyMatches.push({
+              id: `urn:li:organization:${resolvedId}`,
+              text: name,
+              selectionType: selectionType,
+            });
+          } else {
+            warnings.push(
+              `Past Company "${name}" has non-numeric ID "${id}" in local data and could not be resolved via URL lookup.`
+            );
+          }
+        }
+      } else {
+        // Not found locally - try multiple URL variations
+        const resolvedId = await tryMultipleUrlVariations(name, 'company', options);
+        
+        if (resolvedId !== null) {
+          pastCompanyMatches.push({
+            id: `urn:li:organization:${resolvedId}`,
+            text: name,
+            selectionType: selectionType,
+          });
+        } else {
+          warnings.push(
+            `Past Company "${name}" not found. Tried multiple URL variations but could not resolve ID.`
+          );
+        }
+      }
+    }
+
+    if (pastCompanyMatches.length > 0) {
+      matched.PAST_COMPANY = pastCompanyMatches;
     }
   }
 

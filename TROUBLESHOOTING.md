@@ -59,7 +59,7 @@ Matched Facets:
    - Check available patterns in QUICKSTART.md
 
 3. **Data not loaded:**
-   - Ensure `Formats copy.json` and `Industry IDs.csv` are in the project root
+   - Ensure `facet-store.json` and `Industry IDs.csv` are in the project root
    - Check file permissions
 
 ---
@@ -158,7 +158,7 @@ pnpm start "your query"
 
 ### 4. Verify Data Files
 ```bash
-ls -lh "Formats copy.json" "Industry IDs.csv"
+ls -lh "facet-store.json" "Industry IDs.csv"
 ```
 Both files should exist in the project root.
 
