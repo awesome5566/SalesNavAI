@@ -5,8 +5,20 @@
 import type { MatchedValue, FreeTextValue } from "./types.js";
 
 /**
+ * Double-encode location text for REGION facet
+ * Commas and spaces need special encoding for Sales Navigator
+ */
+function doubleEncodeLocation(text: string): string {
+  // First encode: , → %2C, space → %20
+  const firstEncode = text.replace(/,/g, '%2C').replace(/ /g, '%20');
+  // Second encode: % → %25 (so %2C → %252C, %20 → %2520)
+  return firstEncode.replace(/%/g, '%25');
+}
+
+/**
  * Build a facet block for ID-based facets
  * Example: (type:FUNCTION,values:List((id:25,text:Sales,selectionType:INCLUDED)))
+ * For REGION facets, the text is double-encoded
  */
 export function facetBlockIdBased(
   type: string,
@@ -16,7 +28,9 @@ export function facetBlockIdBased(
 
   const valueStrings = values.map((v) => {
     const selectionType = v.selectionType || "INCLUDED";
-    return `(id:${v.id},text:${v.text},selectionType:${selectionType})`;
+    // Double-encode location text for REGION facets
+    const text = type === "REGION" ? doubleEncodeLocation(v.text) : v.text;
+    return `(id:${v.id},text:${text},selectionType:${selectionType})`;
   });
 
   return `(type:${type},values:List(${valueStrings.join(",")}))`;

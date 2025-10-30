@@ -83,16 +83,17 @@ export function matchFacetStrict(
 
 /**
  * Generic matcher that searches for facet values in text
- * Uses partial consecutive word matching for geographies
+ * For REGION facets (locations), only matches exact location entries
+ * For other facets, uses partial consecutive word matching
  */
 function matchFacet(
   text: string,
   index: FacetIndex | undefined,
-  options: { fuzzyThreshold?: number; minLength?: number } = {}
+  options: { fuzzyThreshold?: number; minLength?: number; isRegion?: boolean } = {}
 ): MatchedValue[] {
   if (!index) return [];
 
-  const { fuzzyThreshold = 0, minLength = 3 } = options;
+  const { fuzzyThreshold = 0, minLength = 3, isRegion = false } = options;
   const normalizedText = normalizeForLookup(text);
   const matches: MatchedValue[] = [];
   const seenIds = new Set<number | string>();
@@ -125,24 +126,37 @@ function matchFacet(
       }
     }
     
-    // Also check if the text words match the beginning of the lookup key
-    // This handles "san francisco" in text matching "san francisco bay area" in data
-    if (!matched && lookupWords.length > 1) {
-      for (let i = 0; i <= textWords.length - 1; i++) {
-        let matchCount = 0;
-        for (let j = 0; j < lookupWords.length && i + j < textWords.length; j++) {
-          if (textWords[i + j].toLowerCase() === lookupWords[j].toLowerCase()) {
-            matchCount++;
-          } else {
-            break;
-          }
-        }
-        // If at least 1 consecutive word matches at the start of the lookup key
-        // This allows "boston" to match "boston, massachusetts, united states"
-        if (matchCount >= 1) {
-          matched = true;
+    // For REGION facets, only match if text words match at the START of lookup key
+    // For other facets, match if lookup starts with text words
+    if (!matched && lookupWords.length > 1 && !isRegion) {
+      let matchCount = 0;
+      for (let j = 0; j < textWords.length && j < lookupWords.length; j++) {
+        if (textWords[j].toLowerCase() === lookupWords[j].toLowerCase()) {
+          matchCount++;
+        } else {
           break;
         }
+      }
+      // For non-region facets: allow partial matches at the beginning
+      if (matchCount === textWords.length && matchCount >= 1) {
+        matched = true;
+      }
+    }
+    
+    // For REGION facets, only match if lookup key STARTS with ALL text words in order
+    // This prevents "charlotte" from matching "north carolina" or "united states"
+    if (!matched && isRegion && lookupWords.length >= 1) {
+      let matchCount = 0;
+      for (let j = 0; j < textWords.length && j < lookupWords.length; j++) {
+        if (textWords[j].toLowerCase() === lookupWords[j].toLowerCase()) {
+          matchCount++;
+        } else {
+          break;
+        }
+      }
+      // Only match if ALL text words match at the start and in the correct order
+      if (matchCount === textWords.length && matchCount >= 1) {
+        matched = true;
       }
     }
 
@@ -168,8 +182,8 @@ function matchFacet(
       continue;
     }
 
-    // Contains match for longer keys
-    if (lookupKey.length >= minLength && normalizedText.includes(lookupKey)) {
+    // Contains match for longer keys (skip for REGION facets to avoid over-matching)
+    if (!isRegion && lookupKey.length >= minLength && normalizedText.includes(lookupKey)) {
       matches.push({
         id,
         text: index.byId.get(id)!,
@@ -180,8 +194,8 @@ function matchFacet(
     }
   }
 
-  // Fuzzy matches for remaining
-  if (fuzzyThreshold > 0) {
+  // Fuzzy matches for remaining (skip for REGION facets)
+  if (fuzzyThreshold > 0 && !isRegion) {
     const words = normalizedText.split(/\s+/);
     for (const word of words) {
       if (word.length < minLength) continue;
@@ -386,13 +400,15 @@ export function matchIndustries(
 /**
  * Match geographies using explicit "Location:" syntax (e.g., "Location: Boston", "Location: MacKenzie County, Alberta, Canada")
  * Supports multiple locations separated by semicolons
+ * Uses REGION facet for person location searches
+ * Only matches exact locations, not parent regions
  */
 export function matchGeographies(
   text: string,
   store: Partial<NormalizedFacetStore>
 ): MatchedValue[] {
-  // Use facet store data for geographies
-  if (!store.GEOGRAPHY) {
+  // Use facet store data for regions (person locations)
+  if (!store.REGION) {
     return [];
   }
   
@@ -419,24 +435,25 @@ export function matchGeographies(
         .replace(/\bsf\b/gi, "san francisco")
         .replace(/\bla\b/gi, "los angeles");
       
-      // Use the facet store to find the location
-      const locationMatches = matchFacet(augmentedLocation, store.GEOGRAPHY, { minLength: 3 });
-      allMatches.push(...locationMatches);
+      // Normalize the search location for comparison
+      const normalizedSearchLocation = normalizeForLookup(augmentedLocation);
+      
+      // Find EXACT match in REGION facet
+      // Look for entries that exactly match the normalized search location
+      for (const [lookupKey, id] of store.REGION.byText.entries()) {
+        if (lookupKey === normalizedSearchLocation) {
+          allMatches.push({
+            id,
+            text: store.REGION.byId.get(id)!,
+            selectionType: "INCLUDED",
+          });
+          break; // Found exact match, stop looking
+        }
+      }
     }
   }
 
-  // Deduplicate by ID
-  const seen = new Set<string | number>();
-  const uniqueMatches: MatchedValue[] = [];
-
-  for (const match of allMatches) {
-    if (match.id !== undefined && !seen.has(match.id)) {
-      seen.add(match.id);
-      uniqueMatches.push(match);
-    }
-  }
-
-  return uniqueMatches;
+  return allMatches;
 }
 
 /**
@@ -458,19 +475,27 @@ export function matchSeniority(
 
 /**
  * Match years of experience (e.g., "10 years", "5+ years", "senior level")
- * Maps to LinkedIn's predefined experience buckets
+ * Maps to LinkedIn's predefined experience buckets using facet store data
  */
-export function matchYearsOfExperience(text: string): MatchedValue[] {
+export function matchYearsOfExperience(
+  text: string,
+  store: Partial<NormalizedFacetStore>
+): MatchedValue[] {
+  // Use facet store data for years of experience
+  if (!store.YEARS_OF_EXPERIENCE) {
+    return [];
+  }
+  
   const matches: MatchedValue[] = [];
   
-  // LinkedIn's experience bucket mapping
+  // Define the experience buckets based on the facet store structure
+  // These correspond to the IDs in the facet store: 1, 2, 3, 4, 5
   const experienceBuckets = [
-    { id: 1, text: "0 to 2 years", min: 0, max: 2 },
-    { id: 2, text: "3 to 5 years", min: 3, max: 5 },
-    { id: 3, text: "6 to 10 years", min: 6, max: 10 },
-    { id: 4, text: "11 to 15 years", min: 11, max: 15 },
-    { id: 5, text: "16 to 20 years", min: 16, max: 20 },
-    { id: 6, text: "21+ years", min: 21, max: 99 },
+    { id: "1", text: "Less than 1 year", min: 0, max: 0 },
+    { id: "2", text: "1 to 2 years", min: 1, max: 2 },
+    { id: "3", text: "3 to 5 years", min: 3, max: 5 },
+    { id: "4", text: "6 to 10 years", min: 6, max: 10 },
+    { id: "5", text: "More than 10 years", min: 11, max: 99 },
   ];
   
   // Pattern for "X years" or "X+ years" or "X year experience" or just "X years"
@@ -495,7 +520,7 @@ export function matchYearsOfExperience(text: string): MatchedValue[] {
   // Pattern for "senior level" or "experienced" - map to 6-10 years bucket
   const seniorPattern = /\b(senior|experienced|veteran|seasoned)\b/gi;
   if (seniorPattern.test(text)) {
-    const seniorBucket = experienceBuckets.find(b => b.id === 3); // 6-10 years
+    const seniorBucket = experienceBuckets.find(b => b.text === "6 to 10 years");
     if (seniorBucket) {
       matches.push({
         id: seniorBucket.id,

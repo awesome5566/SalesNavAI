@@ -119,10 +119,10 @@ export async function generateUrlFromDescription(
     matched.INDUSTRY = industries;
   }
 
-  // Match geographies
+  // Match geographies (person locations use REGION facet)
   const geographies = matchGeographies(description, store);
   if (geographies.length > 0) {
-    matched.GEOGRAPHY = geographies;
+    matched.REGION = geographies;
   }
 
   // Match seniority (using PERSONA as a proxy)
@@ -144,7 +144,7 @@ export async function generateUrlFromDescription(
   }
 
   // Match years of experience
-  const yearsOfExperience = matchYearsOfExperience(description);
+  const yearsOfExperience = matchYearsOfExperience(description, store);
   if (yearsOfExperience.length > 0) {
     matched.YEARS_OF_EXPERIENCE = yearsOfExperience;
   }

@@ -169,8 +169,8 @@ export function loadAllData(
   // Merge industries into store (or replace if exists)
   store.INDUSTRY = industries;
   
-  // Merge geo IDs into store as GEOGRAPHY facet
-  store.GEOGRAPHY = geoIds;
+  // Merge geo IDs into store as REGION facet (for person location searches)
+  store.REGION = geoIds;
 
   return store;
 }
