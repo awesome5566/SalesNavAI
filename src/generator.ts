@@ -122,7 +122,7 @@ export async function generateUrlFromDescription(
   // Match geographies
   const geographies = matchGeographies(description, store);
   if (geographies.length > 0) {
-    matched.REGION = geographies;
+    matched.GEOGRAPHY = geographies;
   }
 
   // Match seniority (using PERSONA as a proxy)

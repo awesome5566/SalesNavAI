@@ -102,8 +102,9 @@ function matchFacet(
     if (seenIds.has(id)) continue;
 
     // Split both the lookup key and text into words for partial matching
-    const lookupWords = lookupKey.split(/\s+/);
-    const textWords = normalizedText.split(/\s+/);
+    // Clean up commas and other punctuation for better matching
+    const lookupWords = lookupKey.split(/\s+/).map(word => word.replace(/[,\-]/g, ''));
+    const textWords = normalizedText.split(/\s+/).map(word => word.replace(/[,\-]/g, ''));
     
     // Check if the first N words of the lookup key match consecutively in the text
     // This handles "san francisco" matching "san francisco bay area"
@@ -127,7 +128,7 @@ function matchFacet(
     // Also check if the text words match the beginning of the lookup key
     // This handles "san francisco" in text matching "san francisco bay area" in data
     if (!matched && lookupWords.length > 1) {
-      for (let i = 0; i <= textWords.length - 2; i++) {
+      for (let i = 0; i <= textWords.length - 1; i++) {
         let matchCount = 0;
         for (let j = 0; j < lookupWords.length && i + j < textWords.length; j++) {
           if (textWords[i + j].toLowerCase() === lookupWords[j].toLowerCase()) {
@@ -136,9 +137,9 @@ function matchFacet(
             break;
           }
         }
-        // If at least 2 consecutive words match at the start of the lookup key
-        // This allows "san francisco" to match "san francisco bay area"
-        if (matchCount >= 2) {
+        // If at least 1 consecutive word matches at the start of the lookup key
+        // This allows "boston" to match "boston, massachusetts, united states"
+        if (matchCount >= 1) {
           matched = true;
           break;
         }
@@ -383,33 +384,59 @@ export function matchIndustries(
 }
 
 /**
- * Match geographies/regions (e.g., "Boston", "NYC", "San Francisco")
+ * Match geographies using explicit "Location:" syntax (e.g., "Location: Boston", "Location: MacKenzie County, Alberta, Canada")
+ * Supports multiple locations separated by semicolons
  */
 export function matchGeographies(
   text: string,
   store: Partial<NormalizedFacetStore>
 ): MatchedValue[] {
-  const augmentedText = text
-    .replace(/\bnyc\b/gi, "new york")
-    .replace(/\bsf\b/gi, "san francisco")
-    .replace(/\bla\b/gi, "los angeles");
+  // Use facet store data for geographies
+  if (!store.GEOGRAPHY) {
+    return [];
+  }
+  
+  // Pattern: "Location: X" (case-insensitive)
+  // Match everything after "Location:" until another "Location:" keyword
+  const locationPattern = /location\s*:\s*(.+)(?=\s+location\s*:|$)/gis;
+  let match;
 
-  // Try REGION first, then GEOGRAPHY
-  const regionMatches = matchFacet(augmentedText, store.REGION, { minLength: 3 });
-  const geoMatches = matchFacet(augmentedText, store.GEOGRAPHY, { minLength: 3 });
+  // Reset regex state to avoid issues between test runs
+  locationPattern.lastIndex = 0;
 
-  // Deduplicate by ID
-  const seen = new Set<number | string>();
-  const combined: MatchedValue[] = [];
+  const allMatches: MatchedValue[] = [];
 
-  for (const match of [...regionMatches, ...geoMatches]) {
-    if (match.id && !seen.has(match.id)) {
-      combined.push(match);
-      seen.add(match.id);
+  while ((match = locationPattern.exec(text)) !== null) {
+    const locationList = match[1].trim();
+    
+    // Split by semicolon and process each location value
+    const locationValues = locationList.split(';').map(value => value.trim()).filter(value => value.length > 0);
+    
+    for (const locationValue of locationValues) {
+      // Apply common abbreviations
+      const augmentedLocation = locationValue
+        .replace(/\bnyc\b/gi, "new york")
+        .replace(/\bsf\b/gi, "san francisco")
+        .replace(/\bla\b/gi, "los angeles");
+      
+      // Use the facet store to find the location
+      const locationMatches = matchFacet(augmentedLocation, store.GEOGRAPHY, { minLength: 3 });
+      allMatches.push(...locationMatches);
     }
   }
 
-  return combined;
+  // Deduplicate by ID
+  const seen = new Set<string | number>();
+  const uniqueMatches: MatchedValue[] = [];
+
+  for (const match of allMatches) {
+    if (match.id !== undefined && !seen.has(match.id)) {
+      seen.add(match.id);
+      uniqueMatches.push(match);
+    }
+  }
+
+  return uniqueMatches;
 }
 
 /**

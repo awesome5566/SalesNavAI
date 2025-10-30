@@ -115,17 +115,62 @@ export function loadIndustriesCsv(path = "Industry IDs.csv"): FacetIndex {
 }
 
 /**
+ * Load and normalize geoId.csv
+ * Columns: ADDRESS,COUNTRY_CODE,GEO_ID
+ */
+export function loadGeoIdsCsv(path = "geoId.csv"): FacetIndex {
+  const content = readFileSync(path, "utf-8");
+  const sanitized = sanitizeText(content);
+
+  const records = parse(sanitized, {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true,
+    delimiter: ';',
+  });
+
+  const index: FacetIndex = {
+    byId: new Map(),
+    byText: new Map(),
+  };
+
+  for (const record of records) {
+    const address = sanitizeText(record.ADDRESS || "");
+    const geoId = record.GEO_ID;
+
+    if (address && geoId) {
+      const lookupKey = normalizeForLookup(address);
+      
+      // First wins for deduplication
+      if (!index.byId.has(geoId)) {
+        index.byId.set(geoId, address);
+      }
+      if (!index.byText.has(lookupKey)) {
+        index.byText.set(lookupKey, geoId);
+      }
+    }
+  }
+
+  return index;
+}
+
+/**
  * Load all data and merge into a complete store
  */
 export function loadAllData(
   facetStorePath = "facet-store.json",
-  industriesPath = "Industry IDs.csv"
+  industriesPath = "Industry IDs.csv",
+  geoIdsPath = "geoId.csv"
 ): Partial<NormalizedFacetStore> {
   const store = loadFacetStore(facetStorePath);
   const industries = loadIndustriesCsv(industriesPath);
+  const geoIds = loadGeoIdsCsv(geoIdsPath);
 
   // Merge industries into store (or replace if exists)
   store.INDUSTRY = industries;
+  
+  // Merge geo IDs into store as GEOGRAPHY facet
+  store.GEOGRAPHY = geoIds;
 
   return store;
 }
