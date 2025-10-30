@@ -159,6 +159,9 @@ async function main() {
       if (result.matched.SENIORITY_LEVEL && result.matched.SENIORITY_LEVEL.length > 0) {
         facets.SENIORITY_LEVEL = result.matched.SENIORITY_LEVEL.map((s) => `${s.text} (${s.id}) [${s.selectionType}]`).join(", ");
       }
+      if (result.matched.KEYWORD && result.matched.KEYWORD.length > 0) {
+        facets.KEYWORD = result.matched.KEYWORD.join(", ");
+      }
 
       const jsonOutput = {
         url: result.url,
@@ -229,6 +232,11 @@ async function main() {
     if (result.matched.SENIORITY_LEVEL && result.matched.SENIORITY_LEVEL.length > 0) {
       const items = result.matched.SENIORITY_LEVEL.map((s) => `${s.text} (${s.id}) [${s.selectionType}]`).join(", ");
       console.log(`SENIORITY_LEVEL: ${items}`);
+    }
+
+    if (result.matched.KEYWORD && result.matched.KEYWORD.length > 0) {
+      const items = result.matched.KEYWORD.join(", ");
+      console.log(`KEYWORD: ${items}`);
     }
 
       // Check if no matches found

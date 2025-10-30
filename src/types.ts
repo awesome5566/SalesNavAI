@@ -50,7 +50,8 @@ export type FacetName =
   | "WITH_SHARED_EXPERIENCES"
   | "RECENTLY_CHANGED_JOBS"
   | "POSTED_ON_LINKEDIN"
-  | "LEAD_INTERACTIONS";
+  | "LEAD_INTERACTIONS"
+  | "KEYWORD";
 
 // Normalized facet store
 export type NormalizedFacetStore = Record<FacetName, FacetIndex>;
@@ -106,6 +107,7 @@ export interface NLPMatches {
   RECENTLY_CHANGED_JOBS: MatchedValue[];
   POSTED_ON_LINKEDIN: MatchedValue[];
   LEAD_INTERACTIONS: MatchedValue[];
+  KEYWORD: string[];
 }
 
 // URL generation options

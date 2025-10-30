@@ -28,6 +28,7 @@ import {
   matchRecentlyChangedJobs,
   matchPostedOnLinkedIn,
   matchLeadInteractions,
+  matchKeywords,
 } from "./nlp.js";
 import { resolveCompanyIds, resolveSchoolIds, resolveCompanyIdFromHtml, resolveSchoolIdFromHtml } from "./resolvers.js";
 import { buildDslFromMatches, encodeQuery, buildPeopleSearchUrl } from "./dsl.js";
@@ -424,6 +425,12 @@ export async function generateUrlFromDescription(
   const leadInteractions = matchLeadInteractions(description, store);
   if (leadInteractions.length > 0) {
     matched.LEAD_INTERACTIONS = leadInteractions;
+  }
+
+  // Match keywords
+  const keywords = matchKeywords(description);
+  if (keywords.length > 0) {
+    matched.KEYWORD = keywords;
   }
 
   // Build DSL

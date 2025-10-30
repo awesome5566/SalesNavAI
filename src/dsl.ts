@@ -68,9 +68,23 @@ export function buildFilters(blocks: string[]): string {
 /**
  * Encode the DSL query for URL
  * Uses encodeURIComponent for proper URL encoding
+ * If keywords are present, double-encodes only the %20 (spaces) within the keywords value
  */
 export function encodeQuery(dsl: string): string {
-  return encodeURIComponent(dsl);
+  const encoded = encodeURIComponent(dsl);
+  
+  // Check if this DSL contains keywords (has spellCorrectionEnabled and keywords:)
+  if (dsl.includes('spellCorrectionEnabled:true') && dsl.includes('keywords:')) {
+    // Extract the keyword value and double-encode only spaces within it
+    // Pattern: keywords%3A followed by the keyword value (until %2C or & or end)
+    return encoded.replace(/keywords%3A([^&,)]+)/g, (_match, keywordValue) => {
+      // Double-encode the %20 (space) within the keyword value
+      const doubleEncoded = keywordValue.replace(/%20/g, '%2520');
+      return `keywords%3A${doubleEncoded}`;
+    });
+  }
+  
+  return encoded;
 }
 
 /**
@@ -110,7 +124,34 @@ export function buildDslFromMatches(matches: {
   RECENTLY_CHANGED_JOBS?: MatchedValue[];
   POSTED_ON_LINKEDIN?: MatchedValue[];
   LEAD_INTERACTIONS?: MatchedValue[];
+  KEYWORD?: string[];
 }): string {
+  // Handle keyword search - special case that modifies the entire query structure
+  if (matches.KEYWORD && matches.KEYWORD.length > 0) {
+    // Keywords create a different DSL structure: (spellCorrectionEnabled:true,keywords:keyword text,filters:...)
+    // Keywords need special handling: space becomes %20 when URL-encoded, and must be double-encoded
+    // But we build DSL with literal spaces and let encodeURIComponent handle the first encoding
+    // Then we need to double-encode the % signs in the final URL
+    const keywords = matches.KEYWORD.join(' '); // Multiple keywords are space-separated
+    const filtersPart = buildDslFromMatchesWithoutKeywords(matches);
+    
+    // If there are no filters, just return the keyword query
+    if (filtersPart === "(filters:List())") {
+      return `(spellCorrectionEnabled:true,keywords:${keywords})`;
+    }
+    
+    // Otherwise, combine keywords with filters
+    return `(spellCorrectionEnabled:true,keywords:${keywords},${filtersPart.substring(1)})`;
+  }
+  
+  // Normal flow without keywords
+  return buildDslFromMatchesWithoutKeywords(matches);
+}
+
+/**
+ * Internal helper to build DSL from matched values without keyword handling
+ */
+function buildDslFromMatchesWithoutKeywords(matches: any): string {
   const blocks: string[] = [];
 
   // ID-based facets

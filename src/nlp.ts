@@ -1159,3 +1159,27 @@ export function matchLeadInteractions(
   return matchFacet(augmentedText, store.LEAD_INTERACTIONS, { minLength: 4 });
 }
 
+/**
+ * Match keywords using structured syntax (e.g., "Keyword: Free Diver")
+ */
+export function matchKeywords(text: string): string[] {
+  const keywords: string[] = [];
+
+  // Pattern: "Keyword: X" (case-insensitive)
+  // Match everything after "Keyword:" until another "Keyword:" keyword
+  const keywordPattern = /keyword\s*:\s*(.+?)(?=\s+keyword\s*:|$)/gis;
+  let match;
+
+  // Reset regex state to avoid issues between test runs
+  keywordPattern.lastIndex = 0;
+
+  while ((match = keywordPattern.exec(text)) !== null) {
+    const keywordText = match[1].trim();
+    if (keywordText.length > 0) {
+      keywords.push(keywordText);
+    }
+  }
+
+  return keywords;
+}
+
