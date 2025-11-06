@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { spawn } from 'child_process';
@@ -24,11 +25,12 @@ app.post('/api/generate', async (req, res) => {
       return res.status(400).json({ error: 'Query is required' });
     }
 
-    // Run the CLI tool
+    // Run the CLI tool with environment variables passed through
     const cliPath = path.join(__dirname, 'dist', 'cli.js');
     const child = spawn('node', [cliPath, query, '--json'], {
       cwd: __dirname,
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env: { ...process.env }  // Pass environment variables to child process
     });
 
     let stdout = '';

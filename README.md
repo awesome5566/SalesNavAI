@@ -4,6 +4,7 @@ A zero-API-key, local-first CLI tool that converts natural language descriptions
 
 ## Features
 
+- 🤖 **AI-powered preprocessing** using GPT-4o-mini to convert natural language to structured syntax
 - 🎯 **Rule-based NLP matching** for functions, industries, geographies, titles, and more
 - 📊 **Local data loading** from `facet-store.json` and `Industry IDs.csv`
 - 🔗 **On-demand HTML resolvers** for company/school LinkedIn URLs (use sparingly)
@@ -16,11 +17,41 @@ A zero-API-key, local-first CLI tool that converts natural language descriptions
 pnpm install
 ```
 
+### Environment Setup
+
+The tool uses GPT-4o-mini to automatically convert natural language queries into the structured syntax required by Sales Navigator. To enable this feature:
+
+1. Copy the `.env.example` file to `.env`:
+```bash
+cp .env.example .env
+```
+
+2. Add your OpenAI API key to the `.env` file:
+```
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys).
+
+**Note:** If no API key is provided, the tool will fall back to using the original query directly with rule-based matching. The GPT preprocessing enhances the natural language understanding but is not strictly required.
+
 ## Usage
 
-### Basic Search
+With GPT preprocessing enabled, you can use either natural language or structured syntax:
+
+### Natural Language Queries (GPT-powered)
 
 ```bash
+# Natural language - GPT converts to structured syntax
+pnpm run start "Find me VPs of Sales in Boston"
+pnpm run start "Software engineers at Google with 5+ years experience"
+pnpm run start "Marketing directors in fintech companies"
+```
+
+### Structured Syntax (Direct)
+
+```bash
+# Structured syntax - works with or without GPT
 pnpm run start "Function: Sales in boston and nyc Industry: Software"
 ```
 
@@ -196,6 +227,7 @@ SalesNavAI/
 │   ├── types.ts           # TypeScript type definitions
 │   ├── sanitize.ts        # Text sanitization utilities
 │   ├── loaders.ts         # JSON/CSV data loaders
+│   ├── gpt-parser.ts      # GPT-4o-mini preprocessing
 │   ├── nlp.ts             # Rule-based text matchers
 │   ├── resolvers.ts       # HTML-based LinkedIn ID resolvers
 │   ├── dsl.ts             # DSL construction and encoding
