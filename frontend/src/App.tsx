@@ -72,11 +72,22 @@ const groupedQueries = sampleQueries.reduce((acc, query) => {
   return acc
 }, {} as Record<string, typeof sampleQueries>)
 
-// Ghost example prompts
-const examplePrompts = [
-  "VPs of Sales in Boston at 50–500 employee SaaS, exclude interns",
-  "Fintech CROs in NYC or SF, Series B–D",
-  "AI founders in London, headcount < 100, not consultants"
+const featuredQueries = [
+  {
+    text: "VPs of Sales in Boston at 50–500 employee SaaS, exclude interns",
+    icon: "📈",
+    description: "Senior sales leadership at established SaaS companies with specific headcount range."
+  },
+  {
+    text: "Fintech CROs in NYC or SF, Series B–D",
+    icon: "💳",
+    description: "Chief Revenue Officers in fintech companies at specific funding stages."
+  },
+  {
+    text: "AI founders in London, headcount < 100, not consultants",
+    icon: "🤖",
+    description: "Startup founders building AI products with specific company size and type."
+  }
 ]
 
 function App() {
@@ -84,19 +95,11 @@ function App() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
-  const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showAccountModal, setShowAccountModal] = useState(false)
   const [filterPills, setFilterPills] = useState<FilterPill[]>([])
   const [isParsing, setIsParsing] = useState(false)
   const [showExamples, setShowExamples] = useState(true)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % examplePrompts.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   // Debounced parsing as user types
   useEffect(() => {
@@ -205,14 +208,6 @@ function App() {
   const handleSampleClick = (sampleText: string) => {
     setQuery(sampleText)
     setShowExamples(false)
-  }
-
-  const handleExamplePromptClick = (promptText: string) => {
-    setQuery(promptText)
-    setShowExamples(false)
-    // Focus the input after setting query
-    const input = document.querySelector('.search-input') as HTMLInputElement
-    if (input) input.focus()
   }
 
   const handleCopyURL = () => {
@@ -327,7 +322,7 @@ function App() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={examplePrompts[placeholderIndex]}
+                placeholder="Fintech CROs in NYC or SF, Series B-D"
                 className="search-input"
                 disabled={loading}
                 autoFocus
@@ -406,25 +401,12 @@ function App() {
             </div>
           )}
 
-          {/* Ghost Example Prompts */}
-          <div className="example-prompts">
-            {examplePrompts.map((prompt, index) => (
-              <button
-                key={index}
-                onClick={() => handleExamplePromptClick(prompt)}
-                className="example-prompt-chip"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-
           {/* Marketing Cards - Below the Fold */}
           {showExamples && (
             <div className="marketing-cards-section">
               <h3 className="marketing-cards-title">Popular Searches</h3>
               <div className="marketing-cards-grid">
-                {sampleQueries.slice(0, 6).map((sample, index) => (
+                {featuredQueries.map((sample, index) => (
                   <button
                     key={index}
                     onClick={() => handleSampleClick(sample.text)}
