@@ -7,31 +7,57 @@ import OpenAI from 'openai';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.log');
+const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.csv');
+const CSV_HEADERS = ['email', 'timestamp', 'input', 'output', 'status', 'url'] as const;
 
-type GptLogEntry =
-  | {
-      timestamp: string;
-      input: string;
-      output: string;
-      status: 'success';
-    }
-  | {
-      timestamp: string;
-      input: string;
-      status: 'empty_response';
-    }
-  | {
-      timestamp: string;
-      input: string;
-      status: 'error';
-      error: string;
-    };
+type GptLogEntry = {
+  timestamp: string;
+  input: string;
+  output: string;
+  status: string;
+  url: string;
+};
+
+let logFileInitialized = false;
+
+async function ensureLogFileInitialized(): Promise<void> {
+  if (logFileInitialized) {
+    return;
+  }
+
+  await fs.mkdir(path.dirname(LOG_FILE_PATH), { recursive: true });
+
+  try {
+    await fs.access(LOG_FILE_PATH);
+  } catch {
+    const headerLine = `${CSV_HEADERS.join(',')}\n`;
+    await fs.writeFile(LOG_FILE_PATH, headerLine, 'utf8');
+  }
+
+  logFileInitialized = true;
+}
+
+function toCsvValue(value: string): string {
+  const normalized = value.replace(/\r?\n|\r/g, ' ').replace(/"/g, '""');
+  return `"${normalized}"`;
+}
 
 async function logGptInteraction(entry: GptLogEntry): Promise<void> {
   try {
-    await fs.mkdir(path.dirname(LOG_FILE_PATH), { recursive: true });
-    await fs.appendFile(LOG_FILE_PATH, `${JSON.stringify(entry)}\n`, 'utf8');
+    await ensureLogFileInitialized();
+    const email = process.env.REQUEST_USER_EMAIL ?? 'unknown';
+    const row = [
+      email,
+      entry.timestamp,
+      entry.input,
+      entry.output,
+      entry.status,
+      entry.url,
+    ]
+      .map((value) => toCsvValue(value))
+      .join(',');
+
+    await fs.appendFile(LOG_FILE_PATH, `${row}\n`, 'utf8');
   } catch (logError) {
     if (process.env.GPT_LOG_DEBUG === 'true') {
       console.warn(
@@ -40,6 +66,16 @@ async function logGptInteraction(entry: GptLogEntry): Promise<void> {
       );
     }
   }
+}
+
+export interface ParseWithGPTResult {
+  processedQuery: string;
+  output: string;
+  status: string;
+}
+
+export async function logGptConversation(entry: GptLogEntry): Promise<void> {
+  await logGptInteraction(entry);
 }
 
 const SYSTEM_PROMPT = `You are an expert at converting natural language queries into structured Sales Navigator search syntax.
@@ -246,7 +282,10 @@ function getOpenAIClient(): OpenAI | null {
  * Parse user query using GPT-4o-mini
  * Falls back to original query if API fails or is not configured
  */
-export async function parseWithGPT(userQuery: string, options?: { silent?: boolean }): Promise<string> {
+export async function parseWithGPT(
+  userQuery: string,
+  options?: { silent?: boolean }
+): Promise<ParseWithGPTResult> {
   const client = getOpenAIClient();
   
   // If no API key or client, silently fall back to original query
@@ -254,7 +293,11 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
     if (!options?.silent) {
       console.log('⚠️  OpenAI API key not found. Skipping GPT preprocessing.');
     }
-    return userQuery;
+    return {
+      processedQuery: userQuery,
+      output: userQuery,
+      status: 'skipped',
+    };
   }
 
   try {
@@ -263,7 +306,7 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
     }
 
     const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-5',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userQuery }
@@ -278,12 +321,11 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
       if (!options?.silent) {
         console.log('⚠️  GPT returned empty response. Using original query.');
       }
-      await logGptInteraction({
-        timestamp: new Date().toISOString(),
-        input: userQuery,
+      return {
+        processedQuery: userQuery,
+        output: userQuery,
         status: 'empty_response',
-      });
-      return userQuery;
+      };
     }
 
     if (!options?.silent) {
@@ -292,26 +334,21 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
       console.log(`   Parsed:   "${parsedQuery}"`);
     }
 
-    await logGptInteraction({
-      timestamp: new Date().toISOString(),
-      input: userQuery,
+    return {
+      processedQuery: parsedQuery,
       output: parsedQuery,
       status: 'success',
-    });
-
-    return parsedQuery;
+    };
   } catch (error) {
     // Silently fall back to original query on any error
     if (!options?.silent) {
       console.log(`⚠️  GPT preprocessing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       console.log('   Falling back to original query.');
     }
-    await logGptInteraction({
-      timestamp: new Date().toISOString(),
-      input: userQuery,
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-    return userQuery;
+    return {
+      processedQuery: userQuery,
+      output: userQuery,
+      status: error instanceof Error ? `error: ${error.message}` : 'error: Unknown error',
+    };
   }
 }

@@ -34,7 +34,7 @@ import { resolveCompanyIds, resolveSchoolIds, resolveCompanyIdFromHtml, resolveS
 import { buildDslFromMatches, encodeQuery, buildPeopleSearchUrl } from "./dsl.js";
 import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from "./types.js";
 import { normalizeForLookup } from "./sanitize.js";
-import { parseWithGPT } from "./gpt-parser.js";
+import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
 import 'dotenv/config';
 
 /**
@@ -108,7 +108,8 @@ export async function generateUrlFromDescription(
   const matched: Partial<NLPMatches> = {};
 
   // Preprocess with GPT to convert natural language to structured syntax
-  const processedDescription = await parseWithGPT(description, { silent: options.silent });
+  const gptResult = await parseWithGPT(description, { silent: options.silent });
+  const processedDescription = gptResult.processedQuery;
 
   // Load data
   const store = loadAllData();
@@ -443,11 +444,21 @@ export async function generateUrlFromDescription(
   const encodedQuery = encodeQuery(dslDecoded);
   const url = buildPeopleSearchUrl(encodedQuery);
 
-  return {
+  const result: GeneratorResult = {
     url,
     dslDecoded,
     matched,
     warnings,
   };
+
+  await logGptConversation({
+    timestamp: new Date().toISOString(),
+    input: description,
+    output: gptResult.output,
+    status: gptResult.status,
+    url: result.url ?? '',
+  });
+
+  return result;
 }
 

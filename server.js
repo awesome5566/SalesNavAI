@@ -4,12 +4,25 @@ import cors from 'cors';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3001;
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.warn('⚠️  Supabase admin credentials are not configured. Requests will be rejected.');
+}
+
+const supabaseAdmin =
+  supabaseUrl && supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey)
+    : null;
 
 app.use(cors());
 app.use(express.json());
@@ -20,6 +33,30 @@ app.use(express.static(path.join(__dirname, 'dist-frontend')));
 app.post('/api/generate', async (req, res) => {
   try {
     const { query } = req.body;
+    const authHeader = req.headers.authorization;
+    const bearerPrefix = 'Bearer ';
+
+    if (!supabaseAdmin) {
+      return res.status(500).json({ error: 'Server auth configuration missing' });
+    }
+
+    if (!authHeader || !authHeader.startsWith(bearerPrefix)) {
+      return res.status(401).json({ error: 'Authorization header missing' });
+    }
+
+    const accessToken = authHeader.slice(bearerPrefix.length).trim();
+
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Invalid authorization token' });
+    }
+
+    const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(accessToken);
+
+    if (userError || !userData?.user?.email) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const requestUserEmail = userData.user.email;
     
     if (!query || typeof query !== 'string') {
       return res.status(400).json({ error: 'Query is required' });
@@ -30,7 +67,7 @@ app.post('/api/generate', async (req, res) => {
     const child = spawn('node', [cliPath, query, '--json'], {
       cwd: __dirname,
       stdio: ['pipe', 'pipe', 'pipe'],
-      env: { ...process.env }  // Pass environment variables to child process
+      env: { ...process.env, REQUEST_USER_EMAIL: requestUserEmail }  // Pass environment variables to child process
     });
 
     let stdout = '';
