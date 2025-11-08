@@ -4,6 +4,43 @@
  */
 
 import OpenAI from 'openai';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+
+const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.log');
+
+type GptLogEntry =
+  | {
+      timestamp: string;
+      input: string;
+      output: string;
+      status: 'success';
+    }
+  | {
+      timestamp: string;
+      input: string;
+      status: 'empty_response';
+    }
+  | {
+      timestamp: string;
+      input: string;
+      status: 'error';
+      error: string;
+    };
+
+async function logGptInteraction(entry: GptLogEntry): Promise<void> {
+  try {
+    await fs.mkdir(path.dirname(LOG_FILE_PATH), { recursive: true });
+    await fs.appendFile(LOG_FILE_PATH, `${JSON.stringify(entry)}\n`, 'utf8');
+  } catch (logError) {
+    if (process.env.GPT_LOG_DEBUG === 'true') {
+      console.warn(
+        '⚠️  Failed to write GPT log:',
+        logError instanceof Error ? logError.message : logError
+      );
+    }
+  }
+}
 
 const SYSTEM_PROMPT = `You are an expert at converting natural language queries into structured Sales Navigator search syntax.
 
@@ -95,10 +132,77 @@ Values: Public Company, Privately Held, Educational Institution, Non Profit, Sel
 
 ### 11. KEYWORD
 Syntax: \`Keyword: [keyword text]\`
-Use for specialized skills, interests, or phrases that don't fit other categories
-Examples:
-- "scuba diving" → "Keyword: scuba diving"
-- "speaks French" → "Keyword: French"
+Take the plain-English description and set the keyword search to an extremely accurate Boolean keyword string that can be pasted into LinkedIn Sales Navigator’s search bar or keyword field.
+
+GENERAL RULES
+- Output the final Boolean string in keyword syntax: \`Keyword: [keyword text]\`
+- Use UPPERCASE for Boolean operators: AND, OR, NOT.
+- Wrap multi-word phrases in "double quotes".
+- Use parentheses () to group related terms cleanly.
+- Prefer fewer, high-precision terms over huge noisy lists.
+
+INTERPRETATION RULES
+Given the user’s description of the ideal search:
+
+1. JOB TITLE(S)
+   - Identify the core role(s) they want (e.g., “Sales Development Representative”).
+   - Add 2–4 realistic synonyms/variants ONLY if they clearly match the intent.
+   - Combine with OR inside a title group, e.g.:
+     ("Sales Development Representative" OR "Business Development Representative" OR SDR)
+
+2. CONTEXT (INDUSTRY / PRODUCT TYPE)
+   - If they mention SaaS / B2B / fintech / etc., add 2–5 key context terms that are likely to appear in profiles or company descriptions.
+   - Example pattern:
+     (SaaS OR "Software as a Service" OR "B2B software")
+
+3. LOCATION
+   - If a geography is specified (e.g., “San Francisco”, “SF Bay Area”, “London”), include 2–4 common textual variants in one group:
+     ("San Francisco" OR "SF Bay Area" OR "San Francisco Bay Area")
+   - If location is not mentioned, omit location terms (don’t guess).
+
+4. SENIORITY / LEVEL
+   - If they say **entry-level / junior / SDR / IC**:
+     - EXCLUDE senior roles with a NOT block:
+       NOT ("Senior" OR "Sr" OR "Manager" OR "Head of" OR "Director" OR "VP" OR "Vice President" OR "CRO" OR "Chief Revenue Officer")
+   - If they clearly want **senior / leadership**:
+     - Optionally INCLUDE senior terms and EXCLUDE junior:
+       ("Head of" OR "Director" OR "VP" OR "Vice President" OR "CRO" OR "Chief Revenue Officer")
+       AND NOT ("Intern" OR "Junior" OR "Trainee")
+   - If level is unclear, do NOT add a NOT block.
+
+5. COMPANY SIZE / TYPE (WHEN IMPLIED)
+   - LinkedIn doesn’t have company size in keywords, but you can bias toward small/startup by including terms like:
+     ("startup" OR "start-up" OR "early stage")
+   - Only do this if the user explicitly says “small company”, “startup”, “under 50 employees”, etc.
+   - Keep this group small (2–4 terms max) to avoid noise.
+
+6. EXCLUSIONS
+   - Use a NOT block to filter obvious mismatch sectors if the description clearly implies B2B tech and not, say, retail or hospitality.
+   - Example:
+     NOT ("retail" OR "restaurant" OR "hospitality")
+   - Only add exclusions when they’re strongly implied by the description.
+
+7. STRUCTURE
+   - Combine all groups with AND in this rough order:
+     (TITLE_GROUP)
+     AND (CONTEXT_GROUP)        [if applicable]
+     AND (LOCATION_GROUP)       [if applicable]
+     AND (COMPANY_TYPE_GROUP)   [if applicable]
+     AND NOT (EXCLUSIONS_GROUP) [if applicable]
+   - Remove any empty groups; don’t include dangling ANDs.
+
+8. QUALITY CHECK
+   - Ensure the Boolean is not over-complicated:
+     - Max ~3–5 title variants.
+     - Max ~3–5 context/industry terms.
+     - Max ~3–5 exclusions.
+   - Make sure parentheses are balanced and there are no trailing AND/OR.
+
+OUTPUT FORMAT
+- Return ONLY the Boolean string.
+- Do NOT explain your reasoning.
+- Do NOT label sections.
+- No markdown, no bullets — just the final Boolean.
 
 ## CONVERSION EXAMPLES:
 
@@ -174,6 +278,11 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
       if (!options?.silent) {
         console.log('⚠️  GPT returned empty response. Using original query.');
       }
+      await logGptInteraction({
+        timestamp: new Date().toISOString(),
+        input: userQuery,
+        status: 'empty_response',
+      });
       return userQuery;
     }
 
@@ -183,6 +292,13 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
       console.log(`   Parsed:   "${parsedQuery}"`);
     }
 
+    await logGptInteraction({
+      timestamp: new Date().toISOString(),
+      input: userQuery,
+      output: parsedQuery,
+      status: 'success',
+    });
+
     return parsedQuery;
   } catch (error) {
     // Silently fall back to original query on any error
@@ -190,6 +306,12 @@ export async function parseWithGPT(userQuery: string, options?: { silent?: boole
       console.log(`⚠️  GPT preprocessing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       console.log('   Falling back to original query.');
     }
+    await logGptInteraction({
+      timestamp: new Date().toISOString(),
+      input: userQuery,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
     return userQuery;
   }
 }
