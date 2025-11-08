@@ -18,74 +18,17 @@ interface FilterPill {
   value: string
 }
 
-interface SampleQuery {
-  text: string
-  icon: string
-  description: string
-  category: string
-}
-
-const sampleQueries = [
-  { 
-    text: "CFOs at fintech startups in Boston", 
-    icon: "💼",
-    description: "Financial decision makers in fintech and banking sector.",
-    category: "By Role"
-  },
-  { 
-    text: "VPs of Sales in enterprise tech firms",
-    icon: "📈",
-    description: "Senior sales leadership at established technology companies.",
-    category: "By Role"
-  },
-  { 
-    text: "Marketing directors at SaaS companies", 
-    icon: "🎯",
-    description: "Marketing leaders at software companies.",
-    category: "By Industry"
-  },
-  {
-    text: "Healthcare founders in San Francisco",
-    icon: "🏥",
-    description: "Startup founders and healthcare executives in the Bay Area.",
-    category: "By Industry"
-  },
-  {
-    text: "CTOs at AI and machine learning startups",
-    icon: "⚡",
-    description: "Technical executives building AI-powered products.",
-    category: "By Industry"
-  },
-  {
-    text: "Product managers in fintech with MBA",
-    icon: "🎓",
-    description: "Product professionals with business education.",
-    category: "By Criteria"
-  }
-]
-
-const groupedQueries = sampleQueries.reduce((acc, query) => {
-  if (!acc[query.category]) {
-    acc[query.category] = []
-  }
-  acc[query.category].push(query)
-  return acc
-}, {} as Record<string, typeof sampleQueries>)
-
 const featuredQueries = [
   {
-    text: "VPs of Sales in Boston at 50–500 employee SaaS, exclude interns",
-    icon: "📈",
+    text: "VPs of Sales in Boston at 50-500 employee SaaS, exclude interns",
     description: "Senior sales leadership at established SaaS companies with specific headcount range."
   },
   {
-    text: "Fintech CROs in NYC or SF, Series B–D",
-    icon: "💳",
+    text: "Fintech CROs in NYC or SF, Series B-D",
     description: "Chief Revenue Officers in fintech companies at specific funding stages."
   },
   {
     text: "AI founders in London, headcount < 100, not consultants",
-    icon: "🤖",
     description: "Startup founders building AI products with specific company size and type."
   }
 ]
@@ -279,7 +222,7 @@ function App() {
       <header className="header">
         <div className="header-content">
           <div className="logo">
-            <span className="logo-text">SalesNav AI</span>
+            <img src="/salesnav.io.jpg" alt="SalesNav AI" className="logo-image" />
           </div>
           <button className="auth-button" onClick={handleAuthButtonClick}>
             {user ? (
@@ -305,36 +248,53 @@ function App() {
 
       <main className="main">
         <section className="hero">
+          {/* Hero Title */}
           <h1 className="hero-title">
             Describe your lead. We return a perfect Sales Navigator search.
           </h1>
           <p className="hero-subtitle">
-            Roles, seniority, geo IDs, industries — auto-parsed and applied. No guesswork.
+            Roles, seniority, geo IDs, industries - auto-parsed and applied. No guesswork.
           </p>
 
           {/* Command Bar */}
           <form onSubmit={handleSubmit} className="command-bar-form" role="search">
             <div className={`command-bar ${loading ? 'loading' : ''}`}>
-              <svg className="command-bar-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Fintech CROs in NYC or SF, Series B-D"
+                placeholder="How can I help you today?"
                 className="search-input"
                 disabled={loading}
                 autoFocus
               />
-              <button 
-                type="submit" 
-                className={`command-bar-cta ${loading ? 'loading' : ''}`}
-                disabled={loading || !query.trim()}
-                aria-label="Build search"
-              >
-                {loading ? 'Building...' : 'Build search'}
-              </button>
+              <div className="command-bar-actions">
+                <button type="button" className="command-bar-icon-btn" aria-label="Add attachment">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 5V15M5 10H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </button>
+                <button type="button" className="command-bar-icon-btn" aria-label="Settings">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 3V5M10 15V17M5.5 5.5L7 7M13 13L14.5 14.5M3 10H5M15 10H17M5.5 14.5L7 13M13 7L14.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </button>
+                <button type="button" className="command-bar-icon-btn" aria-label="History">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 6V10L13 13M19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </button>
+                <button 
+                  type="submit" 
+                  className={`command-bar-submit ${loading ? 'loading' : ''}`}
+                  disabled={loading || !query.trim()}
+                  aria-label="Submit"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 3L10 17M10 3L5 8M10 3L15 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </form>
 
@@ -402,7 +362,7 @@ function App() {
           )}
 
           {/* Marketing Cards - Below the Fold */}
-          {showExamples && (
+          {showExamples && !result && (
             <div className="marketing-cards-section">
               <h3 className="marketing-cards-title">Popular Searches</h3>
               <div className="marketing-cards-grid">
@@ -412,10 +372,8 @@ function App() {
                     onClick={() => handleSampleClick(sample.text)}
                     className="marketing-card"
                   >
-                    <div className="marketing-card-icon">{sample.icon}</div>
                     <div className="marketing-card-content">
                       <div className="marketing-card-title">{sample.text}</div>
-                      <div className="marketing-card-description">{sample.description}</div>
                     </div>
                   </button>
                 ))}

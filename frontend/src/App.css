@@ -14,7 +14,13 @@ body {
 
 .app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #FFF0E8 0%, #FFE5D9 25%, #FFD6E8 50%, #E8D4F5 75%, #D4C5F5 100%);
+  background: linear-gradient(
+    to top,
+    #0072b1 0%,
+    #3b94c5 30%,
+    #8fc0db 60%,
+    #ffffff 100%
+  );
   display: flex;
   flex-direction: column;
   position: relative;
@@ -22,17 +28,18 @@ body {
 
 /* Header */
 .header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom: none;
   position: relative;
   z-index: 10;
 }
 
 .header-content {
-  max-width: 1200px;
+  max-width: 52rem;
+  width: 100%;
   margin: 0 auto;
-  padding: 0.875rem 2rem;
+  padding: 1.5rem 1.5rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,14 +48,12 @@ body {
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.logo-text {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.02em;
+.logo-image {
+  height: 36px;
+  width: auto;
+  display: block;
 }
 
 .auth-button {
@@ -127,30 +132,32 @@ body {
 .main {
   flex: 1;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 5rem 1.5rem 4rem;
+  padding: 3rem 1.5rem 4rem;
   position: relative;
+  width: 100%;
 }
 
 .hero {
   width: 100%;
-  max-width: 1200px;
+  max-width: 52rem;
   margin: 0 auto;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 2.25rem;
 }
 
 .hero-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 2.25rem;
-  letter-spacing: -0.025em;
-  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #171717;
+  line-height: 2.5rem;
+  letter-spacing: -0.02em;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .hero-subtitle {
@@ -158,95 +165,112 @@ body {
   line-height: 1.5rem;
   color: #475569;
   font-weight: 500;
-  margin-bottom: 1.5rem;
+  margin: 0;
   max-width: 42rem;
 }
 
 /* Command Bar */
 .command-bar-form {
   width: 100%;
-  max-width: 42.5rem;
+  max-width: 52rem;
 }
 
 .command-bar {
   position: relative;
   display: flex;
   align-items: center;
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  background: #FAFAFA;
+  border: 1px solid #E5E5E5;
+  border-radius: 1.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 3.5rem;
+  height: 3.75rem;
+  padding: 0 0.75rem;
 }
 
 .command-bar:focus-within {
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-  border-color: #94a3b8;
-}
-
-.command-bar-icon {
-  position: absolute;
-  left: 1rem;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: #94a3b8;
-  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: #D4D4D4;
+  background: #FFFFFF;
 }
 
 .search-input {
   flex: 1;
   height: 100%;
   width: 100%;
-  padding-left: 3rem;
-  padding-right: 9.5rem;
+  padding: 0 1rem;
   border: none;
   background: transparent;
-  font-size: 1.0625rem;
-  color: #0f172a;
-  border-radius: 1rem;
+  font-size: 1rem;
+  color: #171717;
+  border-radius: 1.75rem;
   outline: none;
   font-family: inherit;
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: #A3A3A3;
 }
 
-.command-bar-cta {
-  position: absolute;
-  right: 0.5rem;
+.command-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.command-bar-icon-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
   border: none;
-  background: #2563eb;
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 500;
+  background: transparent;
+  color: #737373;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
 }
 
-.command-bar-cta:hover:not(:disabled) {
-  background: #1d4ed8;
+.command-bar-icon-btn:hover {
+  background: #F5F5F5;
+  color: #525252;
 }
 
-.command-bar-cta:active:not(:disabled) {
-  transform: scale(0.99);
+.command-bar-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #E8B4A0;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 0.25rem;
 }
 
-.command-bar-cta:disabled {
-  background: #cbd5e1;
+.command-bar-submit:hover:not(:disabled) {
+  background: #E0A590;
+}
+
+.command-bar-submit:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.command-bar-submit:disabled {
+  background: #E5E5E5;
+  color: #A3A3A3;
   cursor: not-allowed;
 }
 
 /* Filter Pills */
 .filter-pills-container {
   width: 100%;
-  max-width: 42.5rem;
+  max-width: 52rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -317,7 +341,7 @@ body {
 /* URL Preview Panel */
 .url-preview-panel {
   width: 100%;
-  max-width: 42.5rem;
+  max-width: 52rem;
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 1rem;
@@ -400,85 +424,96 @@ body {
 /* Marketing Cards - Below the Fold */
 .marketing-cards-section {
   width: 100%;
-  max-width: 64rem;
-  margin-top: 4rem;
+  max-width: 52rem;
+  margin-top: 3rem;
 }
 
 .marketing-cards-title {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #404040;
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 0 auto 1.25rem;
 }
 
 .marketing-cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-items: center;
+  gap: 0.75rem;
   max-width: 100%;
 }
 
 .marketing-card {
+  width: 100%;
+  max-width: 16rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem 1.5rem;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.9rem 1rem;
   border-radius: 0.75rem;
-  border: 1px solid #e2e8f0;
-  background: white;
-  text-align: center;
+  border: 1px solid #E5E5E5;
+  background: #FAFAFA;
+  text-align: left;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
 }
 
 .marketing-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.marketing-card-icon {
-  font-size: 2.5rem;
-  flex-shrink: 0;
-  margin-bottom: 0.5rem;
+  border-color: #D4D4D4;
+  background: #F5F5F5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .marketing-card-content {
   flex: 1;
   min-width: 0;
-  text-align: center;
+  text-align: left;
 }
 
 .marketing-card-title {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #1e293b;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
+  color: #171717;
+  line-height: 1.4;
+  margin-bottom: 0.375rem;
 }
 
 .marketing-card-description {
-  font-size: 0.8125rem;
-  color: #64748b;
-  line-height: 1.5;
+  display: none;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .header-content {
+    padding: 1.25rem 0;
+  }
+
   .main {
-    padding: 2rem 1rem;
+    padding: 2.5rem 1rem;
+  }
+
+  .hero {
+    gap: 1.5rem;
   }
 
   .hero-title {
-    font-size: 1.5rem;
-    line-height: 2rem;
+    font-size: 1.35rem;
+    line-height: 1.75rem;
   }
 
   .hero-subtitle {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
 
   .command-bar {
@@ -497,7 +532,14 @@ body {
 
   .marketing-cards-grid {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    justify-items: center;
+    gap: 1rem;
+  }
+
+  .marketing-card {
+    max-width: 18rem;
+    align-items: center;
+    text-align: center;
   }
 
   .url-preview-header {
@@ -541,12 +583,12 @@ body {
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 1.375rem;
-    line-height: 1.75rem;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
   }
 
   .hero-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 
   .search-input {
