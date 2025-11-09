@@ -9,6 +9,7 @@ import path from 'node:path';
 
 const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.csv');
 const CSV_HEADERS = ['email', 'timestamp', 'input', 'output', 'status', 'url'] as const;
+const DEFAULT_MODEL = process.env.OPENAI_MODEL ?? 'gpt-5-mini';
 
 type GptLogEntry = {
   timestamp: string;
@@ -279,7 +280,7 @@ function getOpenAIClient(): OpenAI | null {
 }
 
 /**
- * Parse user query using GPT-4o-mini
+ * Parse user query using OpenAI Responses API
  * Falls back to original query if API fails or is not configured
  */
 export async function parseWithGPT(
@@ -302,20 +303,35 @@ export async function parseWithGPT(
 
   try {
     if (!options?.silent) {
-      console.log('🤖 Processing query with GPT-4o-mini...');
+      console.log(`🤖 Processing query with ${DEFAULT_MODEL} via Responses API...`);
     }
 
-    const completion = await client.chat.completions.create({
-      model: 'gpt-5',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userQuery }
+    const response = await client.responses.create({
+      model: DEFAULT_MODEL,
+      input: [
+        {
+          role: 'system',
+          content: [
+            {
+              type: 'input_text',
+              text: SYSTEM_PROMPT,
+            },
+          ],
+        },
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'input_text',
+              text: userQuery,
+            },
+          ],
+        },
       ],
-      temperature: 0.1, // Low temperature for consistent, structured output
-      max_tokens: 500,
-    });
+      max_output_tokens: 50000,
+    } as any);
 
-    const parsedQuery = completion.choices[0]?.message?.content?.trim();
+    const parsedQuery = response.output_text?.trim();
     
     if (!parsedQuery) {
       if (!options?.silent) {

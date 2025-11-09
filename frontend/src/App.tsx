@@ -274,21 +274,6 @@ function App() {
                 autoFocus
               />
               <div className="command-bar-actions">
-                <button type="button" className="command-bar-icon-btn" aria-label="Add attachment">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 5V15M5 10H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
-                <button type="button" className="command-bar-icon-btn" aria-label="Settings">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 3V5M10 15V17M5.5 5.5L7 7M13 13L14.5 14.5M3 10H5M15 10H17M5.5 14.5L7 13M13 7L14.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
-                <button type="button" className="command-bar-icon-btn" aria-label="History">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 6V10L13 13M19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
                 <button 
                   type="submit" 
                   className={`command-bar-submit ${loading ? 'loading' : ''}`}
