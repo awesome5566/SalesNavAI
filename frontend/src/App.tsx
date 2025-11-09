@@ -228,6 +228,7 @@ function App() {
         <div className="header-content">
           <div className="logo">
             <img src="/salesnav.io.jpg" alt="SalesNav AI" className="logo-image" />
+            <span className="logo-text">SalesNav AI</span>
           </div>
           <button className="auth-button" onClick={handleAuthButtonClick}>
             {user ? (
@@ -255,7 +256,9 @@ function App() {
         <section className="hero">
           {/* Hero Title */}
           <h1 className="hero-title">
-            Describe your lead. We return a perfect Sales Navigator search.
+            Describe your lead. We return a
+            <br />
+            perfect Sales Navigator search.
           </h1>
           <p className="hero-subtitle">
             Roles, seniority, geo IDs, industries - auto-parsed and applied. No guesswork.
