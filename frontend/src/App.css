@@ -12,15 +12,45 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Background: radial wash + art-directed grid lines */
+.bg-wash {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image: url('/magicpattern3.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.grid-lines line {
+  stroke: rgba(209, 202, 224, 0.8);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: crispEdges;
+  opacity: 0.14;
+}
+
+[data-theme='dark'] .grid-lines line {
+  opacity: 0.03;
+  stroke: rgba(209, 202, 224, 0.6);
+}
+
 .app {
   min-height: 100vh;
-  background: linear-gradient(
-    to top,
-    #e3f2fb 0%,
-    #edf7fd 30%,
-    #f5fbfe 60%,
-    #ffffff 100%
-  );
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -36,25 +66,24 @@ body {
 }
 
 .header-content {
-  max-width: 52rem;
   width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem 1.5rem 0;
+  margin: 0;
+  padding: 1.5rem 3rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.logo {
+.header-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.logo-image {
-  height: 32px;
-  width: auto;
-  display: block;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .logo-text {
@@ -86,15 +115,33 @@ body {
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
+.auth-button--gray {
+  background: rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #475569;
+  box-shadow: none;
+}
+
+.auth-button--gray:hover {
+  background: rgba(148, 163, 184, 0.22);
+  border-color: rgba(148, 163, 184, 0.4);
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.15);
+}
+
+.auth-button--gray .button-text,
+.auth-button--gray .login-icon {
+  color: inherit;
+}
+
 .user-avatar {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #1e293b;
   font-size: 0.75rem;
   font-weight: 600;
   overflow: hidden;
@@ -279,6 +326,21 @@ body {
   background: #E5E5E5;
   color: #A3A3A3;
   cursor: not-allowed;
+}
+
+/* Loading spinner styles */
+.command-bar-submit.loading svg {
+  display: none;
+}
+
+.command-bar-submit.loading::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 /* Filter Pills */
