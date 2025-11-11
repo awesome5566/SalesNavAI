@@ -388,8 +388,8 @@ function App() {
         <section className="hero">
           {/* Hero Title */}
           <h1 className="hero-title">
-            <span>Describe your lead. We return a</span>
-            <span>perfect Sales Navigator search.</span>
+            <span>SalesNav.io</span>
+           
           </h1>
           <p className="hero-subtitle">
             Roles, seniority, geo IDs, industries - auto-parsed and applied. No guesswork.
