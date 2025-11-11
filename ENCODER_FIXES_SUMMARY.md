@@ -3,28 +3,54 @@
 ## Summary
 This document outlines the fixes applied to ensure LinkedIn Sales Navigator URLs load reliably by following proper DSL construction and encoding rules.
 
+## Encoding Pipeline (The Correct Way)
+
+```typescript
+// Step 1: Build raw Boolean keywords
+const rawBoolean = '(SDR OR "Sales Development Representative") AND ("SaaS" OR "B2B software")';
+
+// Step 2: Pre-encode keywords once
+const encodedKeywords = encodeURIComponent(rawBoolean);
+
+// Step 3: Build DSL with plain text for all facets, pre-encoded keywords
+const dsl = `(spellCorrectionEnabled:true,keywords:${encodedKeywords},filters:List(...))`;
+
+// Step 4: Encode the ENTIRE DSL once (with parenthesis encoding)
+const encodedDsl = encodeURIComponent(dsl).replace(/\(/g, '%28').replace(/\)/g, '%29');
+
+// Step 5: Build final URL
+const url = `https://www.linkedin.com/sales/search/people?query=${encodedDsl}&viewAllFilters=true`;
+```
+
+**Result:** Keywords are double-encoded (once in step 2, once in step 4), which is what LinkedIn expects. The query parameter starts with `%28` not `(`.
+
 ## Changes Made
 
 ### 1. ✅ Fixed DSL Encoding (Critical)
 **File:** `src/dsl.ts`
 
-**Problem:** Keywords were not being pre-encoded, causing incorrect URL encoding.
+**Problem:** Keywords were not being pre-encoded, and the entire DSL wasn't being encoded properly.
 
 **Solution:** 
 - Pre-encode keywords Boolean using `encodeURIComponent()` before embedding into DSL
-- Keep all other DSL fields (text, filters) raw until final outer encode
-- Apply outer `encodeURIComponent()` once to entire DSL in `buildPeopleSearchUrl()`
+- Keep all other DSL fields (text, filters) raw until final encode
+- Apply `encodeURIComponent()` once to entire DSL in `buildPeopleSearchUrl()`
+- Manually encode parentheses since `encodeURIComponent` doesn't encode them
+- Removed redundant `encodeQuery()` function
+- `buildPeopleSearchUrl()` is now the ONLY place that performs the final encode
 
 **Code Changes:**
 ```typescript
-// Before:
-const keywords = matches.KEYWORD.join(' ');
-return `(spellCorrectionEnabled:true,keywords:${keywords},...)`;
-
-// After:
+// buildDslFromMatches: Pre-encode keywords
 const keywordsRaw = matches.KEYWORD.join(' ');
-const keywordsEncoded = encodeURIComponent(keywordsRaw); // Pre-encode
-return `(spellCorrectionEnabled:true,keywords:${keywordsEncoded},...)`;
+const keywordsEncoded = encodeURIComponent(keywordsRaw);
+const dsl = `(spellCorrectionEnabled:true,keywords:${keywordsEncoded},filters:...)`;
+
+// buildPeopleSearchUrl: Encode entire DSL once
+const encodedDsl = encodeURIComponent(dsl)
+  .replace(/\(/g, '%28')
+  .replace(/\)/g, '%29');
+return `${baseUrl}?query=${encodedDsl}&viewAllFilters=true`;
 ```
 
 ### 2. ✅ Simplified ID-Based Facet Blocks

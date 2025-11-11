@@ -54,27 +54,25 @@ export function buildFilters(blocks: string[]): string {
 }
 
 /**
- * Encode the DSL query for URL
- * Simply passes through the DSL string - encoding happens once in buildPeopleSearchUrl
- */
-export function encodeQuery(dsl: string): string {
-  return dsl;
-}
-
-/**
  * Build the complete Sales Navigator People search URL
+ * This is the ONLY place that encodes the DSL query
  * Applies encodeURIComponent once to the entire query string
+ * Note: encodeURIComponent doesn't encode (), but LinkedIn expects them encoded
  */
-export function buildPeopleSearchUrl(query: string): string {
+export function buildPeopleSearchUrl(dsl: string): string {
   const baseUrl = "https://www.linkedin.com/sales/search/people";
-  const params: string[] = ["viewAllFilters=true"];
-
-  if (query) {
-    const encodedQuery = encodeURIComponent(query);
-    params.unshift(`query=${encodedQuery}`);
+  
+  if (!dsl) {
+    return `${baseUrl}?viewAllFilters=true`;
   }
 
-  return `${baseUrl}?${params.join("&")}`;
+  // Encode the entire DSL string once - this is the critical step
+  // encodeURIComponent doesn't encode parentheses, so we manually encode them
+  const encodedDsl = encodeURIComponent(dsl)
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29');
+  
+  return `${baseUrl}?query=${encodedDsl}&viewAllFilters=true`;
 }
 
 /**
@@ -83,6 +81,14 @@ export function buildPeopleSearchUrl(query: string): string {
  */
 export function decodeQuery(encodedQuery: string): string {
   return decodeURIComponent(encodedQuery);
+}
+
+/**
+ * DEPRECATED: Use buildPeopleSearchUrl directly instead
+ * Kept for backward compatibility
+ */
+export function encodeQuery(dsl: string): string {
+  return dsl;
 }
 
 /**

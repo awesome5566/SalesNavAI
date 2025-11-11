@@ -31,7 +31,7 @@ import {
   matchKeywords,
 } from "./nlp.js";
 import { resolveCompanyIds, resolveSchoolIds, resolveCompanyIdFromHtml, resolveSchoolIdFromHtml } from "./resolvers.js";
-import { buildDslFromMatches, encodeQuery, buildPeopleSearchUrl } from "./dsl.js";
+import { buildDslFromMatches, buildPeopleSearchUrl } from "./dsl.js";
 import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from "./types.js";
 import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
@@ -655,10 +655,11 @@ export async function generateUrlFromDescription(
   // Validate no contradictions between keywords and facets
   validateNoContradictions(matched.KEYWORD, matched, warnings);
 
-  // Build DSL
+  // Build DSL and URL
+  // buildDslFromMatches returns raw DSL with keywords pre-encoded
+  // buildPeopleSearchUrl encodes the entire DSL once
   const dslDecoded = buildDslFromMatches(matched as any);
-  const encodedQuery = encodeQuery(dslDecoded);
-  const url = buildPeopleSearchUrl(encodedQuery);
+  const url = buildPeopleSearchUrl(dslDecoded);
 
   // Generate human-readable summary from matched facets
   const summary = generateSummaryFromMatches(matched);

@@ -62,7 +62,9 @@ test("buildFilters handles empty blocks", () => {
   assert.strictEqual(result, "");
 });
 
-test("encodeQuery returns DSL unchanged", () => {
+test("encodeQuery returns DSL unchanged (deprecated)", () => {
+  // DEPRECATED: encodeQuery is kept for backward compatibility only
+  // Use buildPeopleSearchUrl directly instead
   const dsl = "(filters:List((type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))))";
   const result = encodeQuery(dsl);
   
@@ -74,11 +76,14 @@ test("buildPeopleSearchUrl constructs valid URL", () => {
     "(filters:List((type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))))";
   const result = buildPeopleSearchUrl(dsl);
   
+  // encodeURIComponent doesn't encode parentheses, but buildPeopleSearchUrl does
+  const expected = encodeURIComponent(dsl)
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29');
+  
   assert.strictEqual(
     result,
-    `https://www.linkedin.com/sales/search/people?query=${encodeURIComponent(
-      dsl
-    )}&viewAllFilters=true`
+    `https://www.linkedin.com/sales/search/people?query=${expected}&viewAllFilters=true`
   );
 });
 
@@ -89,6 +94,15 @@ test("buildPeopleSearchUrl omits query when empty", () => {
     result,
     "https://www.linkedin.com/sales/search/people?viewAllFilters=true"
   );
+});
+
+test("buildPeopleSearchUrl properly encodes DSL (query starts with %28)", () => {
+  const dsl = "(spellCorrectionEnabled:true,keywords:test,filters:List((type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))))";
+  const result = buildPeopleSearchUrl(dsl);
+  
+  // The query parameter should start with %28 (encoded '('), not raw '('
+  assert.ok(result.includes("query=%28"), "Query parameter should start with %28 (encoded parenthesis)");
+  assert.ok(!result.includes("query=("), "Query parameter should NOT start with raw '('");
 });
 
 test("buildDslFromMatches creates complete DSL", () => {
