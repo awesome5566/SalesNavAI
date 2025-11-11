@@ -5,20 +5,9 @@
 import type { MatchedValue, FreeTextValue } from "./types.js";
 
 /**
- * Double-encode location text for REGION facet
- * Commas and spaces need special encoding for Sales Navigator
- */
-function doubleEncodeLocation(text: string): string {
-  // First encode: , → %2C, space → %20
-  const firstEncode = text.replace(/,/g, '%2C').replace(/ /g, '%20');
-  // Second encode: % → %25 (so %2C → %252C, %20 → %2520)
-  return firstEncode.replace(/%/g, '%25');
-}
-
-/**
  * Build a facet block for ID-based facets
- * Example: (type:FUNCTION,values:List((id:25,text:Sales,selectionType:INCLUDED)))
- * For REGION facets, the text is double-encoded
+ * Simplified: only includes id and selectionType (text is optional and omitted)
+ * Example: (type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))
  */
 export function facetBlockIdBased(
   type: string,
@@ -28,9 +17,8 @@ export function facetBlockIdBased(
 
   const valueStrings = values.map((v) => {
     const selectionType = v.selectionType || "INCLUDED";
-    // Double-encode location text for REGION facets
-    const text = type === "REGION" ? doubleEncodeLocation(v.text) : v.text;
-    return `(id:${v.id},text:${text},selectionType:${selectionType})`;
+    // Simplified: omit text field for ID-based filters
+    return `(id:${v.id},selectionType:${selectionType})`;
   });
 
   return `(type:${type},values:List(${valueStrings.join(",")}))`;
@@ -60,38 +48,41 @@ export function facetBlockTextBased(
 export function buildFilters(blocks: string[]): string {
   const validBlocks = blocks.filter((b) => b.length > 0);
   if (validBlocks.length === 0) {
-    return "(filters:List())";
+    return "";
   }
   return `(filters:List(${validBlocks.join(",")}))`;
 }
 
 /**
  * Encode the DSL query for URL
- * Uses encodeURIComponent for proper URL encoding
- * If keywords are present, double-encodes only the %20 (spaces) within the keywords value
+ * Simply passes through the DSL string - encoding happens once in buildPeopleSearchUrl
  */
 export function encodeQuery(dsl: string): string {
-  const encoded = encodeURIComponent(dsl);
-  
-  // Check if this DSL contains keywords (has spellCorrectionEnabled and keywords:)
-  if (dsl.includes('spellCorrectionEnabled:true') && dsl.includes('keywords:')) {
-    // Extract the keyword value and double-encode only spaces within it
-    // Pattern: keywords%3A followed by the keyword value (until %2C or & or end)
-    return encoded.replace(/keywords%3A([^&,)]+)/g, (_match, keywordValue) => {
-      // Double-encode the %20 (space) within the keyword value
-      const doubleEncoded = keywordValue.replace(/%20/g, '%2520');
-      return `keywords%3A${doubleEncoded}`;
-    });
-  }
-  
-  return encoded;
+  return dsl;
 }
 
 /**
  * Build the complete Sales Navigator People search URL
+ * Applies encodeURIComponent once to the entire query string
  */
-export function buildPeopleSearchUrl(encodedQuery: string): string {
-  return `https://www.linkedin.com/sales/search/people?query=${encodedQuery}&viewAllFilters=true`;
+export function buildPeopleSearchUrl(query: string): string {
+  const baseUrl = "https://www.linkedin.com/sales/search/people";
+  const params: string[] = ["viewAllFilters=true"];
+
+  if (query) {
+    const encodedQuery = encodeURIComponent(query);
+    params.unshift(`query=${encodedQuery}`);
+  }
+
+  return `${baseUrl}?${params.join("&")}`;
+}
+
+/**
+ * Decode a Sales Navigator query string
+ * Reverses the encoding to extract the original DSL
+ */
+export function decodeQuery(encodedQuery: string): string {
+  return decodeURIComponent(encodedQuery);
 }
 
 /**
@@ -128,20 +119,19 @@ export function buildDslFromMatches(matches: {
 }): string {
   // Handle keyword search - special case that modifies the entire query structure
   if (matches.KEYWORD && matches.KEYWORD.length > 0) {
-    // Keywords create a different DSL structure: (spellCorrectionEnabled:true,keywords:keyword text,filters:...)
-    // Keywords need special handling: space becomes %20 when URL-encoded, and must be double-encoded
-    // But we build DSL with literal spaces and let encodeURIComponent handle the first encoding
-    // Then we need to double-encode the % signs in the final URL
-    const keywords = matches.KEYWORD.join(' '); // Multiple keywords are space-separated
+    // Keywords create a different DSL structure: (spellCorrectionEnabled:true,keywords:encoded_keywords,filters:...)
+    // CRITICAL: Pre-encode the keywords Boolean first, then embed into DSL
+    const keywordsRaw = matches.KEYWORD.join(' '); // Multiple keywords are space-separated
+    const keywordsEncoded = encodeURIComponent(keywordsRaw); // Pre-encode keywords
     const filtersPart = buildDslFromMatchesWithoutKeywords(matches);
     
     // If there are no filters, just return the keyword query
-    if (filtersPart === "(filters:List())") {
-      return `(spellCorrectionEnabled:true,keywords:${keywords})`;
+    if (!filtersPart) {
+      return `(spellCorrectionEnabled:true,keywords:${keywordsEncoded})`;
     }
     
     // Otherwise, combine keywords with filters
-    return `(spellCorrectionEnabled:true,keywords:${keywords},${filtersPart.substring(1)})`;
+    return `(spellCorrectionEnabled:true,keywords:${keywordsEncoded},${filtersPart.substring(1)})`;
   }
   
   // Normal flow without keywords

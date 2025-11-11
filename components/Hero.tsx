@@ -21,7 +21,7 @@ export default function Hero() {
             Describe your lead.
           </h1>
           <p className="text-4xl sm:text-6xl font-semibold leading-[1.05] tracking-tight text-foreground transition-opacity group-focus-within:opacity-90">
-            We return a perfect Sales Navigator search.
+            We open a perfect Sales Navigator search.
           </p>
         </motion.div>
 

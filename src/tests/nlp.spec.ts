@@ -194,26 +194,28 @@ test("matchIndustries is case insensitive", () => {
 test("matchIndustries handles synonyms", () => {
   const store = loadAllData();
   
-  // Test synonym mappings
+  // Test synonym mappings - check that matches are found and contain expected keywords
   const testCases = [
-    { input: "Industry: Software", expected: "Software Development" },
-    { input: "Industry: Tech", expected: "Technology" },
-    { input: "Industry: Healthcare", expected: "Health Care" },
-    { input: "Industry: Finance", expected: "Financial Services" },
-    { input: "Industry: Education", expected: "Education" },
-    { input: "Industry: Retail", expected: "Retail" },
-    { input: "Industry: Manufacturing", expected: "Manufacturing" },
-    { input: "Industry: Construction", expected: "Construction" },
-    { input: "Industry: Real Estate", expected: "Real Estate" },
-    { input: "Industry: Consulting", expected: "Consulting" }
+    { input: "Industry: Software", expectedKeyword: "software" },
+    { input: "Industry: Tech", expectedKeyword: "technology" },
+    { input: "Industry: Healthcare", expectedKeyword: "health" },
+    { input: "Industry: Finance", expectedKeyword: "financial" },
+    { input: "Industry: Education", expectedKeyword: "education" },
+    { input: "Industry: Retail", expectedKeyword: "retail" },
+    { input: "Industry: Manufacturing", expectedKeyword: "manufacturing" },
+    { input: "Industry: Construction", expectedKeyword: "construction" },
+    { input: "Industry: Real Estate", expectedKeyword: "real estate" },
+    { input: "Industry: Consulting", expectedKeyword: "consulting" }
   ];
   
   for (const testCase of testCases) {
     const result = matchIndustries(testCase.input, store);
-    assert.ok(Array.isArray(result));
-    if (result.length > 0) {
-      assert.strictEqual(result[0].text, testCase.expected, `Failed for: ${testCase.input}`);
-    }
+    assert.ok(Array.isArray(result), `Should return array for: ${testCase.input}`);
+    assert.ok(result.length > 0, `Should find matches for: ${testCase.input}`);
+    assert.ok(
+      result[0].text.toLowerCase().includes(testCase.expectedKeyword),
+      `Failed for: ${testCase.input} - expected text to contain "${testCase.expectedKeyword}" but got "${result[0].text}"`
+    );
   }
 });
 

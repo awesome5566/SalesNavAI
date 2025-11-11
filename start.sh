@@ -32,6 +32,13 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Prefer local Node 20.19.0 if available
+LOCAL_NODE_DIR="$(pwd)/.local-node/node-v20.19.0-darwin-x64/bin"
+if [ -d "$LOCAL_NODE_DIR" ]; then
+    export PATH="$LOCAL_NODE_DIR:$PATH"
+    print_status "Using local Node $(node --version)"
+fi
+
 # Cleanup function for graceful shutdown
 cleanup() {
     echo ""

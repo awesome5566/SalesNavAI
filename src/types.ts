@@ -124,5 +124,6 @@ export interface GeneratorResult {
   dslDecoded: string;
   matched: Partial<NLPMatches>;
   warnings: string[];
+  summary?: string;
 }
 

@@ -2,12 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SalesNav.io</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/frontend/src/main.tsx"></script>
+    <script>
+      window.LoomFlows = window.LoomFlows || {};
+      LoomFlows.access_token = 'bbf14e4c-8985-40fb-9b2e-1a70e65bcc3b';
+      (function(d) {
+        var s = d.createElement('script'); s.async = true;
+        s.src = 'https://loomflows.com/widget/widget.umd.js';
+        (d.head || d.body).appendChild(s);
+      })(document);
+    </script>
   </body>
 </html>

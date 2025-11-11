@@ -196,3 +196,60 @@ export async function resolveSchoolIds(
   return results;
 }
 
+/**
+ * Common location aliases that map to specific region IDs
+ * This helps resolve common location names to LinkedIn region IDs
+ */
+const REGION_ALIASES: Record<string, string[]> = {
+  // San Francisco Bay Area variations
+  "102277331": ["san francisco", "sf", "bay area", "san francisco bay area", "silicon valley"],
+  // New York City Metro Area
+  "105080838": ["new york", "nyc", "new york city", "manhattan", "brooklyn"],
+  // Los Angeles Metropolitan Area
+  "103644278": ["los angeles", "la", "los angeles metro", "greater los angeles"],
+  // Seattle Metropolitan Area  
+  "104116928": ["seattle", "seattle metro", "puget sound"],
+  // Boston Metro Area
+  "105214831": ["boston", "boston metro", "greater boston"],
+  // Chicago Area
+  "103112676": ["chicago", "chicago metro", "chicagoland"],
+  // Austin, Texas Area
+  "102748797": ["austin", "austin metro"],
+  // Denver Metropolitan Area
+  "104757945": ["denver", "denver metro"],
+  // United States (nationwide)
+  "103055929": ["united states", "usa", "us"],
+};
+
+/**
+ * Resolve a location string to a LinkedIn region ID
+ * Checks common aliases first, then falls back to data store lookup
+ * Returns null if no match found (caller should omit the region facet)
+ */
+export function resolveRegionId(
+  locationText: string,
+  geoIndex?: Map<string, number | string>
+): string | null {
+  if (!locationText) return null;
+
+  const normalized = locationText.toLowerCase().trim();
+
+  // Check aliases first (common locations)
+  for (const [regionId, aliases] of Object.entries(REGION_ALIASES)) {
+    if (aliases.some(alias => normalized.includes(alias))) {
+      return regionId;
+    }
+  }
+
+  // Fall back to geoIndex lookup if provided
+  if (geoIndex) {
+    const id = geoIndex.get(normalized);
+    if (id !== undefined) {
+      return id.toString();
+    }
+  }
+
+  // No match found - return null so caller can omit the facet
+  return null;
+}
+

@@ -5,6 +5,7 @@ dist/
 *.tsbuildinfo
 
 /dist-frontend
+/.local-node
 
 .env
 .env.local

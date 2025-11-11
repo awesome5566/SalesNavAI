@@ -111,6 +111,25 @@ export function loadIndustriesCsv(path = "Industry IDs.csv"): FacetIndex {
     }
   }
 
+  // Add common aliases for SaaS/B2B software/startup terms
+  const aliases: Record<string, number> = {
+    "saas": 4,                    // Software Development
+    "software": 4,                // Software Development
+    "b2b software": 4,            // Software Development
+    "computer software": 4,       // Software Development
+    "internet": 6,                // Technology, Information and Internet
+    "tech": 6,                    // Technology, Information and Internet
+    "technology": 6,              // Technology, Information and Internet
+  };
+
+  for (const [alias, id] of Object.entries(aliases)) {
+    const lookupKey = normalizeForLookup(alias);
+    // Only add if not already present
+    if (!index.byText.has(lookupKey)) {
+      index.byText.set(lookupKey, id);
+    }
+  }
+
   return index;
 }
 

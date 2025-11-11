@@ -18,7 +18,8 @@ test("facetBlockIdBased creates single value block", () => {
     { id: 25, text: "Sales", selectionType: "INCLUDED" },
   ]);
   
-  assert.strictEqual(result, "(type:FUNCTION,values:List((id:25,text:Sales,selectionType:INCLUDED)))");
+  // Simplified format: omits text field for ID-based facets
+  assert.strictEqual(result, "(type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))");
 });
 
 test("facetBlockIdBased creates multiple value block", () => {
@@ -27,10 +28,10 @@ test("facetBlockIdBased creates multiple value block", () => {
     { id: 105080838, text: "New York", selectionType: "INCLUDED" },
   ]);
   
+  // Simplified format: only checks for IDs, no text field
   assert.ok(result.includes("id:102380872"));
   assert.ok(result.includes("id:105080838"));
-  assert.ok(result.includes("text:Boston"));
-  assert.ok(result.includes("text:New York"));
+  assert.ok(result.includes("selectionType:INCLUDED"));
 });
 
 test("facetBlockTextBased creates title block", () => {
@@ -43,8 +44,8 @@ test("facetBlockTextBased creates title block", () => {
 
 test("buildFilters combines multiple blocks", () => {
   const blocks = [
-    "(type:FUNCTION,values:List((id:25,text:Sales,selectionType:INCLUDED)))",
-    "(type:INDUSTRY,values:List((id:4,text:Software,selectionType:INCLUDED)))",
+    "(type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))",
+    "(type:INDUSTRY,values:List((id:4,selectionType:INCLUDED)))",
   ];
   
   const result = buildFilters(blocks);
@@ -58,27 +59,35 @@ test("buildFilters combines multiple blocks", () => {
 test("buildFilters handles empty blocks", () => {
   const result = buildFilters([]);
   
-  assert.strictEqual(result, "(filters:List())");
+  assert.strictEqual(result, "");
 });
 
-test("encodeQuery URL-encodes DSL", () => {
-  const dsl = "(filters:List((type:FUNCTION,values:List((id:25,text:Sales,selectionType:INCLUDED)))))";
+test("encodeQuery returns DSL unchanged", () => {
+  const dsl = "(filters:List((type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))))";
   const result = encodeQuery(dsl);
   
-  // Should be URL-encoded (colons, commas)
-  assert.ok(result.includes("%3A")); // : encoded
-  assert.ok(result.includes("%2C")); // , encoded
-  // Check that special characters are encoded and decode correctly
-  assert.strictEqual(decodeURIComponent(result), dsl);
+  assert.strictEqual(result, dsl);
 });
 
 test("buildPeopleSearchUrl constructs valid URL", () => {
-  const encoded = "test%20query";
-  const result = buildPeopleSearchUrl(encoded);
+  const dsl =
+    "(filters:List((type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))))";
+  const result = buildPeopleSearchUrl(dsl);
   
   assert.strictEqual(
     result,
-    "https://www.linkedin.com/sales/search/people?query=test%20query&viewAllFilters=true"
+    `https://www.linkedin.com/sales/search/people?query=${encodeURIComponent(
+      dsl
+    )}&viewAllFilters=true`
+  );
+});
+
+test("buildPeopleSearchUrl omits query when empty", () => {
+  const result = buildPeopleSearchUrl("");
+
+  assert.strictEqual(
+    result,
+    "https://www.linkedin.com/sales/search/people?viewAllFilters=true"
   );
 });
 
@@ -129,5 +138,23 @@ test("buildDslFromMatches handles new facets", () => {
   assert.ok(result.includes("id:2"));
   assert.ok(result.includes("id:11"));
   assert.ok(result.includes("id:1817569"));
+});
+
+test("buildDslFromMatches pre-encodes keywords", () => {
+  const matches = {
+    KEYWORD: ['(SDR OR "Sales Development Representative") AND NOT ("Retail")'],
+    FUNCTION: [{ id: 25, text: "Sales", selectionType: "INCLUDED" }],
+  };
+  
+  const result = buildDslFromMatches(matches as any);
+  
+  // Keywords should be pre-encoded
+  assert.ok(result.includes("spellCorrectionEnabled:true"));
+  assert.ok(result.includes("keywords:"));
+  // Check that the keyword is encoded (contains %20 for spaces, %22 for quotes)
+  assert.ok(result.includes("%20") || result.includes("%22"));
+  // Should also include the function filter
+  assert.ok(result.includes("type:FUNCTION"));
+  assert.ok(result.includes("id:25"));
 });
 

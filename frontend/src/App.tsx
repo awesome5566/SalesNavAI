@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { useAuth } from './contexts/AuthContext'
 import { AuthModal } from './components/AuthModal'
@@ -9,18 +9,18 @@ interface SearchResult {
   facets: string
   dsl?: string
   warnings?: string[]
-}
-
-interface FilterPill {
-  id: string
-  type: 'role' | 'seniority' | 'geo' | 'industry' | 'headcount' | 'include' | 'exclude' | 'other'
-  label: string
-  value: string
+  summary?: string
 }
 
 interface RecentSearch {
   text: string
   timestamp: number
+  url?: string
+}
+
+type CopyNotification = {
+  message: string
+  type: 'success' | 'error'
 }
 
 const RECENT_SEARCHES_KEY = 'recentSearches'
@@ -34,10 +34,22 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showAccountModal, setShowAccountModal] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'signIn' | 'signUp'>('signIn')
-  const [filterPills, setFilterPills] = useState<FilterPill[]>([])
-  const [isParsing, setIsParsing] = useState(false)
-  const showExamples = true
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false)
+  const [copyNotification, setCopyNotification] = useState<CopyNotification | null>(null)
+  const copyNotificationTimeout = useRef<number | null>(null)
+
+  const clearRecentSearches = () => {
+    setRecentSearches([])
+    setIsSidebarVisible(false)
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(RECENT_SEARCHES_KEY)
+      } catch (error) {
+        console.error('Failed to clear recent searches', error)
+      }
+    }
+  }
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -52,68 +64,6 @@ function App() {
       console.error('Failed to load recent searches', error)
     }
   }, [])
-
-  // Debounced parsing as user types
-  useEffect(() => {
-    if (!query.trim()) {
-      setFilterPills([])
-      return
-    }
-
-    setIsParsing(true)
-    const timeoutId = setTimeout(() => {
-      // Simple filter extraction (this would call your NLP API in production)
-      const pills: FilterPill[] = []
-      
-      // Role detection
-      const roleMatches = query.match(/\b(VP|CTO|CFO|CEO|CRO|Director|Manager|Head|Founder|President)s?\s+of\s+\w+|\b(VP|CTO|CFO|CEO|CRO|Director|Manager|Head|Founder|President)s?\b/gi)
-      if (roleMatches) {
-        roleMatches.forEach((match, i) => {
-          pills.push({ id: `role-${i}`, type: 'role', label: 'Role', value: match })
-        })
-      }
-
-      // Geo detection
-      const geoMatches = query.match(/\bin\s+([\w\s,]+?)(?:\s+at|\s+with|\s+exclude|,|$)/gi)
-      if (geoMatches) {
-        geoMatches.forEach((match, i) => {
-          const geo = match.replace(/^in\s+/i, '').replace(/\s+(at|with|exclude)$/i, '').trim()
-          if (geo.length > 0) {
-            pills.push({ id: `geo-${i}`, type: 'geo', label: 'Location', value: geo })
-          }
-        })
-      }
-
-      // Industry detection
-      const industryTerms = ['fintech', 'saas', 'software', 'healthcare', 'tech', 'AI', 'machine learning', 'consulting', 'enterprise']
-      industryTerms.forEach((term, i) => {
-        const regex = new RegExp(`\\b${term}\\b`, 'gi')
-        if (regex.test(query)) {
-          pills.push({ id: `industry-${i}`, type: 'industry', label: 'Industry', value: term })
-        }
-      })
-
-      // Headcount detection
-      const headcountMatch = query.match(/(\d+)[–-](\d+)\s+employee|headcount\s*[<>]\s*(\d+)|<\s*(\d+)/i)
-      if (headcountMatch) {
-        pills.push({ id: 'headcount-0', type: 'headcount', label: 'Headcount', value: headcountMatch[0] })
-      }
-
-      // Exclude detection
-      const excludeMatch = query.match(/exclude\s+([\w\s,]+)/gi)
-      if (excludeMatch) {
-        excludeMatch.forEach((match, i) => {
-          const excluded = match.replace(/^exclude\s+/i, '').trim()
-          pills.push({ id: `exclude-${i}`, type: 'exclude', label: 'Exclude', value: excluded })
-        })
-      }
-
-      setFilterPills(pills)
-      setIsParsing(false)
-    }, 250)
-
-    return () => clearTimeout(timeoutId)
-  }, [query])
 
   const handleSubmit = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault()
@@ -150,10 +100,11 @@ function App() {
 
       const data = await response.json()
       setResult(data)
-      addRecentSearch(queryToSubmit)
+      addRecentSearch(queryToSubmit, data.url)
 
-      // Auto-open the URL in a new tab
       if (data.url) {
+        void copyUrlToClipboard(data.url)
+        // Auto-open the URL in a new tab
         window.open(data.url, '_blank')
       }
     } catch (err) {
@@ -167,9 +118,57 @@ function App() {
     setQuery(sampleText)
   }
 
+  const triggerCopyNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setCopyNotification({ message, type })
+    if (typeof window !== 'undefined') {
+      if (copyNotificationTimeout.current) {
+        window.clearTimeout(copyNotificationTimeout.current)
+      }
+      copyNotificationTimeout.current = window.setTimeout(() => {
+        setCopyNotification(null)
+        copyNotificationTimeout.current = null
+      }, 2500)
+    }
+  }
+
+  const copyUrlToClipboard = async (url: string) => {
+    if (!url || typeof window === 'undefined') return
+
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url)
+        triggerCopyNotification('Copied to clipboard')
+        return
+      } catch (error) {
+        console.error('Failed to copy URL via clipboard API', error)
+      }
+    }
+
+    try {
+      const textArea = document.createElement('textarea')
+      textArea.value = url
+      textArea.style.position = 'fixed'
+      textArea.style.opacity = '0'
+      textArea.setAttribute('readonly', '')
+      document.body.appendChild(textArea)
+      textArea.select()
+      const successful = document.execCommand('copy')
+      document.body.removeChild(textArea)
+
+      if (successful) {
+        triggerCopyNotification('Copied to clipboard')
+      } else {
+        triggerCopyNotification('Unable to copy URL', 'error')
+      }
+    } catch (error) {
+      console.error('Failed to copy URL via fallback', error)
+      triggerCopyNotification('Unable to copy URL', 'error')
+    }
+  }
+
   const handleCopyURL = () => {
     if (result?.url) {
-      navigator.clipboard.writeText(result.url)
+      void copyUrlToClipboard(result.url)
     }
   }
 
@@ -179,21 +178,28 @@ function App() {
     }
   }
 
-  const removePill = (id: string) => {
-    setFilterPills(pills => pills.filter(p => p.id !== id))
-  }
-
-  const addRecentSearch = (searchText: string) => {
+  const addRecentSearch = (searchText: string, url?: string) => {
     const trimmed = searchText.trim()
     if (!trimmed) return
 
     setRecentSearches(prev => {
-      if (prev[0]?.text === trimmed) {
-        return prev
-      }
+      const existingIndex = prev.findIndex(item => item.text === trimmed)
+      const now = Date.now()
+      let updated: RecentSearch[]
 
-      const filtered = prev.filter(item => item.text !== trimmed)
-      const updated = [{ text: trimmed, timestamp: Date.now() }, ...filtered].slice(0, MAX_RECENT_SEARCHES)
+      if (existingIndex >= 0) {
+        const existing = prev[existingIndex]
+        const revised: RecentSearch = {
+          ...existing,
+          text: trimmed,
+          timestamp: now,
+          url: url ?? existing.url,
+        }
+        const withoutExisting = prev.filter((_, index) => index !== existingIndex)
+        updated = [revised, ...withoutExisting].slice(0, MAX_RECENT_SEARCHES)
+      } else {
+        updated = [{ text: trimmed, timestamp: now, url }, ...prev].slice(0, MAX_RECENT_SEARCHES)
+      }
 
       if (typeof window !== 'undefined') {
         try {
@@ -215,6 +221,14 @@ function App() {
   const handleAccountButtonClick = () => {
     setShowAccountModal(true)
   }
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && copyNotificationTimeout.current) {
+        window.clearTimeout(copyNotificationTimeout.current)
+      }
+    }
+  }, [])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -255,6 +269,15 @@ function App() {
 
   return (
     <div className="app">
+      {copyNotification && (
+        <div
+          className={`copy-notification copy-notification--${copyNotification.type}`}
+          role="status"
+          aria-live="polite"
+        >
+          {copyNotification.message}
+        </div>
+      )}
       {/* Background: radial wash + art-directed grid lines (non-intersecting) */}
       <div className="bg-wash"></div>
       <svg
@@ -350,9 +373,6 @@ function App() {
       
       <header className="header">
         <div className="header-content">
-          <div className="logo">
-            <span className="logo-text">SalesNav.io</span>
-          </div>
           <div className="header-actions">
             {user ? (
               <button className="auth-button auth-button--gray" onClick={handleAccountButtonClick}>
@@ -368,14 +388,12 @@ function App() {
             ) : (
               <>
                 <button className="auth-button" onClick={() => openAuthModal('signUp')}>
-                  <span className="login-icon">✨</span>
                   <span className="button-text">Sign Up</span>
                 </button>
                 <button
                   className="auth-button auth-button--gray"
                   onClick={() => openAuthModal('signIn')}
                 >
-                  <span className="login-icon">👤</span>
                   <span className="button-text">Sign In</span>
                 </button>
               </>
@@ -392,7 +410,7 @@ function App() {
            
           </h1>
           <p className="hero-subtitle">
-            Roles, seniority, geo IDs, industries - auto-parsed and applied. No guesswork.
+          Describe your lead. We open a perfect Sales Navigator search.
           </p>
 
           {/* Command Bar */}
@@ -402,7 +420,7 @@ function App() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="How can I help you today?"
+                placeholder="B2B Saas SDRs at startups in San Francisco"
                 className="search-input"
                 disabled={loading}
                 autoFocus
@@ -424,90 +442,111 @@ function App() {
             </div>
           </form>
 
-          {/* Filter Pills */}
-          {(filterPills.length > 0 || isParsing) && (
-            <div className="filter-pills-container">
-              {isParsing ? (
-                <>
-                  <div className="filter-pill skeleton"></div>
-                  <div className="filter-pill skeleton"></div>
-                  <div className="filter-pill skeleton"></div>
-                </>
-              ) : (
-                filterPills.map((pill) => (
-                  <span key={pill.id} className={`filter-pill ${pill.type}`}>
-                    <span className="pill-label">{pill.label}:</span> {pill.value}
-                    <button 
-                      className="pill-remove"
-                      onClick={() => removePill(pill.id)}
-                      aria-label={`Remove ${pill.label}`}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))
-              )}
-            </div>
-          )}
-
-          {/* Live URL Preview Panel */}
-          {result && (
-            <div className="url-preview-panel">
-              <div className="url-preview-header">
-                <code className="url-preview-code" title="Exact filters we'll open in Sales Navigator">
-                  {result.url}
-                </code>
-                <span className="confidence-badge">Confidence 0.92</span>
-              </div>
-              <div className="url-preview-actions">
-                <a 
-                  href={result.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                  aria-label="Open in Sales Navigator"
-                >
-                  Open in Sales Navigator
-                </a>
-                <button 
-                  onClick={handleCopyURL}
-                  className="btn-secondary"
-                  aria-label="Copy URL"
-                >
-                  Copy URL
-                </button>
-                <button 
-                  onClick={handleCopyJSON}
-                  className="btn-secondary"
-                  aria-label="Copy JSON filters"
-                >
-                  Copy JSON
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Marketing Cards - Below the Fold */}
-          {showExamples && !result && recentSearches.length > 0 && (
-            <div className="marketing-cards-section">
-              <h3 className="marketing-cards-title">Recent Searches</h3>
-              <div className="marketing-cards-grid">
-                {recentSearches.map(search => (
-                  <button
-                    key={search.timestamp}
-                    onClick={() => handleSampleClick(search.text)}
-                    className="marketing-card"
-                  >
-                    <div className="marketing-card-content">
-                      <div className="marketing-card-title">{search.text}</div>
-                    </div>
-                  </button>
+          {/* Summary Display */}
+          {result?.summary && (
+            <div className="result-summary">
+              <div className="summary-content">
+                {result.summary.split('\n').map((line, index) => (
+                  <div key={index} className="summary-line">
+                    {line}
+                  </div>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Warnings Display */}
+          {result?.warnings && result.warnings.length > 0 && (
+            <div className="result-warnings">
+              {result.warnings.map((warning, index) => (
+                <div key={index} className="warning-line">
+                  ⚠️ {warning}
+                </div>
+              ))}
+            </div>
+          )}
+
         </section>
       </main>
+
+      {recentSearches.length > 0 && (
+        <>
+          <div
+            className="sidebar-interaction-layer"
+            onMouseLeave={() => setIsSidebarVisible(false)}
+          >
+            <div
+              className="sidebar-hover-zone"
+              onMouseEnter={() => setIsSidebarVisible(true)}
+            ></div>
+            <aside
+              className={`recent-searches-sidebar ${isSidebarVisible ? 'visible' : ''}`}
+              onMouseEnter={() => setIsSidebarVisible(true)}
+            >
+              <div className="sidebar-header">
+                <span>Recent</span>
+                <button
+                  className="clear-recent-button"
+                  onClick={clearRecentSearches}
+                  type="button"
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="recent-searches-list">
+                {recentSearches.map(search => (
+                  <div key={search.timestamp} className="recent-search-item">
+                    <button
+                      className="recent-search-select"
+                      onClick={() => {
+                        handleSampleClick(search.text)
+                        setIsSidebarVisible(false)
+                      }}
+                      type="button"
+                    >
+                      <span className="recent-search-text">{search.text}</span>
+                    </button>
+                    {search.url && (
+                      <button
+                        className="recent-search-copy"
+                        type="button"
+                        aria-label="Copy URL"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          if (search.url) {
+                            void copyUrlToClipboard(search.url)
+                          }
+                        }}
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M6.5 4A2.5 2.5 0 0 1 9 1.5h6A2.5 2.5 0 0 1 17.5 4v6A2.5 2.5 0 0 1 15 12.5h-6A2.5 2.5 0 0 1 6.5 10V4ZM3 7A2 2 0 0 1 5 5h1v5a4 4 0 0 0 4 4h5v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </aside>
+          </div>
+          {!isSidebarVisible && (
+            <div className="sidebar-icon-container">
+              <img src="/sidebar-icon.svg" alt="Recent searches" className="sidebar-icon" />
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

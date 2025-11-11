@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <style>
+      .accent { fill: #0b4a76; }
+      .ring { fill: none; stroke: #0b4a76; stroke-width: 32; }
+    </style>
+  </defs>
+  <circle class="ring" cx="256" cy="256" r="208" />
+  <polygon class="accent" points="256 16 280 112 232 112 256 16" />
+  <polygon class="accent" points="256 496 232 400 280 400 256 496" />
+  <polygon class="accent" points="16 256 112 280 112 232 16 256" />
+  <polygon class="accent" points="496 256 400 232 400 280 496 256" />
+  <path
+    class="accent"
+    d="M256 144 290.55 237.45 384 272 290.55 306.55 256 400 221.45 306.55 128 272 221.45 237.45 256 144Z"
+  />
+</svg>
+
