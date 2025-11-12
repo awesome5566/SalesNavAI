@@ -3,6 +3,41 @@
 ## Summary
 This document outlines the fixes applied to ensure LinkedIn Sales Navigator URLs load reliably by following proper DSL construction and encoding rules.
 
+## Latest Fix (November 2025)
+
+### ✅ Added Text Field to REGION Facets
+**File:** `src/dsl.ts`
+
+**Problem:** LinkedIn Sales Navigator requires REGION facets to include both `id` and `text` fields for URL validation. URLs with only `id` would fail to load.
+
+**Solution:** Modified `facetBlockIdBased()` to conditionally include the `text` field for REGION facets while keeping other facets unchanged.
+
+**Code Changes:**
+```typescript
+// Before: Only id and selectionType
+return `(id:${v.id},selectionType:${selectionType})`;
+
+// After: Include text for REGION facets
+if (type === "REGION" && v.text) {
+  return `(id:${v.id},text:${v.text},selectionType:${selectionType})`;
+}
+return `(id:${v.id},selectionType:${selectionType})`;
+```
+
+**Example Output:**
+```
+(type:REGION,values:List((id:100901743,text:San Francisco County, California, United States,selectionType:INCLUDED)))
+```
+
+### ✅ Separated San Francisco County from Bay Area
+**File:** `src/resolvers.ts`
+
+**Change:** Split the San Francisco region aliases to provide more precise location targeting:
+- **100901743** (San Francisco County) - "san francisco", "sf"
+- **102277331** (San Francisco Bay Area) - "bay area", "san francisco bay area", "silicon valley"
+
+This allows users to choose between the narrower city/county or the broader metro area.
+
 ## Encoding Pipeline (The Correct Way)
 
 ```typescript

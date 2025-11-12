@@ -201,8 +201,10 @@ export async function resolveSchoolIds(
  * This helps resolve common location names to LinkedIn region IDs
  */
 const REGION_ALIASES: Record<string, string[]> = {
-  // San Francisco Bay Area variations
-  "102277331": ["san francisco", "sf", "bay area", "san francisco bay area", "silicon valley"],
+  // San Francisco County (narrower - city/county proper)
+  "100901743": ["san francisco", "sf"],
+  // San Francisco Bay Area (broader - includes Silicon Valley, Oakland, San Jose)
+  "102277331": ["bay area", "san francisco bay area", "silicon valley"],
   // New York City Metro Area
   "105080838": ["new york", "nyc", "new york city", "manhattan", "brooklyn"],
   // Los Angeles Metropolitan Area

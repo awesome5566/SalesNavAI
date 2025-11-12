@@ -6,8 +6,10 @@ import type { MatchedValue, FreeTextValue } from "./types.js";
 
 /**
  * Build a facet block for ID-based facets
- * Simplified: only includes id and selectionType (text is optional and omitted)
+ * For REGION facets, includes both id and text (LinkedIn requires text for validation)
+ * For other facets, only includes id and selectionType
  * Example: (type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))
+ * Example: (type:REGION,values:List((id:100901743,text:San Francisco County, California, United States,selectionType:INCLUDED)))
  */
 export function facetBlockIdBased(
   type: string,
@@ -17,7 +19,13 @@ export function facetBlockIdBased(
 
   const valueStrings = values.map((v) => {
     const selectionType = v.selectionType || "INCLUDED";
-    // Simplified: omit text field for ID-based filters
+    
+    // REGION facets require the text field for LinkedIn validation
+    if (type === "REGION" && v.text) {
+      return `(id:${v.id},text:${v.text},selectionType:${selectionType})`;
+    }
+    
+    // Other facets work fine with just id and selectionType
     return `(id:${v.id},selectionType:${selectionType})`;
   });
 
