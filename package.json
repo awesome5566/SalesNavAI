@@ -4,13 +4,14 @@
   "description": "Generate Sales Navigator URLs from natural language queries",
   "type": "module",
   "scripts": {
-    "start": "node dist/cli.js",
-    "dev": "node --loader ts-node/esm src/cli.ts",
     "build": "tsc -p tsconfig.json",
-    "test": "node --test --loader ts-node/esm src/tests/*.spec.ts",
+    "build:vercel": "pnpm run frontend:build",
     "frontend": "vite",
     "frontend:build": "vite build",
+    "start": "node dist/cli.js",
+    "dev": "node --loader ts-node/esm src/cli.ts",
     "server": "node server.js",
+    "test": "node --test --loader ts-node/esm src/tests/*.spec.ts",
     "dev:full": "concurrently \"pnpm run build\" \"pnpm run frontend\" \"pnpm run server\""
   },
   "keywords": [
