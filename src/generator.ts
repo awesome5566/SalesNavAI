@@ -35,6 +35,7 @@ import { buildDslFromMatches, buildPeopleSearchUrl } from "./dsl.js";
 import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from "./types.js";
 import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
+import { healSalesNavUrl } from "./url-healer.js";
 import 'dotenv/config';
 
 /**
@@ -659,7 +660,20 @@ export async function generateUrlFromDescription(
   // buildDslFromMatches returns raw DSL with keywords pre-encoded
   // buildPeopleSearchUrl encodes the entire DSL once
   const dslDecoded = buildDslFromMatches(matched as any);
-  const url = buildPeopleSearchUrl(dslDecoded);
+  let url = buildPeopleSearchUrl(dslDecoded);
+
+  // Run URL healer to validate and auto-fix common issues
+  const healReport = healSalesNavUrl(url);
+  if (healReport.changed && !options.silent) {
+    console.log("🔧 URL healer applied fixes:", healReport.reasons.join("; "));
+  }
+  if (!healReport.ok) {
+    warnings.push(`URL validation failed: ${healReport.reasons.join(", ")}`);
+  } else if (healReport.changed) {
+    // Add healer fixes to warnings for transparency
+    warnings.push(...healReport.reasons.map(r => `Auto-fixed: ${r}`));
+    url = healReport.url; // Use healed URL
+  }
 
   // Generate human-readable summary from matched facets
   const summary = generateSummaryFromMatches(matched);

@@ -129,6 +129,41 @@ test("matchFunctions ignores old natural language syntax", () => {
   assert.strictEqual(result4.length, 0, "Old 'ops team' syntax should not work");
 });
 
+test("matchFunctions prevents cross-contamination from multi-line input", () => {
+  const store = loadAllData();
+  
+  // This is the CRITICAL test case that exposes the bug
+  // GPT outputs multiple facets on separate lines, but the regex was too greedy
+  // and would capture text from subsequent facet lines
+  const multiLineInput = `Function: Sales
+Industry: Software Development
+title "Business Development Representative" contains`;
+  
+  const functions = matchFunctions(multiLineInput, store);
+  
+  // Should ONLY find Sales (id:25), NOT Business Development (id:4)
+  // The bug was that "Business Development Representative" from the title line
+  // was being captured and matched against FUNCTION facet, causing id:4 to appear
+  // in both FUNCTION and INDUSTRY facets with different meanings
+  assert.ok(functions.length > 0, "Should find at least one function");
+  
+  const functionIds = functions.map(f => f.id);
+  const functionTexts = functions.map(f => f.text);
+  
+  // Should find Sales (id:25)
+  assert.ok(functionTexts.includes("Sales"), "Should find Sales function");
+  assert.ok(functionIds.includes("25") || functionIds.includes(25), "Should have Sales ID (25)");
+  
+  // Should NOT find Business Development (id:4) - this was the bug!
+  // id:4 is a valid FUNCTION ID for "Business Development", but it was being
+  // incorrectly picked up from the title line "Business Development Representative"
+  assert.ok(!functionTexts.includes("Business Development"), 
+    "Should NOT incorrectly match 'Business Development' from title line - this causes ID collision with INDUSTRY");
+  
+  // Verify the fix: only one function should be found (Sales)
+  assert.strictEqual(functions.length, 1, "Should find exactly one function (Sales), not pick up text from other lines");
+});
+
 test("matchIndustries finds structured Industry syntax", () => {
   const store = loadAllData();
   
@@ -189,6 +224,35 @@ test("matchIndustries is case insensitive", () => {
   assert.strictEqual(result1[0].selectionType, "INCLUDED");
   assert.strictEqual(result2[0].selectionType, "INCLUDED");
   assert.strictEqual(result3[0].selectionType, "INCLUDED");
+});
+
+test("matchIndustries prevents cross-contamination from multi-line input", () => {
+  const store = loadAllData();
+  
+  // Similar to the function test - ensure industry parsing stops at line breaks
+  const multiLineInput = `Function: Sales
+Industry: Software Development
+title "Business Development Representative" contains
+Company Headcount: 50-200`;
+  
+  const industries = matchIndustries(multiLineInput, store);
+  
+  // Should ONLY find Software Development (id:4 in INDUSTRY taxonomy)
+  assert.ok(industries.length > 0, "Should find at least one industry");
+  
+  const industryTexts = industries.map(i => i.text);
+  
+  // Should find Software Development
+  assert.ok(industryTexts.some(text => text.toLowerCase().includes("software")), 
+    "Should find Software Development industry");
+  
+  // Should NOT pick up text from title or other lines
+  assert.ok(!industryTexts.some(text => text.toLowerCase().includes("business development representative")),
+    "Should NOT pick up title text from other lines");
+  
+  // Should NOT pick up text from company headcount line
+  assert.ok(!industryTexts.some(text => text.includes("50-200")),
+    "Should NOT pick up headcount text from other lines");
 });
 
 test("matchIndustries handles synonyms", () => {

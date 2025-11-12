@@ -172,3 +172,56 @@ test("buildDslFromMatches pre-encodes keywords", () => {
   assert.ok(result.includes("id:25"));
 });
 
+test("buildDslFromMatches prevents facet ID cross-contamination", () => {
+  // This test verifies the fix for the bug where id:4 appeared in both
+  // FUNCTION and INDUSTRY facets with different meanings:
+  // - FUNCTION id:4 = "Business Development" 
+  // - INDUSTRY id:4 = "Software Development"
+  // This caused LinkedIn to reject the URL
+  
+  const matches = {
+    FUNCTION: [
+      { id: 25, text: "Sales", selectionType: "INCLUDED" }
+      // Should NOT include id:4 (Business Development) here
+    ],
+    INDUSTRY: [
+      { id: 4, text: "Software Development", selectionType: "INCLUDED" }
+      // id:4 is valid here in INDUSTRY context
+    ],
+    TITLE: [
+      { text: "Sales Development Representative", match: "CONTAINS" }
+    ],
+  };
+  
+  const result = buildDslFromMatches(matches as any);
+  
+  // Parse the DSL to verify structure
+  assert.ok(result.includes("type:FUNCTION"), "Should include FUNCTION facet");
+  assert.ok(result.includes("type:INDUSTRY"), "Should include INDUSTRY facet");
+  assert.ok(result.includes("type:TITLE"), "Should include TITLE facet");
+  
+  // Extract FUNCTION block - should only contain id:25
+  const functionMatch = result.match(/type:FUNCTION,values:List\(([^)]+)\)/);
+  assert.ok(functionMatch, "Should find FUNCTION block");
+  const functionBlock = functionMatch[1];
+  
+  // CRITICAL: Verify FUNCTION only has id:25 (Sales), NOT id:4
+  assert.ok(functionBlock.includes("id:25"), "FUNCTION should include id:25 (Sales)");
+  assert.ok(!functionBlock.includes("id:4"), 
+    "FUNCTION should NOT include id:4 - this was the bug! id:4 is for INDUSTRY only");
+  
+  // Extract INDUSTRY block - should contain id:4
+  const industryMatch = result.match(/type:INDUSTRY,values:List\(([^)]+)\)/);
+  assert.ok(industryMatch, "Should find INDUSTRY block");
+  const industryBlock = industryMatch[1];
+  
+  // Verify INDUSTRY has id:4 (Software Development)
+  assert.ok(industryBlock.includes("id:4"), 
+    "INDUSTRY should include id:4 (Software Development)");
+  
+  // Verify no duplicate id:4 in the entire DSL
+  const allId4Matches = result.match(/id:4\b/g) || [];
+  assert.strictEqual(allId4Matches.length, 1, 
+    "id:4 should appear exactly once (in INDUSTRY only), not in multiple facets");
+});
+

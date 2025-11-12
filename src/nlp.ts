@@ -233,8 +233,8 @@ export function matchFunctions(
   }
   
   // Pattern: "Function: X" (case-insensitive)
-  // Match everything after "Function:" until another "Function:" keyword
-  const functionPattern = /function\s*:\s*(.+)(?=\s+function\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const functionPattern = /function\s*:\s*([^\n]+?)(?=\s*(?:\n|industry|location|title|seniority|company|keyword|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs
@@ -322,8 +322,8 @@ export function matchIndustries(
   }
   
   // Pattern: "Industry: X" (case-insensitive)
-  // Match everything after "Industry:" until another "Industry:" keyword
-  const industryPattern = /industry\s*:\s*(.+)(?=\s+industry\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const industryPattern = /industry\s*:\s*([^\n]+?)(?=\s*(?:\n|function|location|title|seniority|company|keyword|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs
@@ -413,8 +413,8 @@ export function matchGeographies(
   }
   
   // Pattern: "Location: X" (case-insensitive)
-  // Match everything after "Location:" until another "Location:" keyword
-  const locationPattern = /location\s*:\s*(.+)(?=\s+location\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const locationPattern = /location\s*:\s*([^\n]+?)(?=\s*(?:\n|function|industry|title|seniority|company|keyword|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs
@@ -547,8 +547,8 @@ export function matchCompanyHeadcount(
   }
   
   // Pattern: "Company Headcount: X" (case-insensitive)
-  // Match everything after "Company Headcount:" until another "Company Headcount:" keyword
-  const companyHeadcountPattern = /company\s+headcount\s*:\s*(.+)(?=\s+company\s+headcount\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const companyHeadcountPattern = /company\s+headcount\s*:\s*([^\n]+?)(?=\s*(?:\n|function|industry|location|title|seniority|company\s+type|keyword|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs
@@ -805,8 +805,8 @@ export function matchCompanyType(
   }
   
   // Pattern: "Company Type: X" (case-insensitive)
-  // Match everything after "Company Type:" until another "Company Type:" keyword
-  const companyTypePattern = /company\s+type\s*:\s*(.+)(?=\s+company\s+type\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const companyTypePattern = /company\s+type\s*:\s*([^\n]+?)(?=\s*(?:\n|function|industry|location|title|seniority|company\s+headcount|keyword|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs
@@ -880,8 +880,8 @@ export function matchSeniorityLevel(
   }
   
   // Pattern: "Seniority Level: X" (case-insensitive)
-  // Match everything after "Seniority Level:" until another "Seniority Level:" keyword
-  const seniorityLevelPattern = /seniority\s+level\s*:\s*(.+)(?=\s+seniority\s+level\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const seniorityLevelPattern = /seniority\s+level\s*:\s*([^\n]+?)(?=\s*(?:\n|function|industry|location|title|company|keyword|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs
@@ -1166,8 +1166,8 @@ export function matchKeywords(text: string): string[] {
   const keywords: string[] = [];
 
   // Pattern: "Keyword: X" (case-insensitive)
-  // Match everything after "Keyword:" until another "Keyword:" keyword
-  const keywordPattern = /keyword\s*:\s*(.+?)(?=\s+keyword\s*:|$)/gis;
+  // Stop at newline or start of another facet keyword to prevent cross-contamination
+  const keywordPattern = /keyword\s*:\s*(.+?)(?=\s*(?:\n|function|industry|location|title|seniority|company|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs

@@ -4,12 +4,15 @@
  */
 
 import OpenAI from 'openai';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.csv');
 const CSV_HEADERS = ['email', 'timestamp', 'input', 'output', 'status', 'url'] as const;
 const DEFAULT_MODEL = process.env.OPENAI_MODEL ?? 'gpt-5-mini';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 type GptLogEntry = {
   timestamp: string;
@@ -20,6 +23,15 @@ type GptLogEntry = {
 };
 
 let logFileInitialized = false;
+let supabaseClient: SupabaseClient | null = null;
+
+if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+  supabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
 
 async function ensureLogFileInitialized(): Promise<void> {
   if (logFileInitialized) {
@@ -45,20 +57,36 @@ function toCsvValue(value: string): string {
 
 async function logGptInteraction(entry: GptLogEntry): Promise<void> {
   try {
-    await ensureLogFileInitialized();
     const email = process.env.REQUEST_USER_EMAIL ?? 'unknown';
-    const row = [
-      email,
-      entry.timestamp,
-      entry.input,
-      entry.output,
-      entry.status,
-      entry.url,
-    ]
+    let supabaseError: unknown | null = null;
+
+    if (supabaseClient) {
+      const { error } = await supabaseClient.from('gpt_conversations').insert({
+        email,
+        user_timestamp: entry.timestamp,
+        input: entry.input,
+        output: entry.output,
+        status: entry.status,
+        url: entry.url,
+      });
+
+      if (!error) {
+        return;
+      }
+
+      supabaseError = error;
+    }
+
+    await ensureLogFileInitialized();
+    const row = [email, entry.timestamp, entry.input, entry.output, entry.status, entry.url]
       .map((value) => toCsvValue(value))
       .join(',');
 
     await fs.appendFile(LOG_FILE_PATH, `${row}\n`, 'utf8');
+
+    if (supabaseError && process.env.GPT_LOG_DEBUG === 'true') {
+      console.warn('⚠️  Failed to write GPT log to Supabase:', supabaseError);
+    }
   } catch (logError) {
     if (process.env.GPT_LOG_DEBUG === 'true') {
       console.warn(
