@@ -199,6 +199,8 @@ export async function resolveSchoolIds(
 /**
  * Common location aliases that map to specific region IDs
  * This helps resolve common location names to LinkedIn region IDs
+ * 
+ * CRITICAL: State-level mappings for accurate region resolution
  */
 const REGION_ALIASES: Record<string, string[]> = {
   // San Francisco County (narrower - city/county proper)
@@ -221,6 +223,12 @@ const REGION_ALIASES: Record<string, string[]> = {
   "104757945": ["denver", "denver metro"],
   // United States (nationwide)
   "103055929": ["united states", "usa", "us"],
+  
+  // STATE-LEVEL MAPPINGS (critical for accurate resolution)
+  "101098412": ["massachusetts", "ma"],
+  "106914527": ["connecticut", "ct"],
+  "104877241": ["rhode island", "ri"],  // FIXED: Was incorrectly mapped to 103532695 (NH)
+  "103532695": ["new hampshire", "nh"],
 };
 
 /**

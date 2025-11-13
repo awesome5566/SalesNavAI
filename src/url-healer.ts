@@ -5,6 +5,8 @@
  * Automatically repairs common issues before returning URLs to users.
  */
 
+import { isValidFacetId } from "./allowlists.js";
+
 export interface FixReport {
   ok: boolean;
   changed: boolean;
@@ -26,7 +28,7 @@ const ALLOWED_TYPES = new Set([
   "CURRENT_COMPANY",
   "PAST_COMPANY",
   "SCHOOL",
-  "PERSONA",
+  // PERSONA removed - unsupported per spec
   "CURRENT_TITLE",
   "YEARS_AT_CURRENT_COMPANY",
   "YEARS_IN_CURRENT_POSITION",
@@ -58,6 +60,14 @@ export function healSalesNavUrl(inputUrl: string): FixReport {
         reasons: ["missing query param"], 
         url: inputUrl 
       };
+    }
+
+    // Detect if the input URL query parameter was not properly encoded
+    // Properly encoded: query=%28...
+    // Not encoded: query=(...
+    const wasNotEncoded = inputUrl.includes("query=(") && !inputUrl.includes("query=%28");
+    if (wasNotEncoded) {
+      reasons.push("outer encoding missing; applied");
     }
 
     // Note: searchParams.get() automatically decodes the parameter once
@@ -226,6 +236,11 @@ function normalizeKeywordsEncoding(dsl: string, reasons: string[]): string {
 
 /**
  * Sanitize and validate facet blocks
+ * Per spec:
+ * - Drop PERSONA facets (unsupported)
+ * - REGION facets must ONLY have id (no text, no selectionType)
+ * - TITLE facets must have text and match
+ * - All other ID-based facets must have id and validate against allowlists
  */
 function sanitizeFacetBlocks(dsl: string, reasons: string[]): string {
   // 1) ensure filters:List(...) exists as a single block if present
@@ -247,29 +262,110 @@ function sanitizeFacetBlocks(dsl: string, reasons: string[]): string {
     }
     
     const type = typeMatch[1];
+    
+    // Explicitly drop PERSONA (unsupported per spec)
+    if (type === "PERSONA") {
+      reasons.push("dropped PERSONA facet (unsupported per spec)");
+      continue;
+    }
+    
     if (!ALLOWED_TYPES.has(type)) {
       reasons.push(`dropped unsupported facet: ${type}`);
       continue;
     }
 
-    // TITLE must have text/match, others must have id
+    // TITLE must have text/match
     if (type === "TITLE") {
       if (!/text\s*:/.test(p) || !/match\s*:\s*(CONTAINS|EXACT)/.test(p)) {
         reasons.push("malformed TITLE facet (missing text or match); kept as-is");
         // Keep as-is for manual review
       }
-    } else {
+      sanitized.push(p);
+    } 
+    // REGION must ONLY have id (no text, no selectionType)
+    else if (type === "REGION") {
+      if (!/\bid\s*:/.test(p)) {
+        reasons.push("dropped REGION facet without id");
+        continue;
+      }
+      // Check if REGION has text or selectionType (should not per spec)
+      if (/text\s*:/.test(p) || /selectionType\s*:/.test(p)) {
+        // Fix REGION format: extract IDs and rebuild
+        const idMatches = p.match(/id\s*:\s*(\d+)/g);
+        if (idMatches && idMatches.length > 0) {
+          const ids = idMatches.map(m => m.match(/\d+/)?.[0]).filter(Boolean);
+          const valuesList = ids.map(id => `(id:${id})`).join(",");
+          const fixed = `(type:REGION,values:List(${valuesList}))`;
+          sanitized.push(fixed);
+          reasons.push("fixed REGION facet format (removed text/selectionType, kept only id)");
+          continue;
+        } else {
+          reasons.push("dropped malformed REGION facet");
+          continue;
+        }
+      }
+      sanitized.push(p);
+    } 
+    // All other ID-based facets: must have id and validate against allowlist
+    else {
       if (!/\bid\s*:/.test(p)) {
         reasons.push(`dropped ${type} facet without id`);
         continue;
       }
+      
+      // Validate IDs against allowlist (for facets that have allowlists)
+      const validated = validateFacetIds(type, p, reasons);
+      if (validated) {
+        sanitized.push(validated);
+      }
     }
-    
-    sanitized.push(p);
   }
   
   const rebuilt = dsl.replace(block, sanitized.join(","));
   return rebuilt;
+}
+
+/**
+ * Validate and filter IDs in a facet block against allowlist
+ * Returns the cleaned facet block or null if no valid IDs remain
+ */
+function validateFacetIds(type: string, facetBlock: string, reasons: string[]): string | null {
+  // Only validate facets that have allowlists
+  const facetsWithAllowlists = ['SENIORITY_LEVEL', 'FUNCTION', 'COMPANY_HEADCOUNT', 'COMPANY_TYPE'];
+  if (!facetsWithAllowlists.includes(type)) {
+    return facetBlock; // No allowlist, return as-is
+  }
+  
+  // Extract all (id:X,...) patterns
+  const valuePattern = /\(id\s*:\s*([^,)]+)[^)]*\)/g;
+  const matches = [...facetBlock.matchAll(valuePattern)];
+  
+  if (matches.length === 0) {
+    return facetBlock; // No IDs found, return as-is
+  }
+  
+  // Filter to only valid IDs
+  const validValues: string[] = [];
+  for (const match of matches) {
+    const id = match[1].trim();
+    // Remove quotes if present
+    const cleanId = id.replace(/['"]/g, '');
+    
+    if (isValidFacetId(type, cleanId)) {
+      validValues.push(match[0]); // Keep the full (id:X,selectionType:Y) block
+    } else {
+      reasons.push(`dropped ${type} id=${id} (not in allowlist)`);
+    }
+  }
+  
+  if (validValues.length === 0) {
+    reasons.push(`dropped ${type} facet (no valid IDs in allowlist)`);
+    return null;
+  }
+  
+  // Rebuild the facet block with only valid values
+  const valuesListContent = validValues.join(',');
+  return `(type:${type},values:List(${valuesListContent}))`;
 }
 
 /**

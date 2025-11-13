@@ -6,10 +6,12 @@ import type { MatchedValue, FreeTextValue } from "./types.js";
 
 /**
  * Build a facet block for ID-based facets
- * For REGION facets, includes both id and text (LinkedIn requires text for validation)
- * For other facets, only includes id and selectionType
- * Example: (type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))
- * Example: (type:REGION,values:List((id:100901743,text:San Francisco County, California, United States,selectionType:INCLUDED)))
+ * 
+ * CRITICAL: REGION facets ONLY include id (no text, no selectionType)
+ * Other facets include id and selectionType
+ * 
+ * Example FUNCTION: (type:FUNCTION,values:List((id:25,selectionType:INCLUDED)))
+ * Example REGION: (type:REGION,values:List((id:102277331)))
  */
 export function facetBlockIdBased(
   type: string,
@@ -18,14 +20,13 @@ export function facetBlockIdBased(
   if (values.length === 0) return "";
 
   const valueStrings = values.map((v) => {
-    const selectionType = v.selectionType || "INCLUDED";
-    
-    // REGION facets require the text field for LinkedIn validation
-    if (type === "REGION" && v.text) {
-      return `(id:${v.id},text:${v.text},selectionType:${selectionType})`;
+    // REGION facets: ONLY id field (per spec)
+    if (type === "REGION") {
+      return `(id:${v.id})`;
     }
     
-    // Other facets work fine with just id and selectionType
+    // All other facets: id + selectionType
+    const selectionType = v.selectionType || "INCLUDED";
     return `(id:${v.id},selectionType:${selectionType})`;
   });
 
@@ -63,9 +64,17 @@ export function buildFilters(blocks: string[]): string {
 
 /**
  * Build the complete Sales Navigator People search URL
- * This is the ONLY place that encodes the DSL query
- * Applies encodeURIComponent once to the entire query string
- * Note: encodeURIComponent doesn't encode (), but LinkedIn expects them encoded
+ * 
+ * ENCODING PROTOCOL (per spec):
+ * This function performs STEP 3: Outer-encode the entire DSL
+ * (Keywords were already inner-encoded in buildDslFromMatches)
+ * 
+ * Result: Double-encoded keywords
+ * - Raw keyword: "Sales Development"
+ * - After inner encode: "Sales%20Development"
+ * - After outer encode: "Sales%2520Development" (in final URL)
+ * 
+ * Note: encodeURIComponent doesn't encode (), so we manually encode them
  */
 export function buildPeopleSearchUrl(dsl: string): string {
   const baseUrl = "https://www.linkedin.com/sales/search/people";
@@ -74,7 +83,7 @@ export function buildPeopleSearchUrl(dsl: string): string {
     return `${baseUrl}?viewAllFilters=true`;
   }
 
-  // Encode the entire DSL string once - this is the critical step
+  // STEP 3: Outer-encode entire DSL string (including already inner-encoded keywords)
   // encodeURIComponent doesn't encode parentheses, so we manually encode them
   const encodedDsl = encodeURIComponent(dsl)
     .replace(/\(/g, '%28')
@@ -134,9 +143,13 @@ export function buildDslFromMatches(matches: {
   // Handle keyword search - special case that modifies the entire query structure
   if (matches.KEYWORD && matches.KEYWORD.length > 0) {
     // Keywords create a different DSL structure: (spellCorrectionEnabled:true,keywords:encoded_keywords,filters:...)
-    // CRITICAL: Pre-encode the keywords Boolean first, then embed into DSL
+    // CRITICAL ENCODING PROTOCOL (per spec):
+    // 1. Inner-encode keywords first (this step)
+    // 2. Embed inner-encoded keywords into raw DSL
+    // 3. Outer-encode entire DSL in buildPeopleSearchUrl()
+    // Result: spaces become %2520 in final URL (inner %20 → outer %2520)
     const keywordsRaw = matches.KEYWORD.join(' '); // Multiple keywords are space-separated
-    const keywordsEncoded = encodeURIComponent(keywordsRaw); // Pre-encode keywords
+    const keywordsEncoded = encodeURIComponent(keywordsRaw); // STEP 1: Inner-encode keywords
     const filtersPart = buildDslFromMatchesWithoutKeywords(matches);
     
     // If there are no filters, just return the keyword query
@@ -154,52 +167,106 @@ export function buildDslFromMatches(matches: {
 
 /**
  * Internal helper to build DSL from matched values without keyword handling
+ * 
+ * Facets are assembled in a predictable order per spec:
+ * 1. TITLE
+ * 2. FUNCTION
+ * 3. REGION
+ * 4. SENIORITY_LEVEL
+ * 5. COMPANY_TYPE
+ * 6. COMPANY_HEADCOUNT
+ * 7. YEARS_OF_EXPERIENCE
+ * 8. INDUSTRY
+ * 9. Other supported facets (alphabetical)
  */
 function buildDslFromMatchesWithoutKeywords(matches: any): string {
   const blocks: string[] = [];
 
-  // ID-based facets
+  // 1. TITLE (text-based facet)
+  if (matches.TITLE && matches.TITLE.length > 0) {
+    blocks.push(facetBlockTextBased("TITLE", matches.TITLE));
+  }
+
+  // 2. FUNCTION
   if (matches.FUNCTION && matches.FUNCTION.length > 0) {
     blocks.push(facetBlockIdBased("FUNCTION", matches.FUNCTION));
   }
-  if (matches.INDUSTRY && matches.INDUSTRY.length > 0) {
-    blocks.push(facetBlockIdBased("INDUSTRY", matches.INDUSTRY));
-  }
+
+  // 3. REGION
   if (matches.REGION && matches.REGION.length > 0) {
     blocks.push(facetBlockIdBased("REGION", matches.REGION));
   }
-  if (matches.GEOGRAPHY && matches.GEOGRAPHY.length > 0) {
-    blocks.push(facetBlockIdBased("GEOGRAPHY", matches.GEOGRAPHY));
-  }
+
+  // 4. SENIORITY_LEVEL
   if (matches.SENIORITY_LEVEL && matches.SENIORITY_LEVEL.length > 0) {
     blocks.push(facetBlockIdBased("SENIORITY_LEVEL", matches.SENIORITY_LEVEL));
+  }
+
+  // 5. COMPANY_TYPE
+  if (matches.COMPANY_TYPE && matches.COMPANY_TYPE.length > 0) {
+    blocks.push(facetBlockIdBased("COMPANY_TYPE", matches.COMPANY_TYPE));
+  }
+
+  // 6. COMPANY_HEADCOUNT
+  if (matches.COMPANY_HEADCOUNT && matches.COMPANY_HEADCOUNT.length > 0) {
+    blocks.push(facetBlockIdBased("COMPANY_HEADCOUNT", matches.COMPANY_HEADCOUNT));
+  }
+
+  // 7. YEARS_OF_EXPERIENCE
+  if (matches.YEARS_OF_EXPERIENCE && matches.YEARS_OF_EXPERIENCE.length > 0) {
+    blocks.push(facetBlockIdBased("YEARS_OF_EXPERIENCE", matches.YEARS_OF_EXPERIENCE));
+  }
+
+  // 8. INDUSTRY
+  if (matches.INDUSTRY && matches.INDUSTRY.length > 0) {
+    blocks.push(facetBlockIdBased("INDUSTRY", matches.INDUSTRY));
+  }
+
+  // Other supported facets (alphabetical order for consistency)
+  if (matches.COMPANY_HEADQUARTERS && matches.COMPANY_HEADQUARTERS.length > 0) {
+    blocks.push(facetBlockIdBased("COMPANY_HEADQUARTERS", matches.COMPANY_HEADQUARTERS));
+  }
+  if (matches.CONNECTION_OF && matches.CONNECTION_OF.length > 0) {
+    blocks.push(facetBlockIdBased("CONNECTION_OF", matches.CONNECTION_OF));
   }
   if (matches.CURRENT_COMPANY && matches.CURRENT_COMPANY.length > 0) {
     blocks.push(facetBlockIdBased("CURRENT_COMPANY", matches.CURRENT_COMPANY));
   }
+  if (matches.CURRENT_TITLE && matches.CURRENT_TITLE.length > 0) {
+    blocks.push(facetBlockIdBased("CURRENT_TITLE", matches.CURRENT_TITLE));
+  }
+  if (matches.FOLLOWS_YOUR_COMPANY && matches.FOLLOWS_YOUR_COMPANY.length > 0) {
+    blocks.push(facetBlockIdBased("FOLLOWS_YOUR_COMPANY", matches.FOLLOWS_YOUR_COMPANY));
+  }
+  if (matches.GEOGRAPHY && matches.GEOGRAPHY.length > 0) {
+    blocks.push(facetBlockIdBased("GEOGRAPHY", matches.GEOGRAPHY));
+  }
+  if (matches.GROUP && matches.GROUP.length > 0) {
+    blocks.push(facetBlockIdBased("GROUP", matches.GROUP));
+  }
+  if (matches.LEAD_INTERACTIONS && matches.LEAD_INTERACTIONS.length > 0) {
+    blocks.push(facetBlockIdBased("LEAD_INTERACTIONS", matches.LEAD_INTERACTIONS));
+  }
+  if (matches.PAST_COLLEAGUE && matches.PAST_COLLEAGUE.length > 0) {
+    blocks.push(facetBlockIdBased("PAST_COLLEAGUE", matches.PAST_COLLEAGUE));
+  }
   if (matches.PAST_COMPANY && matches.PAST_COMPANY.length > 0) {
     blocks.push(facetBlockIdBased("PAST_COMPANY", matches.PAST_COMPANY));
+  }
+  if (matches.POSTED_ON_LINKEDIN && matches.POSTED_ON_LINKEDIN.length > 0) {
+    blocks.push(facetBlockIdBased("POSTED_ON_LINKEDIN", matches.POSTED_ON_LINKEDIN));
+  }
+  if (matches.RECENTLY_CHANGED_JOBS && matches.RECENTLY_CHANGED_JOBS.length > 0) {
+    blocks.push(facetBlockIdBased("RECENTLY_CHANGED_JOBS", matches.RECENTLY_CHANGED_JOBS));
   }
   if (matches.SCHOOL && matches.SCHOOL.length > 0) {
     blocks.push(facetBlockIdBased("SCHOOL", matches.SCHOOL));
   }
-  if (matches.COMPANY_TYPE && matches.COMPANY_TYPE.length > 0) {
-    blocks.push(facetBlockIdBased("COMPANY_TYPE", matches.COMPANY_TYPE));
+  if (matches.VIEWED_YOUR_PROFILE && matches.VIEWED_YOUR_PROFILE.length > 0) {
+    blocks.push(facetBlockIdBased("VIEWED_YOUR_PROFILE", matches.VIEWED_YOUR_PROFILE));
   }
-  if (matches.COMPANY_HEADCOUNT && matches.COMPANY_HEADCOUNT.length > 0) {
-    blocks.push(facetBlockIdBased("COMPANY_HEADCOUNT", matches.COMPANY_HEADCOUNT));
-  }
-  if (matches.COMPANY_HEADQUARTERS && matches.COMPANY_HEADQUARTERS.length > 0) {
-    blocks.push(facetBlockIdBased("COMPANY_HEADQUARTERS", matches.COMPANY_HEADQUARTERS));
-  }
-  if (matches.YEARS_OF_EXPERIENCE && matches.YEARS_OF_EXPERIENCE.length > 0) {
-    blocks.push(facetBlockIdBased("YEARS_OF_EXPERIENCE", matches.YEARS_OF_EXPERIENCE));
-  }
-  if (matches.PERSONA && matches.PERSONA.length > 0) {
-    blocks.push(facetBlockIdBased("PERSONA", matches.PERSONA));
-  }
-  if (matches.CURRENT_TITLE && matches.CURRENT_TITLE.length > 0) {
-    blocks.push(facetBlockIdBased("CURRENT_TITLE", matches.CURRENT_TITLE));
+  if (matches.WITH_SHARED_EXPERIENCES && matches.WITH_SHARED_EXPERIENCES.length > 0) {
+    blocks.push(facetBlockIdBased("WITH_SHARED_EXPERIENCES", matches.WITH_SHARED_EXPERIENCES));
   }
   if (matches.YEARS_AT_CURRENT_COMPANY && matches.YEARS_AT_CURRENT_COMPANY.length > 0) {
     blocks.push(facetBlockIdBased("YEARS_AT_CURRENT_COMPANY", matches.YEARS_AT_CURRENT_COMPANY));
@@ -207,38 +274,8 @@ function buildDslFromMatchesWithoutKeywords(matches: any): string {
   if (matches.YEARS_IN_CURRENT_POSITION && matches.YEARS_IN_CURRENT_POSITION.length > 0) {
     blocks.push(facetBlockIdBased("YEARS_IN_CURRENT_POSITION", matches.YEARS_IN_CURRENT_POSITION));
   }
-  if (matches.GROUP && matches.GROUP.length > 0) {
-    blocks.push(facetBlockIdBased("GROUP", matches.GROUP));
-  }
-  if (matches.FOLLOWS_YOUR_COMPANY && matches.FOLLOWS_YOUR_COMPANY.length > 0) {
-    blocks.push(facetBlockIdBased("FOLLOWS_YOUR_COMPANY", matches.FOLLOWS_YOUR_COMPANY));
-  }
-  if (matches.VIEWED_YOUR_PROFILE && matches.VIEWED_YOUR_PROFILE.length > 0) {
-    blocks.push(facetBlockIdBased("VIEWED_YOUR_PROFILE", matches.VIEWED_YOUR_PROFILE));
-  }
-  if (matches.CONNECTION_OF && matches.CONNECTION_OF.length > 0) {
-    blocks.push(facetBlockIdBased("CONNECTION_OF", matches.CONNECTION_OF));
-  }
-  if (matches.PAST_COLLEAGUE && matches.PAST_COLLEAGUE.length > 0) {
-    blocks.push(facetBlockIdBased("PAST_COLLEAGUE", matches.PAST_COLLEAGUE));
-  }
-  if (matches.WITH_SHARED_EXPERIENCES && matches.WITH_SHARED_EXPERIENCES.length > 0) {
-    blocks.push(facetBlockIdBased("WITH_SHARED_EXPERIENCES", matches.WITH_SHARED_EXPERIENCES));
-  }
-  if (matches.RECENTLY_CHANGED_JOBS && matches.RECENTLY_CHANGED_JOBS.length > 0) {
-    blocks.push(facetBlockIdBased("RECENTLY_CHANGED_JOBS", matches.RECENTLY_CHANGED_JOBS));
-  }
-  if (matches.POSTED_ON_LINKEDIN && matches.POSTED_ON_LINKEDIN.length > 0) {
-    blocks.push(facetBlockIdBased("POSTED_ON_LINKEDIN", matches.POSTED_ON_LINKEDIN));
-  }
-  if (matches.LEAD_INTERACTIONS && matches.LEAD_INTERACTIONS.length > 0) {
-    blocks.push(facetBlockIdBased("LEAD_INTERACTIONS", matches.LEAD_INTERACTIONS));
-  }
 
-  // Text-based facets
-  if (matches.TITLE && matches.TITLE.length > 0) {
-    blocks.push(facetBlockTextBased("TITLE", matches.TITLE));
-  }
+  // PERSONA facet is NOT supported (per spec) and is omitted
 
   return buildFilters(blocks);
 }

@@ -28,10 +28,10 @@ test("facetBlockIdBased creates multiple value block", () => {
     { id: 105080838, text: "New York", selectionType: "INCLUDED" },
   ]);
   
-  // Simplified format: only checks for IDs, no text field
-  assert.ok(result.includes("id:102380872"));
-  assert.ok(result.includes("id:105080838"));
-  assert.ok(result.includes("selectionType:INCLUDED"));
+  // REGION format: ONLY id (no text, no selectionType per spec)
+  assert.strictEqual(result, "(type:REGION,values:List((id:102380872),(id:105080838)))");
+  assert.ok(!result.includes("text:"), "REGION should not have text field");
+  assert.ok(!result.includes("selectionType:"), "REGION should not have selectionType field");
 });
 
 test("facetBlockTextBased creates title block", () => {

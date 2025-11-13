@@ -7,7 +7,6 @@ import {
   matchFunctions,
   matchIndustries,
   matchGeographies,
-  matchSeniority,
   matchSeniorityLevel,
   matchTitles,
   matchCompanyNames,
@@ -36,6 +35,7 @@ import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from
 import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
 import { healSalesNavUrl } from "./url-healer.js";
+import { isValidFacetId } from "./allowlists.js";
 import 'dotenv/config';
 
 /**
@@ -295,11 +295,13 @@ export async function generateUrlFromDescription(
   // Load data
   const store = loadAllData();
 
+  // Check if user explicitly requested Function or Seniority Level
+  const explicitlyRequestedFunction = /\bfunction\s*:/i.test(processedDescription);
+  const explicitlyRequestedSeniority = /\bseniority\s+level\s*:/i.test(processedDescription);
+
   // Match functions (using GPT-processed description)
   const functions = matchFunctions(processedDescription, store);
-  if (functions.length > 0) {
-    matched.FUNCTION = functions;
-  }
+  // Will be conditionally added after checking for leadership titles
 
   // Match industries
   // IMPORTANT: Only use industries that have valid LinkedIn IDs - no free-text
@@ -341,22 +343,67 @@ export async function generateUrlFromDescription(
     }
   }
 
-  // Match seniority (using PERSONA as a proxy)
-  const seniority = matchSeniority(processedDescription, store);
-  if (seniority.length > 0) {
-    matched.PERSONA = seniority;
-  }
+  // PERSONA facet removed - unsupported per spec
+  // Use SENIORITY_LEVEL instead
 
-  // Match seniority levels (new SENIORITY_LEVEL facet)
-  const seniorityLevels = matchSeniorityLevel(processedDescription, store);
-  if (seniorityLevels.length > 0) {
-    matched.SENIORITY_LEVEL = seniorityLevels;
-  }
-
-  // Match titles
+  // Match titles FIRST to check for leadership titles
   const titles = matchTitles(processedDescription);
   if (titles.length > 0) {
     matched.TITLE = titles;
+  }
+
+  // Check if any title is a leadership title (CEO, CXO, Founder, Chief *)
+  const hasLeadershipTitle = titles.some(t => 
+    /^(chief|ceo|cfo|cto|coo|cmo|chro|founder|president|owner|partner)/i.test(t.text) ||
+    /\b(chief\s+\w+\s+officer|c[ex]o)\b/i.test(t.text)
+  );
+
+  // GATING RULE: Add FUNCTION only if explicitly requested OR no leadership title
+  if (!hasLeadershipTitle || explicitlyRequestedFunction) {
+    if (functions.length > 0) {
+      // Validate against allowlist
+      const validFunctions = functions.filter(f => {
+        if (!f.id) return false;
+        const isValid = isValidFacetId('FUNCTION', f.id);
+        if (!isValid) {
+          warnings.push(`Dropped FUNCTION id ${f.id} (${f.text}) - not in allowlist`);
+        }
+        return isValid;
+      });
+      if (validFunctions.length > 0) {
+        matched.FUNCTION = validFunctions;
+      }
+    }
+  } else if (hasLeadershipTitle && functions.length > 0) {
+    warnings.push(
+      `Omitted FUNCTION for leadership title (${titles.map(t => t.text).join(', ')}). ` +
+      `Add "Function: ..." to include explicitly.`
+    );
+  }
+
+  // Match seniority levels (SENIORITY_LEVEL facet)
+  // GATING RULE: Omit SENIORITY_LEVEL for leadership titles unless explicitly requested
+  if (!hasLeadershipTitle || explicitlyRequestedSeniority) {
+    const seniorityLevels = matchSeniorityLevel(processedDescription, store);
+    if (seniorityLevels.length > 0) {
+      // Validate against allowlist
+      const validSeniority = seniorityLevels.filter(s => {
+        if (!s.id) return false;
+        const isValid = isValidFacetId('SENIORITY_LEVEL', s.id);
+        if (!isValid) {
+          warnings.push(`Dropped SENIORITY_LEVEL id ${s.id} (${s.text}) - not in allowlist`);
+        }
+        return isValid;
+      });
+      if (validSeniority.length > 0) {
+        matched.SENIORITY_LEVEL = validSeniority;
+      }
+    }
+  } else if (hasLeadershipTitle) {
+    warnings.push(
+      `Omitted SENIORITY_LEVEL for leadership title (${titles.map(t => t.text).join(', ')}). ` +
+      `Add "Seniority Level: ..." to include explicitly.`
+    );
   }
 
   // Match years of experience - ONLY if explicitly requested as a standalone line
@@ -373,13 +420,35 @@ export async function generateUrlFromDescription(
   // Match company headcount
   const companyHeadcount = matchCompanyHeadcount(processedDescription, store);
   if (companyHeadcount.length > 0) {
-    matched.COMPANY_HEADCOUNT = companyHeadcount;
+    // Validate against allowlist
+    const validHeadcount = companyHeadcount.filter(h => {
+      if (!h.id) return false;
+      const isValid = isValidFacetId('COMPANY_HEADCOUNT', h.id);
+      if (!isValid) {
+        warnings.push(`Dropped COMPANY_HEADCOUNT id ${h.id} (${h.text}) - not in allowlist`);
+      }
+      return isValid;
+    });
+    if (validHeadcount.length > 0) {
+      matched.COMPANY_HEADCOUNT = validHeadcount;
+    }
   }
 
   // Match company type
   const companyType = matchCompanyType(processedDescription, store);
   if (companyType.length > 0) {
-    matched.COMPANY_TYPE = companyType;
+    // Validate against allowlist
+    const validType = companyType.filter(t => {
+      if (!t.id) return false;
+      const isValid = isValidFacetId('COMPANY_TYPE', t.id);
+      if (!isValid) {
+        warnings.push(`Dropped COMPANY_TYPE id ${t.id} (${t.text}) - not in allowlist`);
+      }
+      return isValid;
+    });
+    if (validType.length > 0) {
+      matched.COMPANY_TYPE = validType;
+    }
   }
 
   // Match and resolve companies
