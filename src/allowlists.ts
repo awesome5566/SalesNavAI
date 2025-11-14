@@ -154,3 +154,4 @@ export function isValidFacetId(facetType: string, id: number | string): boolean 
          allowlist.has(Number(id));
 }
 
+
