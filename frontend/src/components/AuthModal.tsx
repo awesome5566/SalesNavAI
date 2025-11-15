@@ -16,8 +16,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  if (!isOpen) return null;
-
   useEffect(() => {
     if (isOpen) {
       setIsSignUp(initialMode === 'signUp');
@@ -26,6 +24,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
       setError(null);
     }
   }, [initialMode, isOpen]);
+
+  if (!isOpen) return null;
 
   const handleClose = () => {
     setEmail('');
