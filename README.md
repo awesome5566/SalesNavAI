@@ -208,6 +208,28 @@ pnpm run server         # Start Express server
 
 The web interface will be available at `http://localhost:3001`
 
+### Vercel Deployment
+
+The repository now ships with a serverless API route (`/api/generate`) so production can run entirely on Vercel without an Express server. To deploy:
+
+1. **Set environment variables** in Vercel → Project Settings → Environment Variables (Production & Preview):
+   - `OPENAI_API_KEY`
+   - `OPENAI_MODEL` (defaults to `gpt-5-mini` if omitted)
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - Optional: `GPT_LOG_DEBUG` (set to `true` to log Supabase failures to stdout)
+2. **Build & deploy** the project root. Vercel automatically serves the static files and the `/api/generate` serverless function.
+3. **Smoke-test locally** with the Vercel CLI:
+   ```bash
+   vercel dev
+   ```
+   This emulates the production environment (including the API route) so you can run the React app against the serverless function before pushing.
+4. **Verify Supabase auth** by signing in from the hosted frontend and running a search. The browser sends the Supabase session token to `/api/generate`, which validates the user, calls OpenAI, logs the run to Supabase, and returns the result JSON to the UI.
+
+`vercel.json` already preserves `/api/*` routes while rewriting everything else to the SPA entry point.
+
 ### Available Scripts
 
 - `pnpm start` - Run CLI with compiled JavaScript (fast)

@@ -4,6 +4,7 @@
  */
 
 import { generateUrlFromDescription } from "./generator.js";
+import { buildGeneratorJsonResponse } from "./json-output.js";
 import type { GeneratorOptions } from "./types.js";
 
 function printHelp() {
@@ -123,53 +124,7 @@ async function main() {
     const result = await generateUrlFromDescription(description, options);
 
     if (json) {
-      // Output JSON format for API
-      const facets: Record<string, string> = {};
-      
-      if (result.matched.FUNCTION && result.matched.FUNCTION.length > 0) {
-        facets.FUNCTION = result.matched.FUNCTION.map((f) => `${f.text} (${f.id})`).join(", ");
-      }
-      if (result.matched.INDUSTRY && result.matched.INDUSTRY.length > 0) {
-        facets.INDUSTRY = result.matched.INDUSTRY.map((i) => `${i.text} (${i.id})`).join(", ");
-      }
-      if (result.matched.REGION && result.matched.REGION.length > 0) {
-        facets.REGION = result.matched.REGION.map((g) => `${g.text} (${g.id})`).join(", ");
-      }
-      if (result.matched.PERSONA && result.matched.PERSONA.length > 0) {
-        facets.PERSONA = result.matched.PERSONA.map((s) => `${s.text} (${s.id})`).join(", ");
-      }
-      if (result.matched.TITLE && result.matched.TITLE.length > 0) {
-        facets.TITLE = result.matched.TITLE.map((t) => `"${t.text}" (${t.match})`).join(", ");
-      }
-      if (result.matched.CURRENT_COMPANY && result.matched.CURRENT_COMPANY.length > 0) {
-        facets.CURRENT_COMPANY = result.matched.CURRENT_COMPANY.map((c) => `${c.text} (${c.id})`).join(", ");
-      }
-      if (result.matched.SCHOOL && result.matched.SCHOOL.length > 0) {
-        facets.SCHOOL = result.matched.SCHOOL.map((s) => `${s.text} (${s.id})`).join(", ");
-      }
-      if (result.matched.YEARS_OF_EXPERIENCE && result.matched.YEARS_OF_EXPERIENCE.length > 0) {
-        facets.YEARS_OF_EXPERIENCE = result.matched.YEARS_OF_EXPERIENCE.map((y) => `${y.text} (${y.id})`).join(", ");
-      }
-      if (result.matched.COMPANY_HEADCOUNT && result.matched.COMPANY_HEADCOUNT.length > 0) {
-        facets.COMPANY_HEADCOUNT = result.matched.COMPANY_HEADCOUNT.map((c) => `${c.text} (${c.id})`).join(", ");
-      }
-      if (result.matched.COMPANY_TYPE && result.matched.COMPANY_TYPE.length > 0) {
-        facets.COMPANY_TYPE = result.matched.COMPANY_TYPE.map((c) => `${c.text} (${c.id})`).join(", ");
-      }
-      if (result.matched.SENIORITY_LEVEL && result.matched.SENIORITY_LEVEL.length > 0) {
-        facets.SENIORITY_LEVEL = result.matched.SENIORITY_LEVEL.map((s) => `${s.text} (${s.id}) [${s.selectionType}]`).join(", ");
-      }
-      if (result.matched.KEYWORD && result.matched.KEYWORD.length > 0) {
-        facets.KEYWORD = result.matched.KEYWORD.join(", ");
-      }
-
-      const jsonOutput = {
-        url: result.url,
-        facets: Object.keys(facets).length > 0 ? facets : "(No facets matched)",
-        dsl: options.debug || dryRun ? result.dslDecoded : undefined,
-        warnings: result.warnings.length > 0 ? result.warnings : undefined
-      };
-
+      const jsonOutput = buildGeneratorJsonResponse(result, options.debug || dryRun);
       console.log(JSON.stringify(jsonOutput, null, 2));
     } else {
       // Original console output
