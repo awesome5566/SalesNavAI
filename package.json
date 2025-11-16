@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Generate Sales Navigator URLs from natural language queries",
   "type": "module",
+  "workspaces": ["frontend"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:all": "pnpm run build && cd frontend && pnpm run build",
