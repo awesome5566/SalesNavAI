@@ -3,6 +3,7 @@
  */
 
 import { readFileSync } from "fs";
+import { join } from "path";
 import { parse } from "csv-parse/sync";
 import type { FacetIndex, NormalizedFacetStore, FacetName } from "./types.js";
 import { sanitizeText, normalizeForLookup } from "./sanitize.js";
@@ -11,8 +12,9 @@ import { sanitizeText, normalizeForLookup } from "./sanitize.js";
  * Load and normalize facet-store.json
  * New structure with facets containing ids arrays with records
  */
-export function loadFacetStore(path = "facet-store.json"): Partial<NormalizedFacetStore> {
-  const content = readFileSync(path, "utf-8");
+export function loadFacetStore(path?: string): Partial<NormalizedFacetStore> {
+  const filePath = path || join(process.cwd(), "facet-store.json");
+  const content = readFileSync(filePath, "utf-8");
   const sanitized = sanitizeText(content);
   
   const facetData = JSON.parse(sanitized);
@@ -79,8 +81,9 @@ export function loadFacetStore(path = "facet-store.json"): Partial<NormalizedFac
  * Load and normalize Industry IDs.csv
  * Columns: displayValue,id,headline,headlineV2/text
  */
-export function loadIndustriesCsv(path = "Industry IDs.csv"): FacetIndex {
-  const content = readFileSync(path, "utf-8");
+export function loadIndustriesCsv(path?: string): FacetIndex {
+  const filePath = path || join(process.cwd(), "Industry IDs.csv");
+  const content = readFileSync(filePath, "utf-8");
   const sanitized = sanitizeText(content);
 
   const records = parse(sanitized, {
@@ -137,8 +140,9 @@ export function loadIndustriesCsv(path = "Industry IDs.csv"): FacetIndex {
  * Load and normalize geoId.csv
  * Columns: ADDRESS,COUNTRY_CODE,GEO_ID
  */
-export function loadGeoIdsCsv(path = "geoId.csv"): FacetIndex {
-  const content = readFileSync(path, "utf-8");
+export function loadGeoIdsCsv(path?: string): FacetIndex {
+  const filePath = path || join(process.cwd(), "geoId.csv");
+  const content = readFileSync(filePath, "utf-8");
   const sanitized = sanitizeText(content);
 
   const records = parse(sanitized, {
@@ -177,13 +181,13 @@ export function loadGeoIdsCsv(path = "geoId.csv"): FacetIndex {
  * Load all data and merge into a complete store
  */
 export function loadAllData(
-  facetStorePath = "facet-store.json",
-  industriesPath = "Industry IDs.csv",
-  geoIdsPath = "geoId.csv"
+  facetStorePath?: string,
+  industriesPath?: string,
+  geoIdsPath?: string
 ): Partial<NormalizedFacetStore> {
-  const store = loadFacetStore(facetStorePath);
-  const industries = loadIndustriesCsv(industriesPath);
-  const geoIds = loadGeoIdsCsv(geoIdsPath);
+  const store = loadFacetStore(facetStorePath || join(process.cwd(), "facet-store.json"));
+  const industries = loadIndustriesCsv(industriesPath || join(process.cwd(), "Industry IDs.csv"));
+  const geoIds = loadGeoIdsCsv(geoIdsPath || join(process.cwd(), "geoId.csv"));
 
   // Merge industries into store (or replace if exists)
   store.INDUSTRY = industries;
