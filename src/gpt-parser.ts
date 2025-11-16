@@ -348,7 +348,7 @@ export async function parseWithGPT(
           ],
         },
       ],
-      max_output_tokens: 50000,
+      max_output_tokens: 200,
     } as any);
 
     const parsedQuery = response.output_text?.trim();
