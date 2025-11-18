@@ -9,12 +9,14 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'signIn' }) => {
-  const { signInWithEmail, signUpWithEmail } = useAuth();
+  const { signInWithEmail, signUpWithEmail, testConnectivity } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signUp');
   const [error, setError] = useState<string | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [testingConnection, setTestingConnection] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -22,6 +24,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
       setEmail('');
       setPassword('');
       setError(null);
+      setErrorDetails(null);
     }
   }, [initialMode, isOpen]);
 
@@ -31,15 +34,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     setEmail('');
     setPassword('');
     setError(null);
+    setErrorDetails(null);
     onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setErrorDetails(null);
     setLoading(true);
 
     try {
+      // Test connectivity first if it's a sign-up
+      if (isSignUp) {
+        setTestingConnection(true);
+        const connectivityTest = await testConnectivity();
+        setTestingConnection(false);
+
+        if (!connectivityTest.success) {
+          setError('Cannot connect to authentication server');
+          setErrorDetails(
+            `Network test failed: ${connectivityTest.error}\n\n` +
+            `This usually means:\n` +
+            `• Corporate firewall is blocking the connection\n` +
+            `• Network proxy needs configuration\n` +
+            `• VPN is restricting access\n\n` +
+            `Check the browser console (F12) for detailed error information.`
+          );
+          setLoading(false);
+          return;
+        }
+      }
+
       if (isSignUp) {
         await signUpWithEmail(email, password);
       } else {
@@ -47,9 +73,65 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
       }
       handleClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to authenticate');
+      const errorType = err?.type || 'UNKNOWN';
+      let userMessage = err?.message || 'Failed to authenticate';
+      let details = null;
+
+      // Provide specific guidance based on error type
+      switch (errorType) {
+        case 'NETWORK_ERROR':
+          userMessage = 'Network connection failed';
+          details =
+            `Unable to reach the authentication server.\n\n` +
+            `Possible causes:\n` +
+            `• Corporate firewall blocking external connections\n` +
+            `• Network proxy intercepting requests\n` +
+            `• VPN restrictions\n\n` +
+            `Try:\n` +
+            `• Switching to a different network (mobile hotspot)\n` +
+            `• Contacting IT to whitelist Supabase domains\n` +
+            `• Checking browser console (F12) for details`;
+          break;
+        case 'CORS_ERROR':
+          userMessage = 'CORS policy blocked the request';
+          details =
+            'The server is blocking cross-origin requests. This may require IT configuration.';
+          break;
+        case 'TIMEOUT_ERROR':
+          userMessage = 'Request timed out';
+          details =
+            'The server took too long to respond. Network may be slow or blocked.';
+          break;
+        case 'SSL_ERROR':
+          userMessage = 'SSL/TLS certificate issue';
+          details =
+            `Certificate validation failed. This often happens when:\n` +
+            `• Corporate proxy intercepts HTTPS\n` +
+            `• SSL inspection is enabled\n\n` +
+            `Contact IT about proxy configuration.`;
+          break;
+        default:
+          details = err?.details
+            ? JSON.stringify(err.details, null, 2)
+            : null;
+      }
+
+      setError(userMessage);
+      if (details) {
+        setErrorDetails(details);
+      }
+
+      // Log full error for debugging
+      console.error('[AuthModal] Authentication error:', {
+        errorType,
+        message: err?.message,
+        details: err?.details,
+        originalError: err?.originalError,
+        stack: err?.stack,
+      });
     } finally {
       setLoading(false);
+      setTestingConnection(false);
     }
   };
 
@@ -94,10 +176,41 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
               />
             </div>
 
-            {error && <div className="error-message">{error}</div>}
+            {error && (
+              <div className="error-message">
+                <strong>{error}</strong>
+                {errorDetails && (
+                  <pre
+                    style={{
+                      marginTop: '8px',
+                      fontSize: '12px',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      maxHeight: '200px',
+                      overflow: 'auto',
+                      padding: '8px',
+                      backgroundColor: 'rgba(0,0,0,0.05)',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    {errorDetails}
+                  </pre>
+                )}
+              </div>
+            )}
 
-            <button type="submit" className="submit-button" disabled={loading}>
-              {loading ? 'Loading...' : isSignUp ? 'Sign Up' : 'Sign In'}
+            <button
+              type="submit"
+              className="submit-button"
+              disabled={loading || testingConnection}
+            >
+              {testingConnection
+                ? 'Testing connection...'
+                : loading
+                  ? 'Loading...'
+                  : isSignUp
+                    ? 'Sign Up'
+                    : 'Sign In'}
             </button>
           </form>
 
@@ -109,6 +222,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 onClick={() => {
                   setIsSignUp(!isSignUp);
                   setError(null);
+                  setErrorDetails(null);
                 }}
                 className="link-button"
               >
