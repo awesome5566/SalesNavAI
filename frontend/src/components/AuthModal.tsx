@@ -52,14 +52,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         setTestingConnection(false);
 
         if (!connectivityTest.success) {
-          setError('Cannot connect to authentication server');
+          setError('Looks like your network blocked our sign-in request.');
           setErrorDetails(
-            `Network test failed: ${connectivityTest.error}\n\n` +
-            `This usually means:\n` +
-            `• Corporate firewall is blocking the connection\n` +
-            `• Network proxy needs configuration\n` +
-            `• VPN is restricting access\n\n` +
-            `Check the browser console (F12) for detailed error information.`
+            `This sometimes happens on very secure work networks.\n\n` +
+            `If you're able to, try signing in with your VPN turned off or from a non-work connection.`
           );
           setLoading(false);
           return;
@@ -80,35 +76,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
       // Provide specific guidance based on error type
       switch (errorType) {
         case 'NETWORK_ERROR':
-          userMessage = 'Network connection failed';
+          userMessage = 'Looks like your network blocked our sign-in request.';
           details =
-            `Unable to reach the authentication server.\n\n` +
-            `Possible causes:\n` +
-            `• Corporate firewall blocking external connections\n` +
-            `• Network proxy intercepting requests\n` +
-            `• VPN restrictions\n\n` +
-            `Try:\n` +
-            `• Switching to a different network (mobile hotspot)\n` +
-            `• Contacting IT to whitelist Supabase domains\n` +
-            `• Checking browser console (F12) for details`;
+            `This sometimes happens on very secure work networks.\n\n` +
+            `If you're able to, try signing in with your VPN turned off or from a non-work connection.`;
           break;
         case 'CORS_ERROR':
-          userMessage = 'CORS policy blocked the request';
+          userMessage = 'Looks like your network blocked our sign-in request.';
           details =
-            'The server is blocking cross-origin requests. This may require IT configuration.';
+            `This sometimes happens on very secure work networks.\n\n` +
+            `If you're able to, try signing in with your VPN turned off or from a non-work connection.`;
           break;
         case 'TIMEOUT_ERROR':
-          userMessage = 'Request timed out';
+          userMessage = 'Looks like your network blocked our sign-in request.';
           details =
-            'The server took too long to respond. Network may be slow or blocked.';
+            `This sometimes happens on very secure work networks.\n\n` +
+            `If you're able to, try signing in with your VPN turned off or from a non-work connection.`;
           break;
         case 'SSL_ERROR':
-          userMessage = 'SSL/TLS certificate issue';
+          userMessage = 'Looks like your network blocked our sign-in request.';
           details =
-            `Certificate validation failed. This often happens when:\n` +
-            `• Corporate proxy intercepts HTTPS\n` +
-            `• SSL inspection is enabled\n\n` +
-            `Contact IT about proxy configuration.`;
+            `This sometimes happens on very secure work networks.\n\n` +
+            `If you're able to, try signing in with your VPN turned off or from a non-work connection.`;
           break;
         default:
           details = err?.details
