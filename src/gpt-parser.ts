@@ -378,9 +378,23 @@ export async function parseWithGPT(
     const parsedQuery = response.output_text?.trim();
     
     if (!parsedQuery) {
+      // Debug logging to investigate empty responses
+      const debugInfo = {
+        query: userQuery,
+        responseType: typeof response,
+        responseKeys: response ? Object.keys(response) : [],
+        responseOutputText: response?.output_text,
+        responseText: (response as any)?.text,
+        responseOutput: (response as any)?.output,
+        responseContent: (response as any)?.content,
+        fullResponse: response,
+      };
+      
       if (!options?.silent) {
         console.log('⚠️  GPT returned empty response. Using original query.');
+        console.log('🔍 Debug info:', JSON.stringify(debugInfo, null, 2));
       }
+      
       return {
         processedQuery: userQuery,
         output: userQuery,
