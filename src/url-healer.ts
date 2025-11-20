@@ -222,8 +222,10 @@ function normalizeKeywordsEncoding(dsl: string, reasons: string[]): string {
   }
 
   // We want: inner-encoded value, no outer quotes
-  // If decodedOnce still contains spaces or quotes, inner-encode it
-  const needsEncode = /[ "]/.test(decodedOnce);
+  // Check if already encoded by looking for % patterns that aren't double-encoded
+  // (single-encoded: %20, %22, %28, etc. but not %25XX which indicates double-encoding)
+  const alreadyEncoded = /%[0-9A-F]{2}/i.test(decodedOnce) && !/%25/i.test(decodedOnce);
+  const needsEncode = !alreadyEncoded && /[ "]/.test(decodedOnce);
   const inner = needsEncode ? encodeURIComponent(decodedOnce) : decodedOnce;
 
   // Rebuild
