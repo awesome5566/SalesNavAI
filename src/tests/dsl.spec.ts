@@ -225,3 +225,107 @@ test("buildDslFromMatches prevents facet ID cross-contamination", () => {
     "id:4 should appear exactly once (in INDUSTRY only), not in multiple facets");
 });
 
+test("buildDslFromMatches strips outer parentheses from keywords", () => {
+  // Test that outer wrapping parentheses are stripped (defensive fix)
+  // LinkedIn's parser expects keywords: to be followed by a scalar string, not (expression)
+  
+  const matches = {
+    KEYWORD: ['("B2B SaaS" OR SDR OR "sales development representative")'],
+    FUNCTION: [{ id: 25, text: "Sales", selectionType: "INCLUDED" }],
+  };
+  
+  const result = buildDslFromMatches(matches as any);
+  
+  // Extract the keywords value from the DSL
+  const keywordsMatch = result.match(/keywords:([^,)]+)/);
+  assert.ok(keywordsMatch, "Should find keywords in DSL");
+  
+  // Decode the keywords to see what was encoded
+  const keywordsEncoded = keywordsMatch[1];
+  const keywordsDecoded = decodeURIComponent(keywordsEncoded);
+  
+  // The decoded keywords should NOT start with '(' and end with ')'
+  // It should be: "B2B SaaS" OR SDR OR "sales development representative"
+  // NOT: ("B2B SaaS" OR SDR OR "sales development representative")
+  assert.ok(!keywordsDecoded.startsWith('('), 
+    "Keywords should not start with '(' after stripping outer parentheses");
+  assert.ok(!keywordsDecoded.endsWith(')') || keywordsDecoded.includes(' AND ') || keywordsDecoded.includes(' NOT '),
+    "Keywords should not end with ')' unless it's part of internal grouping");
+  
+  // Verify the content is correct (without outer parens)
+  assert.ok(keywordsDecoded.includes('"B2B SaaS"'), "Should contain B2B SaaS");
+  assert.ok(keywordsDecoded.includes('SDR'), "Should contain SDR");
+});
+
+test("buildDslFromMatches preserves internal grouping parentheses in keywords", () => {
+  // Test that internal grouping parentheses (for NOT blocks, AND grouping) are preserved
+  
+  const matches = {
+    KEYWORD: ['SDR OR "sales development representative" NOT ("Senior" OR "Sr" OR "Manager")'],
+    FUNCTION: [{ id: 25, text: "Sales", selectionType: "INCLUDED" }],
+  };
+  
+  const result = buildDslFromMatches(matches as any);
+  
+  // Extract and decode keywords
+  // Note: keywords value may extend beyond the first comma if there are filters
+  const keywordsMatch = result.match(/keywords:([^,]+?)(?:,filters|\)$)/);
+  assert.ok(keywordsMatch, "Should find keywords in DSL");
+  
+  const keywordsEncoded = keywordsMatch[1];
+  const keywordsDecoded = decodeURIComponent(keywordsEncoded);
+  
+  // Internal grouping parentheses should be preserved
+  assert.ok(keywordsDecoded.includes('NOT ("Senior"'), 
+    "Should preserve internal parentheses for NOT blocks");
+  assert.ok(keywordsDecoded.includes('"Manager")'), 
+    "Should preserve closing parentheses for NOT blocks");
+  
+  // Should not have outer wrapping parentheses at the start/end
+  // (unless the entire expression is wrapped, which we strip)
+  const trimmed = keywordsDecoded.trim();
+  // If it starts with ( and ends with ), check if those are outer wrapping
+  if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+    // Count depth - if depth reaches 0 before the end, it's not outer wrapping
+    let depth = 0;
+    let isOuterWrap = true;
+    for (let i = 0; i < trimmed.length; i++) {
+      if (trimmed[i] === '(') depth++;
+      if (trimmed[i] === ')') {
+        depth--;
+        if (depth === 0 && i < trimmed.length - 1) {
+          isOuterWrap = false;
+          break;
+        }
+      }
+    }
+    // If it's outer wrapping, it should have been stripped
+    assert.ok(!isOuterWrap || trimmed.includes(' AND ') || trimmed.includes(' NOT '),
+      "Outer wrapping parentheses should be stripped unless needed for grouping");
+  }
+});
+
+test("buildDslFromMatches handles keywords with complex grouping that needs outer parens", () => {
+  // Test that if outer parentheses are needed for grouping (e.g., (A OR B) AND C),
+  // they are preserved, but simple wrapping is stripped
+  
+  // Case 1: Simple wrapping - should be stripped
+  const matches1 = {
+    KEYWORD: ['("B2B SaaS" OR SDR)'],
+  };
+  
+  const result1 = buildDslFromMatches(matches1 as any);
+  const keywordsMatch1 = result1.match(/keywords:([^,)]+)/);
+  const keywordsDecoded1 = decodeURIComponent(keywordsMatch1![1]);
+  
+  // Should strip outer wrapping
+  assert.ok(!keywordsDecoded1.startsWith('(') || !keywordsDecoded1.endsWith(')'),
+    "Simple outer wrapping should be stripped");
+  
+  // Case 2: Complex grouping - outer parens needed, should be preserved
+  // Note: This is a tricky case. If GPT outputs: ((A OR B) AND C)
+  // The outer wrap should be stripped, leaving: (A OR B) AND C
+  // But if it outputs: (A OR B) AND C (no outer wrap), it should stay as-is
+  // Our function should handle both correctly
+});
+

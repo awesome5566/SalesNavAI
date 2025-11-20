@@ -109,6 +109,52 @@ export function encodeQuery(dsl: string): string {
 }
 
 /**
+ * Strip outer wrapping parentheses from keywords if present
+ * Preserves internal grouping parentheses needed for boolean logic
+ * 
+ * Example:
+ *   Input:  '("B2B SaaS" OR SDR)'
+ *   Output: '"B2B SaaS" OR SDR'
+ * 
+ *   Input:  '((A OR B) AND C)'
+ *   Output: '(A OR B) AND C' (strips outer wrap, keeps inner grouping)
+ * 
+ *   Input:  '(A OR B) AND C'
+ *   Output: '(A OR B) AND C' (keeps as-is, outer parens needed for grouping)
+ */
+function stripOuterParentheses(keywords: string): string {
+  if (!keywords.startsWith('(') || !keywords.endsWith(')')) {
+    return keywords; // No outer parentheses
+  }
+
+  // Check if the opening '(' matches the closing ')' at the outermost level
+  // by counting parentheses depth
+  let depth = 0;
+  let isOuterWrap = true;
+  
+  for (let i = 0; i < keywords.length; i++) {
+    if (keywords[i] === '(') {
+      depth++;
+    } else if (keywords[i] === ')') {
+      depth--;
+      // If depth reaches 0 before the end, the opening paren is not an outer wrap
+      // (it's part of internal grouping)
+      if (depth === 0 && i < keywords.length - 1) {
+        isOuterWrap = false;
+        break;
+      }
+    }
+  }
+  
+  // Only strip if these are truly outer wrapping parentheses
+  if (isOuterWrap && depth === 0) {
+    return keywords.slice(1, -1); // Remove first and last character
+  }
+  
+  return keywords; // Keep as-is (parentheses needed for grouping)
+}
+
+/**
  * Helper: Build DSL from matched values
  */
 export function buildDslFromMatches(matches: {
@@ -151,7 +197,12 @@ export function buildDslFromMatches(matches: {
     // 
     // NOTE: If multiple Keyword: lines exist, they are joined with space.
     // Future enhancement: Consider using AND/OR logic if multiple keyword lines have different semantics.
-    const keywordsRaw = matches.KEYWORD.join(' ');
+    let keywordsRaw = matches.KEYWORD.join(' ');
+    
+    // Strip outer wrapping parentheses if present (defensive fix for GPT outputs)
+    // LinkedIn's DSL parser expects keywords: to be followed by a scalar string, not (expression)
+    keywordsRaw = stripOuterParentheses(keywordsRaw);
+    
     const keywordsEncoded = encodeURIComponent(keywordsRaw); // STEP 1: Inner-encode keywords
     const filtersPart = buildDslFromMatchesWithoutKeywords(matches);
     
