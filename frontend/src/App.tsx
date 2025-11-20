@@ -24,7 +24,6 @@ type CopyNotification = {
 }
 
 const RECENT_SEARCHES_KEY = 'recentSearches'
-const MAX_RECENT_SEARCHES = 3
 
 function App() {
   const { user, session, loading: authLoading } = useAuth()
@@ -58,7 +57,7 @@ function App() {
       const stored = localStorage.getItem(RECENT_SEARCHES_KEY)
       if (stored) {
         const parsed: RecentSearch[] = JSON.parse(stored)
-        setRecentSearches(parsed.slice(0, MAX_RECENT_SEARCHES))
+        setRecentSearches(parsed)
       }
     } catch (error) {
       console.error('Failed to load recent searches', error)
@@ -196,9 +195,9 @@ function App() {
           url: url ?? existing.url,
         }
         const withoutExisting = prev.filter((_, index) => index !== existingIndex)
-        updated = [revised, ...withoutExisting].slice(0, MAX_RECENT_SEARCHES)
+        updated = [revised, ...withoutExisting]
       } else {
-        updated = [{ text: trimmed, timestamp: now, url }, ...prev].slice(0, MAX_RECENT_SEARCHES)
+        updated = [{ text: trimmed, timestamp: now, url }, ...prev]
       }
 
       if (typeof window !== 'undefined') {
