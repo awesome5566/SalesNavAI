@@ -50,8 +50,9 @@ describe("Integration: Startup CEOs in MA/CT/RI", () => {
     // Verify inner-encoding encodes quotes and spaces (parentheses are NOT encoded by encodeURIComponent)
     assert.ok(innerEncodedKeywords.includes("%22"), "Inner encoding should encode quotes");
     assert.ok(innerEncodedKeywords.includes("%20"), "Inner encoding should encode spaces");
-    assert.ok(innerEncodedKeywords.startsWith("("), "Keywords boolean should start with parenthesis");
-    assert.ok(innerEncodedKeywords.endsWith(")"), "Keywords boolean should end with parenthesis");
+    // Note: Outer wrapping parentheses are intentionally stripped (see stripOuterParentheses in dsl.ts)
+    // The inner boolean logic (OR) remains intact
+    assert.ok(innerEncodedKeywords.includes("OR"), "Keywords should contain boolean operator");
     
     // Verify DSL structure
     assert.ok(rawDsl.includes("spellCorrectionEnabled:true"), "DSL should have spellCorrectionEnabled");
@@ -73,12 +74,11 @@ describe("Integration: Startup CEOs in MA/CT/RI", () => {
     assert.ok(rawDsl.includes("id:106914527"), "Should have CT (106914527)");
     assert.ok(rawDsl.includes("id:104877241"), "Should have RI (104877241)");
     
-    // Verify REGION format (only id, no text/selectionType)
-    const regionMatch = rawDsl.match(/type:REGION,values:List\(([^)]+)\)/);
+    // Verify REGION format (id + text + selectionType to match LinkedIn's own URLs)
+    const regionMatch = rawDsl.match(/type:REGION/);
     assert.ok(regionMatch, "Should find REGION facet block");
-    const regionBlock = regionMatch![1];
-    assert.ok(!regionBlock.includes("text:"), "REGION should not have text field");
-    assert.ok(!regionBlock.includes("selectionType:"), "REGION should not have selectionType field");
+    assert.ok(rawDsl.includes("text:Massachusetts"), "REGION should have text field with state name");
+    assert.ok(rawDsl.includes("selectionType:INCLUDED"), "REGION should have selectionType field");
 
     // === ARTIFACT 3: Final URL ===
     const finalUrl = buildPeopleSearchUrl(rawDsl);
@@ -108,7 +108,7 @@ describe("Integration: Startup CEOs in MA/CT/RI", () => {
     console.log("✅ NO SENIORITY_LEVEL for CEO");
     console.log("✅ NO FUNCTION for CEO");
     console.log("✅ REGION IDs: MA (101098412), CT (106914527), RI (104877241)");
-    console.log("✅ REGION format: only id (no text/selectionType)");
+    console.log("✅ REGION format: id + text + selectionType (matches LinkedIn format)");
     console.log("✅ URL outer-encoded with double-encoding for keywords");
     console.log("✅ All validations passed");
   });

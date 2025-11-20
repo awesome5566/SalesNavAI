@@ -20,13 +20,21 @@ export function facetBlockIdBased(
   if (values.length === 0) return "";
 
   const valueStrings = values.map((v) => {
-    // REGION facets: ONLY id field (per spec)
+    const selectionType = v.selectionType || "INCLUDED";
+
     if (type === "REGION") {
-      return `(id:${v.id})`;
+      // REGION facets need id, text (inner-encoded), and selectionType
+      // to match LinkedIn's own DSL format
+      // Example from LinkedIn: (id:105080838,text:New%20York%2C%20United%20States,selectionType:INCLUDED)
+      
+      const rawText = v.text ?? "";
+      // Inner-encode once; outer encoding happens in buildPeopleSearchUrl
+      const encodedText = encodeURIComponent(rawText);
+
+      return `(id:${v.id},text:${encodedText},selectionType:${selectionType})`;
     }
     
-    // All other facets: id + selectionType
-    const selectionType = v.selectionType || "INCLUDED";
+    // All other facets: id + selectionType (no text)
     return `(id:${v.id},selectionType:${selectionType})`;
   });
 

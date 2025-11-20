@@ -441,15 +441,38 @@ function App() {
             </div>
           </form>
 
-          {/* Summary Display */}
-          {result?.summary && (
-            <div className="result-summary">
-              <div className="summary-content">
-                {result.summary.split('\n').map((line, index) => (
-                  <div key={index} className="summary-line">
-                    {line}
+          {/* URL Display */}
+          {result?.url && (
+            <div className="result-url">
+              <div className="url-content">
+                <div className="url-label">Sales Navigator URL</div>
+                <div className="url-display-container">
+                  <div className="url-text" title={result.url}>
+                    {result.url}
                   </div>
-                ))}
+                  <button
+                    className="url-copy-button"
+                    onClick={handleCopyURL}
+                    aria-label="Copy URL"
+                    type="button"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M6.5 4A2.5 2.5 0 0 1 9 1.5h6A2.5 2.5 0 0 1 17.5 4v6A2.5 2.5 0 0 1 15 12.5h-6A2.5 2.5 0 0 1 6.5 10V4ZM3 7A2 2 0 0 1 5 5h1v5a4 4 0 0 0 4 4h5v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           )}

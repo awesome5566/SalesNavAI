@@ -11,17 +11,17 @@ import { facetBlockIdBased, facetBlockTextBased, buildPeopleSearchUrl, buildDslF
 import type { MatchedValue, FreeTextValue } from "../types.js";
 
 describe("Spec: REGION Facet Format", () => {
-  it("should only include id field (no text, no selectionType)", () => {
+  it("should include id, text (inner-encoded), and selectionType (per LinkedIn format)", () => {
     const values: MatchedValue[] = [
       { id: 102277331, text: "San Francisco Bay Area", selectionType: "INCLUDED" }
     ];
     
     const result = facetBlockIdBased("REGION", values);
     
-    // Per spec: REGION should only have id
-    assert.strictEqual(result, "(type:REGION,values:List((id:102277331)))");
-    assert.ok(!result.includes("text:"), "REGION should not include text field");
-    assert.ok(!result.includes("selectionType:"), "REGION should not include selectionType field");
+    // Per LinkedIn's actual URLs: REGION should have id, text, and selectionType
+    assert.strictEqual(result, "(type:REGION,values:List((id:102277331,text:San%20Francisco%20Bay%20Area,selectionType:INCLUDED)))");
+    assert.ok(result.includes("text:"), "REGION should include text field to match LinkedIn format");
+    assert.ok(result.includes("selectionType:"), "REGION should include selectionType field to match LinkedIn format");
   });
 
   it("should handle multiple REGION IDs correctly", () => {
@@ -33,9 +33,9 @@ describe("Spec: REGION Facet Format", () => {
     
     const result = facetBlockIdBased("REGION", values);
     
-    assert.strictEqual(result, "(type:REGION,values:List((id:101098412),(id:106914527),(id:104877241)))");
-    assert.ok(!result.includes("text:"));
-    assert.ok(!result.includes("selectionType:"));
+    assert.strictEqual(result, "(type:REGION,values:List((id:101098412,text:Massachusetts,selectionType:INCLUDED),(id:106914527,text:Connecticut,selectionType:INCLUDED),(id:104877241,text:Rhode%20Island,selectionType:INCLUDED)))");
+    assert.ok(result.includes("text:"));
+    assert.ok(result.includes("selectionType:"));
   });
 });
 
@@ -198,9 +198,9 @@ describe("Spec: Example URLs", () => {
     
     assert.ok(decodedOnce.includes("type:REGION"));
     assert.ok(decodedOnce.includes("id:102277331"));
-    // Should NOT contain text or selectionType for REGION
-    assert.ok(!(/type:REGION[^)]*text:/.test(decodedOnce)), "REGION should not have text field");
-    assert.ok(!(/type:REGION[^)]*selectionType:/.test(decodedOnce)), "REGION should not have selectionType field");
+    // Should contain text and selectionType for REGION (per LinkedIn format)
+    assert.ok(/type:REGION[^)]*text:/.test(decodedOnce), "REGION should have text field to match LinkedIn format");
+    assert.ok(/type:REGION[^)]*selectionType:/.test(decodedOnce), "REGION should have selectionType field to match LinkedIn format");
   });
 });
 
@@ -237,9 +237,9 @@ describe("Spec: CEO Scenarios", () => {
     assert.ok(dsl.includes("id:106914527"), "Should include Connecticut (106914527)");
     assert.ok(dsl.includes("id:104877241"), "Should include Rhode Island (104877241)");
     
-    // 4. REGION format: only id, no text or selectionType
-    assert.ok(!dsl.match(/type:REGION[^)]*text:/), "REGION should not have text field");
-    assert.ok(!dsl.match(/type:REGION[^)]*selectionType:/), "REGION should not have selectionType field");
+    // 4. REGION format: id + text + selectionType (per LinkedIn format)
+    assert.ok(dsl.match(/type:REGION[^)]*text:/), "REGION should have text field to match LinkedIn format");
+    assert.ok(dsl.match(/type:REGION[^)]*selectionType:/), "REGION should have selectionType field to match LinkedIn format");
     
     // 5. Should include other facets
     assert.ok(dsl.includes("type:TITLE"), "Should have TITLE");
