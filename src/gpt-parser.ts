@@ -221,13 +221,13 @@ If present, output raw as the only content on its own line (e.g., 10+ years).
 
 KEYWORD BOOLEAN RULES
 
-Syntax: Keyword: ( ... )
+Syntax: Keyword: <boolean_expression> (NO outer parentheses - use parentheses only for internal grouping)
 
 UPPERCASE operators: AND, OR, NOT
 
 Quote multi-word phrases.
 
-Group related terms with parentheses; max 3–5 terms per group.
+Use parentheses for internal grouping only (e.g., NOT blocks, AND grouping). Do NOT wrap the entire expression in outer parentheses.
 
 Structure (when applicable):
 
@@ -237,13 +237,13 @@ CONTEXT: add ≤3 strong context terms (SaaS OR "B2B software" OR Fintech).
 
 LOCATION: omit from Boolean (location is a facet).
 
-SENIORITY bias: use a small NOT block for unwanted levels only when clearly requested (max 5 terms).
+SENIORITY bias: use a small NOT block for unwanted levels only when clearly requested (max 5 terms). Format as: ... NOT ("term1" OR "term2" OR ...)
 
-EXCLUSIONS: add ≤3 obvious mismatches if strongly implied.
+EXCLUSIONS: add ≤3 obvious mismatches if strongly implied. Format as: ... NOT ("term1" OR "term2" OR ...)
 
-Keep Boolean compact; remove empty groups; ensure parentheses balance.
+Keep Boolean compact; remove empty groups; ensure internal grouping parentheses balance.
 
-IMPORTANT: Keyword: must always be present. Extract the most important search terms from the user's query. If the query is very simple, use the main terms. If complex, include relevant synonyms and related terms.
+IMPORTANT: Keyword: must always be present. Extract the most important search terms from the user's query. If the query is very simple, use the main terms. If complex, include relevant synonyms and related terms. Do NOT wrap the entire expression in outer parentheses.
 
 EXAMPLES (IO pairs; output only facet lines - note that Keyword: is always present)
 
@@ -251,56 +251,56 @@ Input: "VPs of Sales in Boston"
 Function: Sales
 Location: Boston, Massachusetts, United States
 Seniority Level: Vice President
-Keyword: ("VP" OR "Vice President" OR "sales")
+Keyword: "VP" OR "Vice President" OR "sales"
 
 Input: "software engineers at startups in SF, not at Google"
 Function: Engineering
 Company Headcount: 1-10, 11-50
 Location: San Francisco County, California, United States
 Current Company: Exclude Google
-Keyword: ("software engineer" OR "software engineering" OR startup OR "early stage")
+Keyword: "software engineer" OR "software engineering" OR startup OR "early stage"
 
 Input: "CFOs at fintech companies in NYC"
 title "CFO" contains
 Industry: Finance
 Location: Manhattan County, New York, United States
-Keyword: (CFO OR "Chief Financial Officer" OR fintech)
+Keyword: CFO OR "Chief Financial Officer" OR fintech
 
 Input: "marketing directors with 10+ years experience"
 title "Marketing Director" contains
 10+ years
-Keyword: ("marketing director" OR "marketing" OR "director")
+Keyword: "marketing director" OR "marketing" OR "director"
 
 Input: "Account Executives at Series B companies, exclude consultants"
 title "Account Executive" contains
 Function: Exclude Consulting
-Keyword: ("Account Executive" OR "AE" OR "Series B")
+Keyword: "Account Executive" OR "AE" OR "Series B"
 
 Input: "entry-level SDRs in SF Bay Area at small startups"
 title "Sales Development Representative" contains
 Function: Sales
 Company Headcount: 1-10, 11-50
 Location: San Francisco County, California, United States
-Keyword: (SDR OR "sales development representative" OR "B2B SaaS" NOT ("Senior" OR "Sr" OR "Manager" OR "Director" OR "VP"))
+Keyword: SDR OR "sales development representative" OR "B2B SaaS" NOT ("Senior" OR "Sr" OR "Manager" OR "Director" OR "VP")
 
 Input: "founders or CEOs in fintech or insurtech, US only"
 Function: Entrepreneurship
 Seniority Level: Owner / Partner, CXO
 Industry: Finance
 Location: United States
-Keyword: (founder OR CEO OR "Chief Executive Officer" OR fintech OR insurtech)
+Keyword: founder OR CEO OR "Chief Executive Officer" OR fintech OR insurtech
 
 Input: "B2B saas sdrs at startups in the bahamas"
 title "Sales Development Representative" contains
 Function: Sales
 Company Headcount: 1-10, 11-50
-Keyword: ("B2B SaaS" OR SDR OR "sales development representative" OR startup OR "early stage" OR bahamas)
+Keyword: "B2B SaaS" OR SDR OR "sales development representative" OR startup OR "early stage" OR bahamas
 
 Input: "CEOs of small startup marketing agencies"
 title "CEO" contains
 Seniority Level: Owner / Partner, CXO
 Company Headcount: 1-10, 11-50
-Keyword: (CEO OR "Chief Executive Officer" OR startup OR "marketing agency" OR "marketing agencies")
+Keyword: CEO OR "Chief Executive Officer" OR startup OR "marketing agency" OR "marketing agencies"
 
 End of spec. Output only facet lines. Keyword: is ALWAYS REQUIRED as the final line.`;
 
