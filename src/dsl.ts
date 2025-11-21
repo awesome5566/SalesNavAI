@@ -163,6 +163,81 @@ function stripOuterParentheses(keywords: string): string {
 }
 
 /**
+ * Validate keyword Boolean syntax with quote-aware parsing
+ * Returns validation result and optionally a safe fallback string
+ * Uses warning + fallback instead of throwing to maintain "best effort" behavior
+ */
+function validateKeywordBoolean(keywords: string): {
+  valid: boolean;
+  error?: string;
+  fallback?: string;
+} {
+  // Check balanced quotes (simple count - if odd, definitely broken)
+  const quoteCount = (keywords.match(/"/g) || []).length;
+  if (quoteCount % 2 !== 0) {
+    // Fallback: remove all quotes and wrap entire string as single phrase
+    const safe = `"${keywords.replace(/"/g, '').trim()}"`;
+    return {
+      valid: false,
+      error: `Unbalanced quotes in keyword Boolean`,
+      fallback: safe
+    };
+  }
+  
+  // Check for trailing operators (obvious syntax error)
+  if (/\b(OR|AND|NOT)\s*$/i.test(keywords.trim())) {
+    // Fallback: remove trailing operator
+    const safe = keywords.trim().replace(/\s+(OR|AND|NOT)\s*$/i, '').trim();
+    return {
+      valid: false,
+      error: `Incomplete Boolean operator at end`,
+      fallback: safe || `"${keywords.replace(/"/g, '').trim()}"`
+    };
+  }
+  
+  // Check balanced parentheses - but ONLY count parens OUTSIDE quotes
+  let depth = 0;
+  let insideQuotes = false;
+  for (let i = 0; i < keywords.length; i++) {
+    const ch = keywords[i];
+    // Track quote state (handle escaped quotes if needed)
+    if (ch === '"' && (i === 0 || keywords[i - 1] !== '\\')) {
+      insideQuotes = !insideQuotes;
+      continue;
+    }
+    
+    // Only count parens when NOT inside quotes
+    if (!insideQuotes) {
+      if (ch === '(') depth++;
+      if (ch === ')') {
+        depth--;
+        if (depth < 0) {
+          // Extra closing paren - try to fix by removing it
+          const safe = keywords.slice(0, i) + keywords.slice(i + 1);
+          return {
+            valid: false,
+            error: `Unbalanced parentheses (extra closing)`,
+            fallback: safe
+          };
+        }
+      }
+    }
+  }
+  
+  if (depth !== 0) {
+    // Unbalanced - fallback to wrapping entire thing as single phrase
+    const safe = `"${keywords.replace(/"/g, '').trim()}"`;
+    return {
+      valid: false,
+      error: `Unbalanced parentheses (missing ${depth > 0 ? 'closing' : 'opening'})`,
+      fallback: safe
+    };
+  }
+  
+  return { valid: true };
+}
+
+/**
  * Helper: Build DSL from matched values
  */
 export function buildDslFromMatches(matches: {
@@ -210,6 +285,25 @@ export function buildDslFromMatches(matches: {
     // Strip outer wrapping parentheses if present (defensive fix for GPT outputs)
     // LinkedIn's DSL parser expects keywords: to be followed by a scalar string, not (expression)
     keywordsRaw = stripOuterParentheses(keywordsRaw);
+    
+    // Validate keyword Boolean syntax before encoding
+    // Use warning + fallback instead of throwing to maintain "best effort" behavior
+    const validation = validateKeywordBoolean(keywordsRaw);
+    if (!validation.valid) {
+      // Log warning but don't crash - use fallback if provided
+      if (process.env.NODE_ENV !== 'production' || process.env.DEBUG_KEYWORDS === 'true') {
+        console.warn(`⚠️  Keyword Boolean validation failed: ${validation.error}`);
+        console.warn(`   Original: ${keywordsRaw.substring(0, 150)}`);
+        if (validation.fallback) {
+          console.warn(`   Using fallback: ${validation.fallback.substring(0, 150)}`);
+        }
+      }
+      
+      // Use fallback if available, otherwise keep original (let URL healer try to fix it)
+      if (validation.fallback) {
+        keywordsRaw = validation.fallback;
+      }
+    }
     
     const keywordsEncoded = encodeURIComponent(keywordsRaw); // STEP 1: Inner-encode keywords
     const filtersPart = buildDslFromMatchesWithoutKeywords(matches);

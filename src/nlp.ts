@@ -1166,8 +1166,10 @@ export function matchKeywords(text: string): string[] {
   const keywords: string[] = [];
 
   // Pattern: "Keyword: X" (case-insensitive)
-  // Stop at newline or start of another facet keyword to prevent cross-contamination
-  const keywordPattern = /keyword\s*:\s*(.+?)(?=\s*(?:\n|function|industry|location|title|seniority|company|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted|$))/gis;
+  // Stop at newline followed by another facet keyword to prevent cross-contamination
+  // We use [\r\n]+ to handle both Unix and Windows line endings
+  // This lookahead ensures we don't stop on words like "function" or "title" if they appear INSIDE the keyword boolean string
+  const keywordPattern = /keyword\s*:\s*(.+?)(?=[\r\n]+\s*(?:function|industry|location|title|seniority|company|current|past|school|years|group|follows|viewed|connection|relationship|lead|posted)\s*:|$)/gis;
   let match;
 
   // Reset regex state to avoid issues between test runs

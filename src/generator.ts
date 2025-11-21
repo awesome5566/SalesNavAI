@@ -305,6 +305,8 @@ export async function generateUrlFromDescription(
 
   // Match industries
   // IMPORTANT: Only use industries that have valid LinkedIn IDs - no free-text
+  // If GPT outputs "Industry: SaaS", it should be dropped here (since SaaS isn't a valid ID)
+  // and rely on the Keyword: field to carry that intent.
   const industries = matchIndustries(processedDescription, store);
   if (industries.length > 0) {
     // Validate that each industry has a valid numeric ID
