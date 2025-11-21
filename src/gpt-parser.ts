@@ -10,7 +10,7 @@ import path from 'node:path';
 
 const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.csv');
 const CSV_HEADERS = ['email', 'timestamp', 'input', 'output', 'status', 'url'] as const;
-const DEFAULT_MODEL = process.env.OPENAI_MODEL ?? 'gpt-5-mini';
+const DEFAULT_MODEL = process.env.OPENAI_MODEL ?? 'gpt-5-nano';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
