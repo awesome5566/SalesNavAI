@@ -46,10 +46,12 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   const authHeader = req.headers.authorization;
   const bearerPrefix = "Bearer ";
 
-  if (!authHeader || !authHeader.startsWith(bearerPrefix)) {
+  // Type guard: ensure authHeader is a string
+  if (!authHeader || typeof authHeader !== "string" || !authHeader.startsWith(bearerPrefix)) {
     return res.status(401).json({ error: "Authorization header missing" });
   }
 
+  // Now TypeScript knows authHeader is a string
   const accessToken = authHeader.slice(bearerPrefix.length).trim();
 
   if (!accessToken) {
