@@ -30,13 +30,18 @@ import {
   matchKeywords,
 } from "./nlp.js";
 import { resolveCompanyIds, resolveSchoolIds, resolveCompanyIdFromHtml, resolveSchoolIdFromHtml } from "./resolvers.js";
-import { buildDslFromMatches, buildPeopleSearchUrl } from "./dsl.js";
+import { buildDslFromMatches } from "./dsl.js";
 import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from "./types.js";
 import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
-import { healSalesNavUrl } from "./url-healer.js";
 import { isValidFacetId } from "./allowlists.js";
+import { spawn } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import 'dotenv/config';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Generate a human-readable summary from matched facets
@@ -276,6 +281,80 @@ async function tryMultipleUrlVariations(
   }
 
   return null;
+}
+
+/**
+ * Build a LinkedIn Sales Navigator URL using the Python URL builder script
+ * @param gptOutput - The structured facet lines output from GPT (e.g., "Function: Sales\nLocation: ...")
+ * @returns The generated LinkedIn Sales Navigator URL
+ * @throws Error if Python execution fails or script returns an error
+ */
+async function buildUrlWithPython(gptOutput: string): Promise<string> {
+  const pythonScriptPath = path.join(__dirname, '..', 'URL builder v2', 'url_builder.py');
+  const pythonScriptDir = path.dirname(pythonScriptPath);
+
+  return new Promise((resolve, reject) => {
+    // Spawn Python process with --json flag
+    // Input will be sent via stdin to handle multi-line input properly
+    const pythonProcess = spawn('python3', ['url_builder.py', '--json'], {
+      cwd: pythonScriptDir,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      stdout += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      stderr += data.toString();
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        const errorMessage = stderr || `Python script exited with code ${code}`;
+        reject(new Error(`Python URL builder failed: ${errorMessage}`));
+        return;
+      }
+
+      try {
+        // Parse JSON output
+        const result = JSON.parse(stdout.trim());
+        
+        if (result.error) {
+          reject(new Error(`Python URL builder error: ${result.error}`));
+          return;
+        }
+
+        if (!result.url || typeof result.url !== 'string') {
+          reject(new Error(`Python URL builder returned invalid output: ${JSON.stringify(result)}`));
+          return;
+        }
+
+        resolve(result.url);
+      } catch (parseError) {
+        reject(new Error(`Failed to parse Python output as JSON. stdout: ${stdout}, stderr: ${stderr}, parse error: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`));
+      }
+    });
+
+    pythonProcess.on('error', (error) => {
+      if ((error as any).code === 'ENOENT') {
+        reject(new Error('Python 3 not found. Please ensure Python 3 is installed and available in PATH.'));
+      } else {
+        reject(new Error(`Failed to spawn Python process: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      }
+    });
+
+    // Send GPT output via stdin
+    if (pythonProcess.stdin) {
+      pythonProcess.stdin.write(gptOutput, 'utf8');
+      pythonProcess.stdin.end();
+    } else {
+      reject(new Error('Failed to write to Python process stdin'));
+    }
+  });
 }
 
 /**
@@ -727,23 +806,25 @@ export async function generateUrlFromDescription(
   // Validate no contradictions between keywords and facets
   validateNoContradictions(matched.KEYWORD, matched, warnings);
 
-  // Build DSL and URL
-  // buildDslFromMatches returns raw DSL with keywords pre-encoded
-  // buildPeopleSearchUrl encodes the entire DSL once
-  const dslDecoded = buildDslFromMatches(matched as any);
-  let url = buildPeopleSearchUrl(dslDecoded);
-
-  // Run URL healer to validate and auto-fix common issues
-  const healReport = healSalesNavUrl(url);
-  if (healReport.changed && !options.silent) {
-    console.log("🔧 URL healer applied fixes:", healReport.reasons.join("; "));
-  }
-  if (!healReport.ok) {
-    warnings.push(`URL validation failed: ${healReport.reasons.join(", ")}`);
-  } else if (healReport.changed) {
-    // Add healer fixes to warnings for transparency
-    warnings.push(...healReport.reasons.map(r => `Auto-fixed: ${r}`));
-    url = healReport.url; // Use healed URL
+  // Build URL using Python URL builder with GPT output
+  // The GPT output (gptResult.output) contains structured facet lines that Python can parse
+  let url: string;
+  let dslDecoded: string;
+  
+  try {
+    url = await buildUrlWithPython(gptResult.output);
+    
+    // Generate DSL from matches for compatibility with existing result structure
+    // This is still useful for debugging/dry-run output
+    dslDecoded = buildDslFromMatches(matched as any);
+    
+    if (!options.silent) {
+      console.log("✅ URL generated using Python URL builder");
+    }
+  } catch (error) {
+    // Python execution failed - throw error (user requested no silent fallback)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    throw new Error(`Failed to generate URL with Python builder: ${errorMessage}`);
   }
 
   // Generate human-readable summary from matched facets
