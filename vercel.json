@@ -8,12 +8,7 @@
       "runtime": "python3.9",
       "maxDuration": 10
     }
-  },
-  "includeFiles": [
-    "facet-store.json",
-    "geoId.csv",
-    "Industry IDs.csv"
-  ]
+  }
 }
 
 

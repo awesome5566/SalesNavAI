@@ -48,15 +48,24 @@ class handler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps(error_response).encode('utf-8'))
                 return
             
-            # Get data file paths relative to the API directory
-            # In Vercel, the function runs in /var/task/api/
-            # Data files are in the parent directory
+            # Get data file paths - try multiple possible locations
+            # In Vercel, files can be in different locations depending on deployment
             api_dir = os.path.dirname(__file__)
             parent_dir = os.path.dirname(api_dir)
+            cwd = os.getcwd()
             
-            facet_store_path = os.path.join(parent_dir, 'facet-store.json')
-            geo_id_path = os.path.join(parent_dir, 'geoId.csv')
-            industry_ids_path = os.path.join(parent_dir, 'Industry IDs.csv')
+            # Find the first existing path for each file
+            def find_file(filename):
+                for base_path in [parent_dir, cwd, '.']:
+                    full_path = os.path.join(base_path, filename)
+                    if os.path.exists(full_path):
+                        return full_path
+                # Default fallback to parent directory
+                return os.path.join(parent_dir, filename)
+            
+            facet_store_path = find_file('facet-store.json')
+            geo_id_path = find_file('geoId.csv')
+            industry_ids_path = find_file('Industry IDs.csv')
             
             # Initialize the URL builder
             try:
