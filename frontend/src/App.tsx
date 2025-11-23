@@ -10,6 +10,16 @@ interface SearchResult {
   dsl?: string
   warnings?: string[]
   summary?: string
+  diagnostics?: {
+    gptStatus?: string
+    pythonStatus?: string
+    hasUrl?: boolean
+    urlLength?: number
+    errorType?: string
+    errorMessage?: string
+    isPythonError?: boolean
+    isGPTError?: boolean
+  }
 }
 
 interface RecentSearch {
@@ -30,6 +40,8 @@ function App() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [diagnostics, setDiagnostics] = useState<SearchResult['diagnostics'] | null>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showAccountModal, setShowAccountModal] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'signIn' | 'signUp'>('signIn')
@@ -78,6 +90,8 @@ function App() {
 
     setLoading(true)
     setResult(null)
+    setError(null)
+    setDiagnostics(null)
 
     try {
       const headers: Record<string, string> = {
@@ -93,20 +107,30 @@ function App() {
         body: JSON.stringify({ query: queryToSubmit.trim() }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        // Handle error response with diagnostics
+        setError(data.error || `HTTP error! status: ${response.status}`)
+        setDiagnostics(data.diagnostics || null)
+        return
       }
 
-      const data = await response.json()
       setResult(data)
+      setDiagnostics(data.diagnostics || null)
       addRecentSearch(queryToSubmit, data.url)
 
       if (data.url) {
         void copyUrlToClipboard(data.url)
         // Auto-open the URL in a new tab
         window.open(data.url, '_blank')
+      } else {
+        // URL is missing - this is a diagnostic case
+        setError('URL was not generated. Check diagnostics below.')
       }
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      setError(`Network error: ${errorMessage}`)
       console.error('Error:', err)
     } finally {
       setLoading(false)
@@ -474,6 +498,63 @@ function App() {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Error Display */}
+          {error && (
+            <div className="result-error">
+              <div className="error-title">❌ Error</div>
+              <div className="error-message">{error}</div>
+              {diagnostics && (
+                <div className="error-diagnostics">
+                  <div className="diagnostics-title">Diagnostics:</div>
+                  <div className="diagnostics-item">
+                    <strong>GPT Status:</strong> {diagnostics.gptStatus || 'unknown'}
+                  </div>
+                  <div className="diagnostics-item">
+                    <strong>Python Status:</strong> {diagnostics.pythonStatus || 'unknown'}
+                  </div>
+                  {diagnostics.isPythonError && (
+                    <div className="diagnostics-item diagnostics-item--error">
+                      ⚠️ Python URL builder failed - check Vercel logs for details
+                    </div>
+                  )}
+                  {diagnostics.isGPTError && (
+                    <div className="diagnostics-item diagnostics-item--error">
+                      ⚠️ GPT parser failed - check Vercel logs for details
+                    </div>
+                  )}
+                  {diagnostics.errorType && (
+                    <div className="diagnostics-item">
+                      <strong>Error Type:</strong> {diagnostics.errorType}
+                    </div>
+                  )}
+                  {diagnostics.errorMessage && (
+                    <div className="diagnostics-item">
+                      <strong>Error Details:</strong> {diagnostics.errorMessage}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Diagnostics Display (even on success) */}
+          {diagnostics && !error && (
+            <div className="result-diagnostics">
+              <div className="diagnostics-title">Status:</div>
+              <div className="diagnostics-item">
+                <strong>GPT:</strong> {diagnostics.gptStatus || 'unknown'}
+              </div>
+              <div className="diagnostics-item">
+                <strong>Python:</strong> {diagnostics.pythonStatus || 'unknown'}
+              </div>
+              {!diagnostics.hasUrl && (
+                <div className="diagnostics-item diagnostics-item--warning">
+                  ⚠️ No URL generated
+                </div>
+              )}
             </div>
           )}
 

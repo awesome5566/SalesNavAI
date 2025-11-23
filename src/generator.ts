@@ -370,6 +370,7 @@ export async function generateUrlFromDescription(
   // Preprocess with GPT to convert natural language to structured syntax
   const gptResult = await parseWithGPT(description, { silent: options.silent });
   const processedDescription = gptResult.processedQuery;
+  const gptStatus = gptResult.status; // Track GPT status
 
   // Load data
   const store = loadAllData();
@@ -810,6 +811,7 @@ export async function generateUrlFromDescription(
   // The GPT output (gptResult.output) contains structured facet lines that Python can parse
   let url: string;
   let dslDecoded: string;
+  let pythonStatus = 'success';
   
   try {
     url = await buildUrlWithPython(gptResult.output);
@@ -822,9 +824,14 @@ export async function generateUrlFromDescription(
       console.log("✅ URL generated using Python URL builder");
     }
   } catch (error) {
-    // Python execution failed - throw error (user requested no silent fallback)
+    pythonStatus = 'failed';
+    // Python execution failed - throw error with status info attached
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    throw new Error(`Failed to generate URL with Python builder: ${errorMessage}`);
+    const enhancedError = new Error(`Failed to generate URL with Python builder: ${errorMessage}`);
+    // Attach status info to error for diagnostics
+    (enhancedError as any).gptStatus = gptStatus;
+    (enhancedError as any).pythonStatus = pythonStatus;
+    throw enhancedError;
   }
 
   // Generate human-readable summary from matched facets
@@ -836,6 +843,8 @@ export async function generateUrlFromDescription(
     matched,
     warnings,
     summary,
+    gptStatus,
+    pythonStatus,
   };
 
   await logGptConversation({

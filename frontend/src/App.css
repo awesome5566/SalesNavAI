@@ -468,6 +468,86 @@ body {
   margin-bottom: 0;
 }
 
+/* Error Display */
+.result-error {
+  margin-top: 1rem;
+  width: 75%;
+  max-width: 39rem;
+  background: rgba(254, 226, 226, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.error-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #991b1b;
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #7f1d1d;
+  margin-bottom: 0.75rem;
+}
+
+.error-diagnostics {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.diagnostics-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #991b1b;
+  margin-bottom: 0.5rem;
+}
+
+.diagnostics-item {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #7f1d1d;
+  margin-bottom: 0.375rem;
+}
+
+.diagnostics-item--error {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.diagnostics-item--warning {
+  color: #d97706;
+  font-weight: 500;
+}
+
+.result-diagnostics {
+  margin-top: 1rem;
+  width: 75%;
+  max-width: 39rem;
+  background: rgba(239, 246, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+
+.result-diagnostics .diagnostics-title {
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+.result-diagnostics .diagnostics-item {
+  color: #1e3a8a;
+}
+
 /* Marketing Cards - Below the Fold */
 .marketing-cards-section {
   width: 100%;

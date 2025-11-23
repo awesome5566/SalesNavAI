@@ -86,12 +86,39 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   try {
     const result = await generateUrlFromDescription(query);
     const payload = buildGeneratorJsonResponse(result);
-    return res.status(200).json(payload);
+    
+    // Add diagnostic information
+    return res.status(200).json({
+      ...payload,
+      diagnostics: {
+        gptStatus: result.gptStatus || 'unknown',
+        pythonStatus: result.pythonStatus || 'unknown',
+        hasUrl: !!payload.url,
+        urlLength: payload.url?.length || 0,
+      }
+    });
   } catch (error) {
     console.error("API error:", error);
+    
+    // Enhanced error response with diagnostics
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorWithStatus = error as any;
+    const diagnostics = {
+      errorType: error instanceof Error ? error.constructor.name : 'Unknown',
+      errorMessage,
+      // Extract status from error if available (from generator)
+      gptStatus: errorWithStatus.gptStatus || 'unknown',
+      pythonStatus: errorWithStatus.pythonStatus || 'unknown',
+      // Check if it's a Python error
+      isPythonError: errorMessage.includes('Python') || errorMessage.includes('python'),
+      // Check if it's a GPT error
+      isGPTError: errorMessage.includes('GPT') || errorMessage.includes('OpenAI'),
+    };
+    
     return res.status(500).json({
       error: "Failed to generate URL",
-      details: error instanceof Error ? error.message : "Unknown error",
+      details: errorMessage,
+      diagnostics,
     });
   } finally {
     process.env.REQUEST_USER_EMAIL = previousRequestEmail;

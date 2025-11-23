@@ -125,5 +125,7 @@ export interface GeneratorResult {
   matched: Partial<NLPMatches>;
   warnings: string[];
   summary?: string;
+  gptStatus?: string;
+  pythonStatus?: string;
 }
 
