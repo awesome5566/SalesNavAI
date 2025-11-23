@@ -178,7 +178,7 @@ export class SalesNavigatorUrlBuilder {
     return result;
   }
 
-  private buildFilterValue(filterType: string, idValue: string, textValue: string): string {
+  private buildFilterValue(idValue: string, textValue: string): string {
     const encodedText = this.encodeForQuery(textValue);
     return `(id%3A${idValue}%2Ctext%3A${encodedText}%2CselectionType%3AINCLUDED)`;
   }
@@ -188,7 +188,7 @@ export class SalesNavigatorUrlBuilder {
       return null;
     }
 
-    const valueParts = values.map((value) => this.buildFilterValue(filterType, value.id, value.text));
+    const valueParts = values.map((value) => this.buildFilterValue(value.id, value.text));
     const valuesList = valueParts.join('%2C');
     return `(type%3A${filterType}%2Cvalues%3AList(${valuesList}))`;
   }
