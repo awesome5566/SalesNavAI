@@ -36,7 +36,7 @@ import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
 import { isValidFacetId } from "./allowlists.js";
 import path from 'path';
-import { SalesNavigatorUrlBuilder } from '../URL builder v3/src/urlBuilder.js';
+import { SalesNavigatorUrlBuilder } from './url-builder-v3.js';
 import 'dotenv/config';
 
 /**
