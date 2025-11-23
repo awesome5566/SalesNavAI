@@ -5,7 +5,6 @@
   ],
   "functions": {
     "api/build-url.py": {
-      "runtime": "@vercel/python",
       "maxDuration": 10
     }
   }
