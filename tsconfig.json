@@ -16,6 +16,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "URL builder v3/src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

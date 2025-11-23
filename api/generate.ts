@@ -109,8 +109,8 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
       // Extract status from error if available (from generator)
       gptStatus: errorWithStatus.gptStatus || 'unknown',
       pythonStatus: errorWithStatus.pythonStatus || 'unknown',
-      // Check if it's a Python error
-      isPythonError: errorMessage.includes('Python') || errorMessage.includes('python'),
+      // Check if it's a URL builder error (formerly Python, now TypeScript)
+      isPythonError: errorMessage.includes('Python') || errorMessage.includes('python') || errorMessage.includes('TypeScript URL builder'),
       // Check if it's a GPT error
       isGPTError: errorMessage.includes('GPT') || errorMessage.includes('OpenAI'),
     };

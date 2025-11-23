@@ -1,0 +1,443 @@
+displayValue,id,headline,headlineV2/text
+Chiropractors,2048,Chiropractors,Chiropractors
+Defense and Space Manufacturing,1,Defense and Space Manufacturing,Defense and Space Manufacturing
+Optometrists,2050,Optometrists,Optometrists
+Computer Hardware Manufacturing,3,Computer Hardware Manufacturing,Computer Hardware Manufacturing
+Software Development,4,Software Development,Software Development
+Computer Networking Products,5,Computer Networking Products,Computer Networking Products
+Transportation Equipment Manufacturing,1029,Transportation Equipment Manufacturing,Transportation Equipment Manufacturing
+"Technology, Information and Internet",6,"Technology, Information and Internet","Technology, Information and Internet"
+Internet Publishing,6,Internet Publishing,Internet Publishing
+"Physical, Occupational and Speech Therapists",2054,"Physical, Occupational and Speech Therapists","Physical, Occupational and Speech Therapists"
+Semiconductor Manufacturing,7,Semiconductor Manufacturing,Semiconductor Manufacturing
+Telecommunications,8,Telecommunications,Telecommunications
+Law Practice,9,Law Practice,Law Practice
+Housing Programs,3081,Housing Programs,Housing Programs
+Legal Services,10,Legal Services,Legal Services
+Business Consulting and Services,11,Business Consulting and Services,Business Consulting and Services
+Biotechnology Research,12,Biotechnology Research,Biotechnology Research
+Family Planning Centers,2060,Family Planning Centers,Family Planning Centers
+Medical Practices,13,Medical Practices,Medical Practices
+Transportation Programs,3085,Transportation Programs,Transportation Programs
+Hospitals and Health Care,14,Hospitals and Health Care,Hospitals and Health Care
+Utilities Administration,3086,Utilities Administration,Utilities Administration
+Pharmaceutical Manufacturing,15,Pharmaceutical Manufacturing,Pharmaceutical Manufacturing
+Outpatient Care Centers,2063,Outpatient Care Centers,Outpatient Care Centers
+Veterinary Services,16,Veterinary Services,Veterinary Services
+Medical Equipment Manufacturing,17,Medical Equipment Manufacturing,Medical Equipment Manufacturing
+Space Research and Technology,3089,Space Research and Technology,Space Research and Technology
+Motor Vehicle Parts Manufacturing,1042,Motor Vehicle Parts Manufacturing,Motor Vehicle Parts Manufacturing
+Personal Care Product Manufacturing,18,Personal Care Product Manufacturing,Personal Care Product Manufacturing
+Retail Apparel and Fashion,19,Retail Apparel and Fashion,Retail Apparel and Fashion
+Sporting Goods Manufacturing,20,Sporting Goods Manufacturing,Sporting Goods Manufacturing
+Tobacco Manufacturing,21,Tobacco Manufacturing,Tobacco Manufacturing
+Medical and Diagnostic Laboratories,2069,Medical and Diagnostic Laboratories,Medical and Diagnostic Laboratories
+Retail Groceries,22,Retail Groceries,Retail Groceries
+Food and Beverage Manufacturing,23,Food and Beverage Manufacturing,Food and Beverage Manufacturing
+Oil Extraction,3095,Oil Extraction,Oil Extraction
+Computers and Electronics Manufacturing,24,Computers and Electronics Manufacturing,Computers and Electronics Manufacturing
+Natural Gas Extraction,3096,Natural Gas Extraction,Natural Gas Extraction
+Manufacturing,25,Manufacturing,Manufacturing
+Furniture and Home Furnishings Manufacturing,26,Furniture and Home Furnishings Manufacturing,Furniture and Home Furnishings Manufacturing
+Home Health Care Services,2074,Home Health Care Services,Home Health Care Services
+Retail,27,Retail,Retail
+Embedded Software Products,3099,Embedded Software Products,Embedded Software Products
+Entertainment Providers,28,Entertainment Providers,Entertainment Providers
+Mobile Computing Software Products,3100,Mobile Computing Software Products,Mobile Computing Software Products
+Gambling Facilities and Casinos,29,Gambling Facilities and Casinos,Gambling Facilities and Casinos
+Ambulance Services,2077,Ambulance Services,Ambulance Services
+Desktop Computing Software Products,3101,Desktop Computing Software Products,Desktop Computing Software Products
+IT System Custom Software Development,3102,IT System Custom Software Development,IT System Custom Software Development
+Travel Arrangements,30,Travel Arrangements,Travel Arrangements
+IT System Operations and Maintenance,3103,IT System Operations and Maintenance,IT System Operations and Maintenance
+Hospitality,31,Hospitality,Hospitality
+IT System Installation and Disposal,3104,IT System Installation and Disposal,IT System Installation and Disposal
+Restaurants,32,Restaurants,Restaurants
+IT System Training and Support,3105,IT System Training and Support,IT System Training and Support
+Hospitals,2081,Hospitals,Hospitals
+Spectator Sports,33,Spectator Sports,Spectator Sports
+IT System Data Services,3106,IT System Data Services,IT System Data Services
+Food and Beverage Services,34,Food and Beverage Services,Food and Beverage Services
+"Accommodation and Food Services",2190,"Accommodation and Food Services","Accommodation and Food Services"
+IT System Testing and Evaluation,3107,IT System Testing and Evaluation,IT System Testing and Evaluation
+"Movies, Videos, and Sound",35,"Movies, Videos, and Sound","Movies, Videos, and Sound"
+Movies and Sound Recording,35,Movies and Sound Recording,Movies and Sound Recording
+Broadcast Media Production and Distribution,36,Broadcast Media Production and Distribution,Broadcast Media Production and Distribution
+"Museums, Historical Sites, and Zoos",37,"Museums, Historical Sites, and Zoos","Museums, Historical Sites, and Zoos"
+Artists and Writers,38,Artists and Writers,Artists and Writers
+Performing Arts,39,Performing Arts,Performing Arts
+Recreational Facilities,40,Recreational Facilities,Recreational Facilities
+Banking,41,Banking,Banking
+Insurance,42,Insurance,Insurance
+Nursing Homes and Residential Care Facilities,2091,Nursing Homes and Residential Care Facilities,Nursing Homes and Residential Care Facilities
+Financial Services,43,Financial Services,Financial Services
+Real Estate,44,Real Estate,Real Estate
+Investment Banking,45,Investment Banking,Investment Banking
+Investment Management,46,Investment Management,Investment Management
+Accounting,47,Accounting,Accounting
+Construction,48,Construction,Construction
+Wholesale Building Materials,49,Wholesale Building Materials,Wholesale Building Materials
+Architecture and Planning,50,Architecture and Planning,Architecture and Planning
+Civil Engineering,51,Civil Engineering,Civil Engineering
+Internet News,3124,Internet News,Internet News
+Aviation and Aerospace Component Manufacturing,52,Aviation and Aerospace Component Manufacturing,Aviation and Aerospace Component Manufacturing
+Blogs,3125,Blogs,Blogs
+Motor Vehicle Manufacturing,53,Motor Vehicle Manufacturing,Motor Vehicle Manufacturing
+Interior Design,3126,Interior Design,Interior Design
+Chemical Manufacturing,54,Chemical Manufacturing,Chemical Manufacturing
+Social Networking Platforms,3127,Social Networking Platforms,Social Networking Platforms
+Machinery Manufacturing,55,Machinery Manufacturing,Machinery Manufacturing
+Household and Institutional Furniture Manufacturing,1080,Household and Institutional Furniture Manufacturing,Household and Institutional Furniture Manufacturing
+Business Intelligence Platforms,3128,Business Intelligence Platforms,Business Intelligence Platforms
+Mining,56,Mining,Mining
+Business Content,3129,Business Content,Business Content
+Oil and Gas,57,Oil and Gas,Oil and Gas
+Data Security Software Products,3130,Data Security Software Products,Data Security Software Products
+Shipbuilding,58,Shipbuilding,Shipbuilding
+Utilities,59,Utilities,Utilities
+Mobile Gaming Apps,3131,Mobile Gaming Apps,Mobile Gaming Apps
+Textile Manufacturing,60,Textile Manufacturing,Textile Manufacturing
+Technology and Information,3132,Technology and Information,Technology and Information
+Paper and Forest Product Manufacturing,61,Paper and Forest Product Manufacturing,Paper and Forest Product Manufacturing
+Media and Telecommunications,3133,Media and Telecommunications,Media and Telecommunications
+Railroad Equipment Manufacturing,62,Railroad Equipment Manufacturing,Railroad Equipment Manufacturing
+Blockchain Services,3134,Blockchain Services,Blockchain Services
+Farming,63,Farming,Farming
+Services for the Elderly and Disabled,2112,Services for the Elderly and Disabled,Services for the Elderly and Disabled
+Ranching,64,Ranching,Ranching
+Dairy Product Manufacturing,65,Dairy Product Manufacturing,Dairy Product Manufacturing
+Office Furniture and Fixtures Manufacturing,1090,Office Furniture and Fixtures Manufacturing,Office Furniture and Fixtures Manufacturing
+Fisheries,66,Fisheries,Fisheries
+Community Services,2115,Community Services,Community Services
+Primary and Secondary Education,67,Primary and Secondary Education,Primary and Secondary Education
+Higher Education,68,Higher Education,Higher Education
+Education Administration Programs,69,Education Administration Programs,Education Administration Programs
+Research Services,70,Research Services,Research Services
+Mattress and Blinds Manufacturing,1095,Mattress and Blinds Manufacturing,Mattress and Blinds Manufacturing
+Armed Forces,71,Armed Forces,Armed Forces
+Legislative Offices,72,Legislative Offices,Legislative Offices
+Administration of Justice,73,Administration of Justice,Administration of Justice
+International Affairs,74,International Affairs,International Affairs
+Emergency and Relief Services,2122,Emergency and Relief Services,Emergency and Relief Services
+Government Administration,75,Government Administration,Government Administration
+Executive Offices,76,Executive Offices,Executive Offices
+Law Enforcement,77,Law Enforcement,Law Enforcement
+Vocational Rehabilitation Services,2125,Vocational Rehabilitation Services,Vocational Rehabilitation Services
+Public Safety,78,Public Safety,Public Safety
+Public Policy Offices,79,Public Policy Offices,Public Policy Offices
+Advertising Services,80,Advertising Services,Advertising Services
+Child Day Care Services,2128,Child Day Care Services,Child Day Care Services
+Newspaper Publishing,81,Newspaper Publishing,Newspaper Publishing
+Performing Arts and Spectator Sports,2130,Performing Arts and Spectator Sports,Performing Arts and Spectator Sports
+Book and Periodical Publishing,82,Book and Periodical Publishing,Book and Periodical Publishing
+Printing Services,83,Printing Services,Printing Services
+Information Services,84,Information Services,Information Services
+Libraries,85,Libraries,Libraries
+Theater Companies,2133,Theater Companies,Theater Companies
+Environmental Services,86,Environmental Services,Environmental Services
+Freight and Package Transportation,87,Freight and Package Transportation,Freight and Package Transportation
+Dance Companies,2135,Dance Companies,Dance Companies
+Individual and Family Services,88,Individual and Family Services,Individual and Family Services
+Religious Institutions,89,Religious Institutions,Religious Institutions
+Civic and Social Organizations,90,Civic and Social Organizations,Civic and Social Organizations
+Consumer Services,91,Consumer Services,Consumer Services
+Circuses and Magic Shows,2139,Circuses and Magic Shows,Circuses and Magic Shows
+Truck Transportation,92,Truck Transportation,Truck Transportation
+Warehousing and Storage,93,Warehousing and Storage,Warehousing and Storage
+Sports Teams and Clubs,2142,Sports Teams and Clubs,Sports Teams and Clubs
+Airlines and Aviation,94,Airlines and Aviation,Airlines and Aviation
+Maritime Transportation,95,Maritime Transportation,Maritime Transportation
+Racetracks,2143,Racetracks,Racetracks
+IT Services and IT Consulting,96,IT Services and IT Consulting,IT Services and IT Consulting
+Market Research,97,Market Research,Market Research
+Public Relations and Communications Services,98,Public Relations and Communications Services,Public Relations and Communications Services
+Design Services,99,Design Services,Design Services
+Non-profit Organizations,100,Non-profit Organizations,Non-profit Organizations
+Fundraising,101,Fundraising,Fundraising
+Strategic Management Services,102,Strategic Management Services,Strategic Management Services
+Writing and Editing,103,Writing and Editing,Writing and Editing
+Staffing and Recruiting,104,Staffing and Recruiting,Staffing and Recruiting
+Wholesale Motor Vehicles and Parts,1128,Wholesale Motor Vehicles and Parts,Wholesale Motor Vehicles and Parts
+"Professional Training and Coaching",105,"Professional Training and Coaching","Professional Training and Coaching"
+Business Skills Training,105,Business Skills Training,Business Skills Training
+Venture Capital and Private Equity Principals,106,Venture Capital and Private Equity Principals,Venture Capital and Private Equity Principals
+Political Organizations,107,Political Organizations,Political Organizations
+Translation and Localization,108,Translation and Localization,Translation and Localization
+Computer Games,109,Computer Games,Computer Games
+Events Services,110,Events Services,Events Services
+Retail Art Supplies,111,Retail Art Supplies,Retail Art Supplies
+"Retail Art Dealers",3186,"Retail Art Dealers","Retail Art Dealers"
+Museums,2159,Museums,Museums
+"Appliances, Electrical, and Electronics Manufacturing",112,"Appliances, Electrical, and Electronics Manufacturing","Appliances, Electrical, and Electronics Manufacturing"
+Online Audio and Video Media,113,Online Audio and Video Media,Online Audio and Video Media
+Wholesale Furniture and Home Furnishings,1137,Wholesale Furniture and Home Furnishings,Wholesale Furniture and Home Furnishings
+Historical Sites,2161,Historical Sites,Historical Sites
+Nanotechnology Research,114,Nanotechnology Research,Nanotechnology Research
+Musicians,115,Musicians,Musicians
+Zoos and Botanical Gardens,2163,Zoos and Botanical Gardens,Zoos and Botanical Gardens
+"Transportation, Logistics, Supply Chain and Storage",116,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage"
+"Transportation, Logistics and Storage",116,"Transportation, Logistics and Storage","Transportation, Logistics and Storage"
+Plastics Manufacturing,117,Plastics Manufacturing,Plastics Manufacturing
+Computer and Network Security,118,Computer and Network Security,Computer and Network Security
+Wireless Services,119,Wireless Services,Wireless Services
+Amusement Parks and Arcades,2167,Amusement Parks and Arcades,Amusement Parks and Arcades
+Alternative Dispute Resolution,120,Alternative Dispute Resolution,Alternative Dispute Resolution
+Security and Investigations,121,Security and Investigations,Security and Investigations
+Facilities Services,122,Facilities Services,Facilities Services
+Outsourcing and Offshoring Consulting,123,Outsourcing and Offshoring Consulting,Outsourcing and Offshoring Consulting
+Wellness and Fitness Services,124,Wellness and Fitness Services,Wellness and Fitness Services
+Alternative Medicine,125,Alternative Medicine,Alternative Medicine
+Media Production,126,Media Production,Media Production
+Animation and Post-production,127,Animation and Post-production,Animation and Post-production
+Leasing Non-residential Real Estate,128,Leasing Non-residential Real Estate,Leasing Non-residential Real Estate
+Capital Markets,129,Capital Markets,Capital Markets
+Wholesale Photography Equipment and Supplies,1153,Wholesale Photography Equipment and Supplies,Wholesale Photography Equipment and Supplies
+Think Tanks,130,Think Tanks,Think Tanks
+Philanthropic Fundraising Services,131,Philanthropic Fundraising Services,Philanthropic Fundraising Services
+Golf Courses and Country Clubs,2179,Golf Courses and Country Clubs,Golf Courses and Country Clubs
+E-Learning Providers,132,E-Learning Providers,E-Learning Providers
+Wholesale,133,Wholesale,Wholesale
+Wholesale Computer Equipment,1157,Wholesale Computer Equipment,Wholesale Computer Equipment
+Skiing Facilities,2181,Skiing Facilities,Skiing Facilities
+Wholesale Import and Export,134,Wholesale Import and Export,Wholesale Import and Export
+Industrial Machinery Manufacturing,135,Industrial Machinery Manufacturing,Industrial Machinery Manufacturing
+Photography,136,Photography,Photography
+Human Resources Services,137,Human Resources Services,Human Resources Services
+Retail Office Equipment,138,Retail Office Equipment,Retail Office Equipment
+Mental Health Care,139,Mental Health Care,Mental Health Care
+Graphic Design,140,Graphic Design,Graphic Design
+International Trade and Development,141,International Trade and Development,International Trade and Development
+Beverage Manufacturing,142,Beverage Manufacturing,Beverage Manufacturing
+Accommodation,2190,Accommodation,Accommodation
+Wholesale Metals and Minerals,1166,Wholesale Metals and Minerals,Wholesale Metals and Minerals
+Retail Luxury Goods and Jewelry,143,Retail Luxury Goods and Jewelry,Retail Luxury Goods and Jewelry
+Renewable Energy Semiconductor Manufacturing,144,Renewable Energy Semiconductor Manufacturing,Renewable Energy Semiconductor Manufacturing
+"Glass, Ceramics and Concrete Manufacturing",145,"Glass, Ceramics and Concrete Manufacturing","Glass, Ceramics and Concrete Manufacturing"
+Packaging and Containers Manufacturing,146,Packaging and Containers Manufacturing,Packaging and Containers Manufacturing
+Hotels and Motels,2194,Hotels and Motels,Hotels and Motels
+Automation Machinery Manufacturing,147,Automation Machinery Manufacturing,Automation Machinery Manufacturing
+"Wholesale Appliances, Electrical, and Electronics",1171,"Wholesale Appliances, Electrical, and Electronics","Wholesale Appliances, Electrical, and Electronics"
+Government Relations Services,148,Government Relations Services,Government Relations Services
+"Bed-and-Breakfasts, Hostels, Homestays",2197,"Bed-and-Breakfasts, Hostels, Homestays","Bed-and-Breakfasts, Hostels, Homestays"
+Horticulture,150,Horticulture,Horticulture
+"Wholesale Hardware, Plumbing, Heating Equipment",1178,"Wholesale Hardware, Plumbing, Heating Equipment","Wholesale Hardware, Plumbing, Heating Equipment"
+Wholesale Machinery,1187,Wholesale Machinery,Wholesale Machinery
+Caterers,2212,Caterers,Caterers
+Mobile Food Services,2214,Mobile Food Services,Mobile Food Services
+"Renewable Energy Power Generation",3240,"Renewable Energy Power Generation","Renewable Energy Power Generation"
+"Renewable Energy Equipment Manufacturing",3241,"Renewable Energy Equipment Manufacturing","Renewable Energy Equipment Manufacturing"
+"Engineering Services",3242,"Engineering Services","Engineering Services"
+"Services for Renewable Energy",3243,"Services for Renewable Energy","Services for Renewable Energy"
+"Digital Accessibility Services",3244,"Digital Accessibility Services","Digital Accessibility Services"
+"Accessible Hardware Manufacturing",3245,"Accessible Hardware Manufacturing","Accessible Hardware Manufacturing"
+"Accessible Architecture and Design",3246,"Accessible Architecture and Design","Accessible Architecture and Design"
+"Robot Manufacturing",3247,"Robot Manufacturing","Robot Manufacturing"
+"Robotics Engineering",3248,"Robotics Engineering","Robotics Engineering"
+"Bars, Taverns, and Nightclubs",2217,"Bars, Taverns, and Nightclubs","Bars, Taverns, and Nightclubs"
+Repair and Maintenance,2225,Repair and Maintenance,Repair and Maintenance
+Surveying and Mapping Services,3249,Surveying and Mapping Services,Surveying and Mapping Services
+Vehicle Repair and Maintenance,2226,Vehicle Repair and Maintenance,Vehicle Repair and Maintenance
+"Retail Pharmacies",3250,"Retail Pharmacies","Retail Pharmacies"
+"Climate Technology Product Manufacturing",3251,"Climate Technology Product Manufacturing","Climate Technology Product Manufacturing"
+"Climate Data and Analytics",3252,"Climate Data and Analytics","Climate Data and Analytics"
+"Alternative Fuel Vehicle Manufacturing",3253,"Alternative Fuel Vehicle Manufacturing","Alternative Fuel Vehicle Manufacturing"
+"Smart Meter Manufacturing",3254,"Smart Meter Manufacturing","Smart Meter Manufacturing"
+"Fuel Cell Manufacturing",3255,"Fuel Cell Manufacturing","Fuel Cell Manufacturing"
+"Regenerative Design",3256,"Regenerative Design","Regenerative Design"
+"Funeral Services",3257,"Funeral Services","Funeral Services"
+"Death Care Services",3258,"Death Care Services","Death Care Services"
+"Energy Technology",3259,"Energy Technology","Energy Technology"
+Wholesale Recyclable Materials,1206,Wholesale Recyclable Materials,Wholesale Recyclable Materials
+Wholesale Luxury Goods and Jewelry,1208,Wholesale Luxury Goods and Jewelry,Wholesale Luxury Goods and Jewelry
+Wholesale Paper Products,1212,Wholesale Paper Products,Wholesale Paper Products
+Electronic and Precision Equipment Maintenance,2240,Electronic and Precision Equipment Maintenance,Electronic and Precision Equipment Maintenance
+Wholesale Drugs and Sundries,1221,Wholesale Drugs and Sundries,Wholesale Drugs and Sundries
+Wholesale Apparel and Sewing Supplies,1222,Wholesale Apparel and Sewing Supplies,Wholesale Apparel and Sewing Supplies
+Commercial and Industrial Machinery Maintenance,2247,Commercial and Industrial Machinery Maintenance,Commercial and Industrial Machinery Maintenance
+"Farming, Ranching, Forestry",201,"Farming, Ranching, Forestry","Farming, Ranching, Forestry"
+Reupholstery and Furniture Repair,2253,Reupholstery and Furniture Repair,Reupholstery and Furniture Repair
+Wholesale Footwear,1230,Wholesale Footwear,Wholesale Footwear
+Wholesale Food and Beverage,1231,Wholesale Food and Beverage,Wholesale Food and Beverage
+Footwear and Leather Goods Repair,2255,Footwear and Leather Goods Repair,Footwear and Leather Goods Repair
+Personal and Laundry Services,2258,Personal and Laundry Services,Personal and Laundry Services
+Personal Care Services,2259,Personal Care Services,Personal Care Services
+Laundry and Drycleaning Services,2272,Laundry and Drycleaning Services,Laundry and Drycleaning Services
+Wholesale Raw Farm Products,1250,Wholesale Raw Farm Products,Wholesale Raw Farm Products
+Wholesale Chemical and Allied Products,1257,Wholesale Chemical and Allied Products,Wholesale Chemical and Allied Products
+Pet Services,2282,Pet Services,Pet Services
+Wholesale Petroleum and Petroleum Products,1262,Wholesale Petroleum and Petroleum Products,Wholesale Petroleum and Petroleum Products
+Wholesale Alcoholic Beverages,1267,Wholesale Alcoholic Beverages,Wholesale Alcoholic Beverages
+Ranching and Fisheries,256,Ranching and Fisheries,Ranching and Fisheries
+Internet Marketplace Platforms,1285,Internet Marketplace Platforms,Internet Marketplace Platforms
+Retail Motor Vehicles,1292,Retail Motor Vehicles,Retail Motor Vehicles
+Household Services,2318,Household Services,Household Services
+Retail Furniture and Home Furnishings,1309,Retail Furniture and Home Furnishings,Retail Furniture and Home Furnishings
+"Retail Appliances, Electrical, and Electronic Equipment",1319,"Retail Appliances, Electrical, and Electronic Equipment","Retail Appliances, Electrical, and Electronic Equipment"
+Forestry and Logging,298,Forestry and Logging,Forestry and Logging
+Retail Building Materials and Garden Equipment,1324,Retail Building Materials and Garden Equipment,Retail Building Materials and Garden Equipment
+Health and Human Services,2353,Health and Human Services,Health and Human Services
+Public Health,2358,Public Health,Public Health
+Public Assistance Programs,2360,Public Assistance Programs,Public Assistance Programs
+Food and Beverage Retail,1339,Food and Beverage Retail,Food and Beverage Retail
+"Air, Water, and Waste Program Management",2366,"Air, Water, and Waste Program Management","Air, Water, and Waste Program Management"
+Conservation Programs,2368,Conservation Programs,Conservation Programs
+Housing and Community Development,2369,Housing and Community Development,Housing and Community Development
+Community Development and Urban Planning,2374,Community Development and Urban Planning,Community Development and Urban Planning
+Economic Programs,2375,Economic Programs,Economic Programs
+"Oil, Gas, and Mining",332,"Oil, Gas, and Mining","Oil, Gas, and Mining"
+Retail Health and Personal Care Products,1359,Retail Health and Personal Care Products,Retail Health and Personal Care Products
+Coal Mining,341,Coal Mining,Coal Mining
+Military and International Affairs,2391,Military and International Affairs,Military and International Affairs
+Metal Ore Mining,345,Metal Ore Mining,Metal Ore Mining
+Retail Gasoline,1370,Retail Gasoline,Retail Gasoline
+Operations Consulting,2401,Operations Consulting,Operations Consulting
+Nonmetallic Mineral Mining,356,Nonmetallic Mineral Mining,Nonmetallic Mineral Mining
+"Electric Power Transmission, Control, and Distribution",382,"Electric Power Transmission, Control, and Distribution","Electric Power Transmission, Control, and Distribution"
+Retail Musical Instruments,1407,Retail Musical Instruments,Retail Musical Instruments
+Electric Power Generation,383,Electric Power Generation,Electric Power Generation
+Hydroelectric Power Generation,384,Hydroelectric Power Generation,Hydroelectric Power Generation
+Retail Books and Printed News,1409,Retail Books and Printed News,Retail Books and Printed News
+Fossil Fuel Electric Power Generation,385,Fossil Fuel Electric Power Generation,Fossil Fuel Electric Power Generation
+Nuclear Electric Power Generation,386,Nuclear Electric Power Generation,Nuclear Electric Power Generation
+Solar Electric Power Generation,387,Solar Electric Power Generation,Solar Electric Power Generation
+Environmental Quality Programs,388,Environmental Quality Programs,Environmental Quality Programs
+Geothermal Electric Power Generation,389,Geothermal Electric Power Generation,Geothermal Electric Power Generation
+Biomass Electric Power Generation,390,Biomass Electric Power Generation,Biomass Electric Power Generation
+Natural Gas Distribution,397,Natural Gas Distribution,Natural Gas Distribution
+"Water, Waste, Steam, and Air Conditioning Services",398,"Water, Waste, Steam, and Air Conditioning Services","Water, Waste, Steam, and Air Conditioning Services"
+Retail Florists,1423,Retail Florists,Retail Florists
+Retail Office Supplies and Gifts,1424,Retail Office Supplies and Gifts,Retail Office Supplies and Gifts
+Water Supply and Irrigation Systems,400,Water Supply and Irrigation Systems,Water Supply and Irrigation Systems
+Steam and Air-Conditioning Supply,404,Steam and Air-Conditioning Supply,Steam and Air-Conditioning Supply
+Building Construction,406,Building Construction,Building Construction
+Retail Recyclable Materials & Used Merchandise,1431,Retail Recyclable Materials & Used Merchandise,Retail Recyclable Materials & Used Merchandise
+Residential Building Construction,408,Residential Building Construction,Residential Building Construction
+Data Infrastructure and Analytics,2458,Data Infrastructure and Analytics,Data Infrastructure and Analytics
+Nonresidential Building Construction,413,Nonresidential Building Construction,Nonresidential Building Construction
+Utility System Construction,419,Utility System Construction,Utility System Construction
+Electrical Equipment Manufacturing,2468,Electrical Equipment Manufacturing,Electrical Equipment Manufacturing
+Online and Mail Order Retail,1445,Online and Mail Order Retail,Online and Mail Order Retail
+Subdivision of Land,428,Subdivision of Land,Subdivision of Land
+"Highway, Street, and Bridge Construction",431,"Highway, Street, and Bridge Construction","Highway, Street, and Bridge Construction"
+Specialty Trade Contractors,435,Specialty Trade Contractors,Specialty Trade Contractors
+Building Structure and Exterior Contractors,436,Building Structure and Exterior Contractors,Building Structure and Exterior Contractors
+Wind Electric Power Generation,2489,Wind Electric Power Generation,Wind Electric Power Generation
+Wineries,2500,Wineries,Wineries
+Building Equipment Contractors,453,Building Equipment Contractors,Building Equipment Contractors
+Rail Transportation,1481,Rail Transportation,Rail Transportation
+Building Finishing Contractors,460,Building Finishing Contractors,Building Finishing Contractors
+Ground Passenger Transportation,1495,Ground Passenger Transportation,Ground Passenger Transportation
+Urban Transit Services,1497,Urban Transit Services,Urban Transit Services
+Interurban and Rural Bus Services,1504,Interurban and Rural Bus Services,Interurban and Rural Bus Services
+Taxi and Limousine Services,1505,Taxi and Limousine Services,Taxi and Limousine Services
+Animal Feed Manufacturing,481,Animal Feed Manufacturing,Animal Feed Manufacturing
+School and Employee Bus Services,1512,School and Employee Bus Services,School and Employee Bus Services
+Shuttles and Special Needs Transportation Services,1517,Shuttles and Special Needs Transportation Services,Shuttles and Special Needs Transportation Services
+Sugar and Confectionery Product Manufacturing,495,Sugar and Confectionery Product Manufacturing,Sugar and Confectionery Product Manufacturing
+Pipeline Transportation,1520,Pipeline Transportation,Pipeline Transportation
+Fruit and Vegetable Preserves Manufacturing,504,Fruit and Vegetable Preserves Manufacturing,Fruit and Vegetable Preserves Manufacturing
+Sightseeing Transportation,1532,Sightseeing Transportation,Sightseeing Transportation
+Meat Products Manufacturing,521,Meat Products Manufacturing,Meat Products Manufacturing
+Seafood Product Manufacturing,528,Seafood Product Manufacturing,Seafood Product Manufacturing
+Baked Goods Manufacturing,529,Baked Goods Manufacturing,Baked Goods Manufacturing
+Postal Services,1573,Postal Services,Postal Services
+Breweries,562,Breweries,Breweries
+Distilleries,564,Distilleries,Distilleries
+"Technology, Information and Media",1594,"Technology, Information and Media","Technology, Information and Media"
+Periodical Publishing,1600,Periodical Publishing,Periodical Publishing
+Book Publishing,1602,Book Publishing,Book Publishing
+Movie and Video Distribution,1611,Movie and Video Distribution,Movie and Video Distribution
+Apparel Manufacturing,598,Apparel Manufacturing,Apparel Manufacturing
+Sound Recording,1623,Sound Recording,Sound Recording
+Sheet Music Publishing,1625,Sheet Music Publishing,Sheet Music Publishing
+Radio and Television Broadcasting,1633,Radio and Television Broadcasting,Radio and Television Broadcasting
+Fashion Accessories Manufacturing,615,Fashion Accessories Manufacturing,Fashion Accessories Manufacturing
+Leather Product Manufacturing,616,Leather Product Manufacturing,Leather Product Manufacturing
+Cable and Satellite Programming,1641,Cable and Satellite Programming,Cable and Satellite Programming
+Telecommunications Carriers,1644,Telecommunications Carriers,Telecommunications Carriers
+Footwear Manufacturing,622,Footwear Manufacturing,Footwear Manufacturing
+Satellite Telecommunications,1649,Satellite Telecommunications,Satellite Telecommunications
+Women's Handbag Manufacturing,625,Women's Handbag Manufacturing,Women's Handbag Manufacturing
+Credit Intermediation,1673,Credit Intermediation,Credit Intermediation
+Savings Institutions,1678,Savings Institutions,Savings Institutions
+Loan Brokers,1696,Loan Brokers,Loan Brokers
+Oil and Coal Product Manufacturing,679,Oil and Coal Product Manufacturing,Oil and Coal Product Manufacturing
+Securities and Commodity Exchanges,1713,Securities and Commodity Exchanges,Securities and Commodity Exchanges
+Chemical Raw Materials Manufacturing,690,Chemical Raw Materials Manufacturing,Chemical Raw Materials Manufacturing
+Investment Advice,1720,Investment Advice,Investment Advice
+Insurance Carriers,1725,Insurance Carriers,Insurance Carriers
+Artificial Rubber and Synthetic Fiber Manufacturing,703,Artificial Rubber and Synthetic Fiber Manufacturing,Artificial Rubber and Synthetic Fiber Manufacturing
+Agricultural Chemical Manufacturing,709,Agricultural Chemical Manufacturing,Agricultural Chemical Manufacturing
+Insurance Agencies and Brokerages,1737,Insurance Agencies and Brokerages,Insurance Agencies and Brokerages
+"Claims Adjusting, Actuarial Services",1738,"Claims Adjusting, Actuarial Services","Claims Adjusting, Actuarial Services"
+Funds and Trusts,1742,Funds and Trusts,Funds and Trusts
+Insurance and Employee Benefit Funds,1743,Insurance and Employee Benefit Funds,Insurance and Employee Benefit Funds
+Pension Funds,1745,Pension Funds,Pension Funds
+"Paint, Coating, and Adhesive Manufacturing",722,"Paint, Coating, and Adhesive Manufacturing","Paint, Coating, and Adhesive Manufacturing"
+Trusts and Estates,1750,Trusts and Estates,Trusts and Estates
+Soap and Cleaning Product Manufacturing,727,Soap and Cleaning Product Manufacturing,Soap and Cleaning Product Manufacturing
+Real Estate and Equipment Rental Services,1757,Real Estate and Equipment Rental Services,Real Estate and Equipment Rental Services
+Leasing Residential Real Estate,1759,Leasing Residential Real Estate,Leasing Residential Real Estate
+Plastics and Rubber Product Manufacturing,743,Plastics and Rubber Product Manufacturing,Plastics and Rubber Product Manufacturing
+Real Estate Agents and Brokers,1770,Real Estate Agents and Brokers,Real Estate Agents and Brokers
+Equipment Rental Services,1779,Equipment Rental Services,Equipment Rental Services
+Consumer Goods Rental,1786,Consumer Goods Rental,Consumer Goods Rental
+Rubber Products Manufacturing,763,Rubber Products Manufacturing,Rubber Products Manufacturing
+Clay and Refractory Products Manufacturing,773,Clay and Refractory Products Manufacturing,Clay and Refractory Products Manufacturing
+Commercial and Industrial Equipment Rental,1798,Commercial and Industrial Equipment Rental,Commercial and Industrial Equipment Rental
+Glass Product Manufacturing,779,Glass Product Manufacturing,Glass Product Manufacturing
+Wood Product Manufacturing,784,Wood Product Manufacturing,Wood Product Manufacturing
+Professional Services,1810,Professional Services,Professional Services
+Lime and Gypsum Products Manufacturing,794,Lime and Gypsum Products Manufacturing,Lime and Gypsum Products Manufacturing
+Abrasives and Nonmetallic Minerals Manufacturing,799,Abrasives and Nonmetallic Minerals Manufacturing,Abrasives and Nonmetallic Minerals Manufacturing
+Primary Metal Manufacturing,807,Primary Metal Manufacturing,Primary Metal Manufacturing
+IT System Design Services,1855,IT System Design Services,IT System Design Services
+Marketing Services,1862,Marketing Services,Marketing Services
+Fabricated Metal Products,840,Fabricated Metal Products,Fabricated Metal Products
+Cutlery and Handtool Manufacturing,849,Cutlery and Handtool Manufacturing,Cutlery and Handtool Manufacturing
+Architectural and Structural Metal Manufacturing,852,Architectural and Structural Metal Manufacturing,Architectural and Structural Metal Manufacturing
+"Boilers, Tanks, and Shipping Container Manufacturing",861,"Boilers, Tanks, and Shipping Container Manufacturing","Boilers, Tanks, and Shipping Container Manufacturing"
+Construction Hardware Manufacturing,871,Construction Hardware Manufacturing,Construction Hardware Manufacturing
+Spring and Wire Product Manufacturing,873,Spring and Wire Product Manufacturing,Spring and Wire Product Manufacturing
+Turned Products and Fastener Manufacturing,876,Turned Products and Fastener Manufacturing,Turned Products and Fastener Manufacturing
+Holding Companies,1905,Holding Companies,Holding Companies
+Metal Treatments,883,Metal Treatments,Metal Treatments
+Industry Associations,1909,Industry Associations,Industry Associations
+Landscaping Services,2934,Landscaping Services,Landscaping Services
+Professional Organizations,1911,Professional Organizations,Professional Organizations
+"Metal Valve, Ball, and Roller Manufacturing",887,"Metal Valve, Ball, and Roller Manufacturing","Metal Valve, Ball, and Roller Manufacturing"
+Administrative and Support Services,1912,Administrative and Support Services,Administrative and Support Services
+Office Administration,1916,Office Administration,Office Administration
+Executive Search Services,1923,Executive Search Services,Executive Search Services
+Temporary Help Services,1925,Temporary Help Services,Temporary Help Services
+"Agriculture, Construction, Mining Machinery Manufacturing",901,"Agriculture, Construction, Mining Machinery Manufacturing","Agriculture, Construction, Mining Machinery Manufacturing"
+Telephone Call Centers,1931,Telephone Call Centers,Telephone Call Centers
+Collection Agencies,1938,Collection Agencies,Collection Agencies
+Commercial and Service Industry Machinery Manufacturing,918,Commercial and Service Industry Machinery Manufacturing,Commercial and Service Industry Machinery Manufacturing
+HVAC and Refrigeration Equipment Manufacturing,923,HVAC and Refrigeration Equipment Manufacturing,HVAC and Refrigeration Equipment Manufacturing
+Metalworking Machinery Manufacturing,928,Metalworking Machinery Manufacturing,Metalworking Machinery Manufacturing
+Security Guards and Patrol Services,1956,Security Guards and Patrol Services,Security Guards and Patrol Services
+Security Systems Services,1958,Security Systems Services,Security Systems Services
+Engines and Power Transmission Equipment Manufacturing,935,Engines and Power Transmission Equipment Manufacturing,Engines and Power Transmission Equipment Manufacturing
+Janitorial Services,1965,Janitorial Services,Janitorial Services
+Waste Collection,1981,Waste Collection,Waste Collection
+Waste Treatment and Disposal,1986,Waste Treatment and Disposal,Waste Treatment and Disposal
+Communications Equipment Manufacturing,964,Communications Equipment Manufacturing,Communications Equipment Manufacturing
+Audio and Video Equipment Manufacturing,973,Audio and Video Equipment Manufacturing,Audio and Video Equipment Manufacturing
+Education,1999,Education,Education
+Measuring and Control Instrument Manufacturing,983,Measuring and Control Instrument Manufacturing,Measuring and Control Instrument Manufacturing
+Secretarial Schools,2012,Secretarial Schools,Secretarial Schools
+Technical and Vocational Training,2018,Technical and Vocational Training,Technical and Vocational Training
+Magnetic and Optical Media Manufacturing,994,Magnetic and Optical Media Manufacturing,Magnetic and Optical Media Manufacturing
+Cosmetology and Barber Schools,2019,Cosmetology and Barber Schools,Cosmetology and Barber Schools
+Flight Training,2020,Flight Training,Flight Training
+Electric Lighting Equipment Manufacturing,998,Electric Lighting Equipment Manufacturing,Electric Lighting Equipment Manufacturing
+Fine Arts Schools,2025,Fine Arts Schools,Fine Arts Schools
+Sports and Recreation Instruction,2027,Sports and Recreation Instruction,Sports and Recreation Instruction
+Household Appliance Manufacturing,1005,Household Appliance Manufacturing,Household Appliance Manufacturing
+Language Schools,2029,Language Schools,Language Schools
+Physicians,2040,Physicians,Physicians
+Courts of Law,3065,Courts of Law,Courts of Law
+Correctional Institutions,3068,Correctional Institutions,Correctional Institutions
+Dentists,2045,Dentists,Dentists
+Fire Protection,3070,Fire Protection,Fire Protection

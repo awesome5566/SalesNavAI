@@ -1,0 +1,1973 @@
+{
+  "CURRENT_COMPANY": {
+    "ids": [
+      {
+        "id": "urn",
+        "records": [
+          {
+            "text": "HubSpot",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "HubSpot",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "COMPANY_HEADCOUNT": {
+    "ids": [
+      {
+        "id": "A",
+        "records": [
+          {
+            "text": "Self-employed",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "records": [
+          {
+            "text": "1-10",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "records": [
+          {
+            "text": "11-50",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "records": [
+          {
+            "text": "51-200",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "E",
+        "records": [
+          {
+            "text": "201-500",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "F",
+        "records": [
+          {
+            "text": "501-1,000",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "G",
+        "records": [
+          {
+            "text": "1,001-5,000",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "H",
+        "records": [
+          {
+            "text": "5,001-10,000",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "I",
+        "records": [
+          {
+            "text": "10,001+",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "PAST_COMPANY": {
+    "ids": [
+      {
+        "id": "urn",
+        "records": [
+          {
+            "text": "HubSpot",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "HubSpot",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "COMPANY_TYPE": {
+    "ids": [
+      {
+        "id": "C",
+        "records": [
+          {
+            "text": "Public Company",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "P",
+        "records": [
+          {
+            "text": "Privately Held",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "records": [
+          {
+            "text": "Educational Institution",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "N",
+        "records": [
+          {
+            "text": "Non Profit",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "E",
+        "records": [
+          {
+            "text": "Self Employed",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "S",
+        "records": [
+          {
+            "text": "Partnership",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "G",
+        "records": [
+          {
+            "text": "Government Agency",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "O",
+        "records": [
+          {
+            "text": "Self Owned",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "FUNCTION": {
+    "ids": [
+      {
+        "id": "1",
+        "records": [
+          {
+            "text": "Accounting",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "Accounting",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "records": [
+          {
+            "text": "Business Development",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "Business Development",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "records": [
+          {
+            "text": "Administrative",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "records": [
+          {
+            "text": "Arts and Design",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "records": [
+          {
+            "text": "Consulting",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "records": [
+          {
+            "text": "Community and Social Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "records": [
+          {
+            "text": "Education",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "records": [
+          {
+            "text": "Engineering",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "records": [
+          {
+            "text": "Finance",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "records": [
+          {
+            "text": "Entrepreneurship",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "records": [
+          {
+            "text": "Healthcare Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "records": [
+          {
+            "text": "Human Resources",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "records": [
+          {
+            "text": "Information Technology",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "records": [
+          {
+            "text": "Legal",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "records": [
+          {
+            "text": "Marketing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "16",
+        "records": [
+          {
+            "text": "Media and Communication",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "17",
+        "records": [
+          {
+            "text": "Military and Protective Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "18",
+        "records": [
+          {
+            "text": "Operations",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "20",
+        "records": [
+          {
+            "text": "Program and Project Management",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "19",
+        "records": [
+          {
+            "text": "Product Management",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "21",
+        "records": [
+          {
+            "text": "Purchasing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "22",
+        "records": [
+          {
+            "text": "Quality Assurance",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "23",
+        "records": [
+          {
+            "text": "Real Estate",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "24",
+        "records": [
+          {
+            "text": "Research",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "25",
+        "records": [
+          {
+            "text": "Sales",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "26",
+        "records": [
+          {
+            "text": "Customer Success and Support",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "CURRENT_TITLE": {
+    "ids": [
+      {
+        "id": "11",
+        "records": [
+          {
+            "text": "Account Manager",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "SENIORITY_LEVEL": {
+    "ids": [
+      {
+        "id": "320",
+        "records": [
+          {
+            "text": "Owner / Partner",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "Owner / Partner",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "310",
+        "records": [
+          {
+            "text": "CXO",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "300",
+        "records": [
+          {
+            "text": "Vice President",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "220",
+        "records": [
+          {
+            "text": "Director",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "210",
+        "records": [
+          {
+            "text": "Experienced Manager",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "200",
+        "records": [
+          {
+            "text": "Entry Level Manager",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "130",
+        "records": [
+          {
+            "text": "Strategic",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "110",
+        "records": [
+          {
+            "text": "Entry Level",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "120",
+        "records": [
+          {
+            "text": "Senior",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "100",
+        "records": [
+          {
+            "text": "In Training",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "YEARS_AT_CURRENT_COMPANY": {
+    "ids": [
+      {
+        "id": "1",
+        "records": [
+          {
+            "text": "Less than 1 year",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "records": [
+          {
+            "text": "1 to 2 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "records": [
+          {
+            "text": "3 to 5 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "records": [
+          {
+            "text": "6 to 10 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "records": [
+          {
+            "text": "More than 10 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "YEARS_IN_CURRENT_POSITION": {
+    "ids": [
+      {
+        "id": "1",
+        "records": [
+          {
+            "text": "Less than 1 year",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "records": [
+          {
+            "text": "1 to 2 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "records": [
+          {
+            "text": "6 to 10 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "records": [
+          {
+            "text": "3 to 5 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "records": [
+          {
+            "text": "More than 10 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "INDUSTRY": {
+    "ids": [
+      {
+        "id": "2048",
+        "records": [
+          {
+            "text": "Chiropractors",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "records": [
+          {
+            "text": "Technology, Information and Internet",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "1594",
+        "records": [
+          {
+            "text": "Technology, Information and Media",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "35",
+        "records": [
+          {
+            "text": "Movies, Videos, and Sound",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "105",
+        "records": [
+          {
+            "text": "Professional Training and Coaching",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3186",
+        "records": [
+          {
+            "text": "Retail Art Dealers",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "116",
+        "records": [
+          {
+            "text": "Transportation, Logistics, Supply Chain and Storage",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "2190",
+        "records": [
+          {
+            "text": "Accommodation and Food Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3240",
+        "records": [
+          {
+            "text": "Renewable Energy Power Generation",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3241",
+        "records": [
+          {
+            "text": "Renewable Energy Equipment Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3242",
+        "records": [
+          {
+            "text": "Engineering Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3243",
+        "records": [
+          {
+            "text": "Services for Renewable Energy",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3244",
+        "records": [
+          {
+            "text": "Digital Accessibility Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3245",
+        "records": [
+          {
+            "text": "Accessible Hardware Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3246",
+        "records": [
+          {
+            "text": "Accessible Architecture and Design",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3247",
+        "records": [
+          {
+            "text": "Robot Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3248",
+        "records": [
+          {
+            "text": "Robotics Engineering",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3249",
+        "records": [
+          {
+            "text": "Surveying and Mapping Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3250",
+        "records": [
+          {
+            "text": "Retail Pharmacies",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3251",
+        "records": [
+          {
+            "text": "Climate Technology Product Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3252",
+        "records": [
+          {
+            "text": "Climate Data and Analytics",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3253",
+        "records": [
+          {
+            "text": "Alternative Fuel Vehicle Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3254",
+        "records": [
+          {
+            "text": "Smart Meter Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3255",
+        "records": [
+          {
+            "text": "Fuel Cell Manufacturing",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3256",
+        "records": [
+          {
+            "text": "Regenerative Design",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3257",
+        "records": [
+          {
+            "text": "Funeral Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3258",
+        "records": [
+          {
+            "text": "Death Care Services",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3259",
+        "records": [
+          {
+            "text": "Energy Technology",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "FIRST_NAME": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Andrew",
+        "records": [
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "JOshua",
+        "records": [
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "JOsh",
+        "records": [
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "text": "Josh",
+        "records": [
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "LAST_NAME": {
+    "ids": [],
+    "texts": [
+      {
+        "text": "Lee",
+        "records": [
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ]
+  },
+  "PROFILE_LANGUAGE": {
+    "ids": [
+      {
+        "id": "ar",
+        "records": [
+          {
+            "text": "Arabic",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "es",
+        "records": [
+          {
+            "text": "Spanish",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "en",
+        "records": [
+          {
+            "text": "English",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "zh",
+        "records": [
+          {
+            "text": "Chinese",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "pt",
+        "records": [
+          {
+            "text": "Portuguese",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "fr",
+        "records": [
+          {
+            "text": "French",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "it",
+        "records": [
+          {
+            "text": "Italian",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "ru",
+        "records": [
+          {
+            "text": "Russian",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "nl",
+        "records": [
+          {
+            "text": "Dutch",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "tr",
+        "records": [
+          {
+            "text": "Turkish",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "de",
+        "records": [
+          {
+            "text": "German",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "tl",
+        "records": [
+          {
+            "text": "Tagalog",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "pl",
+        "records": [
+          {
+            "text": "Polish",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "ko",
+        "records": [
+          {
+            "text": "Korean",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "ms",
+        "records": [
+          {
+            "text": "Malay",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "no",
+        "records": [
+          {
+            "text": "Norwegian",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "ja",
+        "records": [
+          {
+            "text": "Japanese",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "ro",
+        "records": [
+          {
+            "text": "Romanian",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "da",
+        "records": [
+          {
+            "text": "Danish",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "in",
+        "records": [
+          {
+            "text": "Bahasa Indonesia",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "sv",
+        "records": [
+          {
+            "text": "Swedish",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "cs",
+        "records": [
+          {
+            "text": "Czech",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "YEARS_OF_EXPERIENCE": {
+    "ids": [
+      {
+        "id": "1",
+        "records": [
+          {
+            "text": "Less than 1 year",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "records": [
+          {
+            "text": "1 to 2 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "records": [
+          {
+            "text": "3 to 5 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "records": [
+          {
+            "text": "6 to 10 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "records": [
+          {
+            "text": "More than 10 years",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "GROUP": {
+    "ids": [
+      {
+        "id": "1817569",
+        "records": [
+          {
+            "text": "CBA Law Practice Management & Technology Section",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3044917",
+        "records": [
+          {
+            "text": "Harvard Business Review Discussion Group",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "66325",
+        "records": [
+          {
+            "text": "The Social Media Marketing Group",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "3926212",
+        "records": [
+          {
+            "text": "Premium Career Group",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "FOLLOWS_YOUR_COMPANY": {
+    "ids": [
+      {
+        "id": "CF",
+        "records": [
+          {
+            "text": null,
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "Following your company",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "VIEWED_YOUR_PROFILE": {
+    "ids": [
+      {
+        "id": "VYP",
+        "records": [
+          {
+            "text": null,
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "RELATIONSHIP": {
+    "ids": [
+      {
+        "id": "F",
+        "records": [
+          {
+            "text": "1st degree connections",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "S",
+        "records": [
+          {
+            "text": "2nd degree connections",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "A",
+        "records": [
+          {
+            "text": "Group members",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "O",
+        "records": [
+          {
+            "text": "3rd+ degree connections",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "CONNECTION_OF": {
+    "ids": [
+      {
+        "id": "ACwAAAABVrsBjy_qqXF0nIGU-YCA950fRdD9Yw4",
+        "records": [
+          {
+            "text": "Peter Milnes",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "PAST_COLLEAGUE": {
+    "ids": [
+      {
+        "id": "PCOLL",
+        "records": [
+          {
+            "text": null,
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "WITH_SHARED_EXPERIENCES": {
+    "ids": [
+      {
+        "id": "COMM",
+        "records": [
+          {
+            "text": null,
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "RECENTLY_CHANGED_JOBS": {
+    "ids": [
+      {
+        "id": "RPC",
+        "records": [
+          {
+            "text": null,
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "POSTED_ON_LINKEDIN": {
+    "ids": [
+      {
+        "id": "RPOL",
+        "records": [
+          {
+            "text": null,
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "PERSONA": {
+    "ids": [
+      {
+        "id": "1950389058",
+        "records": [
+          {
+            "text": "CXO",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "1950389050",
+        "records": [
+          {
+            "text": "Director+",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  },
+  "LEAD_INTERACTIONS": {
+    "ids": [
+      {
+        "id": "LIVP",
+        "records": [
+          {
+            "text": "Viewed profile",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          },
+          {
+            "text": "Viewed profile",
+            "selectionType": "EXCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      },
+      {
+        "id": "LIMP",
+        "records": [
+          {
+            "text": "Messaged",
+            "selectionType": "INCLUDED",
+            "match": null,
+            "scope": null,
+            "operator": null
+          }
+        ]
+      }
+    ],
+    "texts": []
+  }
+}
+
+
