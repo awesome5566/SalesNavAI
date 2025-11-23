@@ -35,8 +35,6 @@ import type { GeneratorOptions, GeneratorResult, MatchedValue, NLPMatches } from
 import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
 import { isValidFacetId } from "./allowlists.js";
-import path from 'path';
-import { SalesNavigatorUrlBuilder } from './url-builder-v3.js';
 import 'dotenv/config';
 
 /**
@@ -279,44 +277,53 @@ async function tryMultipleUrlVariations(
   return null;
 }
 
-// Lazy-load the URL builder to avoid loading data files until needed
-let urlBuilderInstance: SalesNavigatorUrlBuilder | null = null;
-
-function getUrlBuilder(): SalesNavigatorUrlBuilder {
-  if (urlBuilderInstance) {
-    return urlBuilderInstance;
-  }
-  
-  // Path to data files - they're in the root of the project
-  // Use process.cwd() instead of __dirname for Vercel compatibility
-  const dataRoot = process.cwd();
-  const facetStorePath = path.join(dataRoot, 'facet-store.json');
-  const geoIdPath = path.join(dataRoot, 'geoId.csv');
-  const industryIdsPath = path.join(dataRoot, 'Industry IDs.csv');
-  
-  urlBuilderInstance = new SalesNavigatorUrlBuilder({
-    facetStorePath,
-    geoIdPath,
-    industryIdsPath,
-  });
-  
-  return urlBuilderInstance;
-}
-
 /**
- * Build a LinkedIn Sales Navigator URL using the TypeScript URL builder
+ * Build a LinkedIn Sales Navigator URL using the Python URL builder API
  * @param gptOutput - The structured facet lines output from GPT (e.g., "Function: Sales\nLocation: ...")
  * @returns The generated LinkedIn Sales Navigator URL
  * @throws Error if URL builder fails
  */
-function buildUrlWithTypeScript(gptOutput: string): string {
+async function buildUrlWithPython(gptOutput: string): Promise<string> {
   try {
-    const builder = getUrlBuilder();
-    const url = builder.buildUrl(gptOutput);
-    return url;
+    // Determine the API endpoint URL
+    // In local development, use localhost. In production, use relative URL
+    const isLocalDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === undefined;
+    const apiUrl = isLocalDev ? 'http://localhost:3000/api/build-url' : '/api/build-url';
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ input: gptOutput }),
+    });
+    
+    if (!response.ok) {
+      let errorDetails = `HTTP ${response.status}: ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        errorDetails = errorData.error || errorDetails;
+        if (errorData.details) {
+          errorDetails += ` - ${errorData.details}`;
+        }
+      } catch {
+        // If we can't parse the error response, use the status text
+      }
+      throw new Error(`Python URL builder API failed: ${errorDetails}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data.url) {
+      throw new Error('Python URL builder returned no URL');
+    }
+    
+    return data.url;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    throw new Error(`TypeScript URL builder failed: ${errorMessage}`);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Python URL builder failed: ${String(error)}`);
   }
 }
 
@@ -770,27 +777,27 @@ export async function generateUrlFromDescription(
   // Validate no contradictions between keywords and facets
   validateNoContradictions(matched.KEYWORD, matched, warnings);
 
-  // Build URL using TypeScript URL builder with GPT output
+  // Build URL using Python URL builder with GPT output
   // The GPT output (gptResult.output) contains structured facet lines that the builder can parse
   let url: string;
   let dslDecoded: string;
-  let pythonStatus = 'success'; // Keep as 'success' since we're no longer using Python
+  let pythonStatus = 'success';
   
   try {
-    url = buildUrlWithTypeScript(gptResult.output);
+    url = await buildUrlWithPython(gptResult.output);
     
     // Generate DSL from matches for compatibility with existing result structure
     // This is still useful for debugging/dry-run output
     dslDecoded = buildDslFromMatches(matched as any);
     
     if (!options.silent) {
-      console.log("✅ URL generated using TypeScript URL builder");
+      console.log("✅ URL generated using Python URL builder");
     }
   } catch (error) {
     pythonStatus = 'failed';
     // URL builder execution failed - throw error with status info attached
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    const enhancedError = new Error(`Failed to generate URL with TypeScript builder: ${errorMessage}`);
+    const enhancedError = new Error(`Failed to generate URL with Python builder: ${errorMessage}`);
     // Attach status info to error for diagnostics
     (enhancedError as any).gptStatus = gptStatus;
     (enhancedError as any).pythonStatus = pythonStatus;
