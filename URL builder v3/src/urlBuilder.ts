@@ -37,7 +37,10 @@ export class SalesNavigatorUrlBuilder {
   }
 
   private loadFacetStore(filePath: string): FacetLookups {
-    const absolutePath = path.resolve(filePath);
+    // Handle both absolute and relative paths correctly for Vercel compatibility
+    const absolutePath = path.isAbsolute(filePath) 
+      ? filePath 
+      : path.join(process.cwd(), filePath);
     const raw = fs.readFileSync(absolutePath, 'utf8');
     const data = JSON.parse(raw) as Record<string, any>;
     const lookups: FacetLookups = {};
@@ -64,7 +67,11 @@ export class SalesNavigatorUrlBuilder {
   }
 
   private loadGeoMapping(filePath: string): Record<string, string> {
-    const content = fs.readFileSync(path.resolve(filePath), 'utf8');
+    // Handle both absolute and relative paths correctly for Vercel compatibility
+    const absolutePath = path.isAbsolute(filePath)
+      ? filePath
+      : path.join(process.cwd(), filePath);
+    const content = fs.readFileSync(absolutePath, 'utf8');
     const rows = parseDelimitedRecords(content, ';');
     const mapping: Record<string, string> = {};
 
@@ -80,7 +87,11 @@ export class SalesNavigatorUrlBuilder {
   }
 
   private loadIndustryMapping(filePath: string): Record<string, string> {
-    const content = fs.readFileSync(path.resolve(filePath), 'utf8');
+    // Handle both absolute and relative paths correctly for Vercel compatibility
+    const absolutePath = path.isAbsolute(filePath)
+      ? filePath
+      : path.join(process.cwd(), filePath);
+    const content = fs.readFileSync(absolutePath, 'utf8');
     const rows = parseDelimitedRecords(content, ',');
     const mapping: Record<string, string> = {};
 

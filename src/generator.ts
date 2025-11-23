@@ -292,7 +292,8 @@ function getUrlBuilder(): SalesNavigatorUrlBuilder {
   }
   
   // Path to data files - they're in the root of the project
-  const dataRoot = path.join(__dirname, '..');
+  // Use process.cwd() instead of __dirname for Vercel compatibility
+  const dataRoot = process.cwd();
   const facetStorePath = path.join(dataRoot, 'facet-store.json');
   const geoIdPath = path.join(dataRoot, 'geoId.csv');
   const industryIdsPath = path.join(dataRoot, 'Industry IDs.csv');
