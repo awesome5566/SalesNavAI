@@ -19,6 +19,10 @@ interface SearchResult {
     errorMessage?: string
     isPythonError?: boolean
     isGPTError?: boolean
+    responseStatus?: number
+    responseHeaders?: Record<string, string>
+    fullResponse?: string
+    errorStack?: string
   }
 }
 
@@ -107,7 +111,28 @@ function App() {
         body: JSON.stringify({ query: queryToSubmit.trim() }),
       })
 
-      const data = await response.json()
+      // Get response text first to handle both JSON and non-JSON responses
+      const responseText = await response.text()
+      let data: any
+
+      try {
+        data = JSON.parse(responseText)
+      } catch (parseError) {
+        // Response is not JSON - likely an HTML error page from Vercel
+        console.error('Failed to parse response as JSON. Full response:', responseText)
+        console.error('Response status:', response.status)
+        console.error('Response headers:', Object.fromEntries(response.headers.entries()))
+        
+        setError(`Server returned non-JSON response (status ${response.status}). See console for full details.`)
+        setDiagnostics({
+          errorType: 'ParseError',
+          errorMessage: `Response is not valid JSON. First 1000 chars: ${responseText.substring(0, 1000)}`,
+          responseStatus: response.status,
+          responseHeaders: Object.fromEntries(response.headers.entries()),
+          fullResponse: responseText,
+        })
+        return
+      }
 
       if (!response.ok) {
         // Handle error response with diagnostics
@@ -130,8 +155,19 @@ function App() {
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      const errorStack = err instanceof Error ? err.stack : undefined
+      
+      console.error('Full error:', err)
+      console.error('Error stack:', errorStack)
+      
       setError(`Network error: ${errorMessage}`)
-      console.error('Error:', err)
+      
+      // Add error details to diagnostics
+      setDiagnostics({
+        errorType: err instanceof Error ? err.constructor.name : 'Unknown',
+        errorMessage,
+        errorStack: errorStack?.substring(0, 2000), // Include stack trace (limited length)
+      })
     } finally {
       setLoading(false)
     }
@@ -533,6 +569,44 @@ function App() {
                   {diagnostics.errorMessage && (
                     <div className="diagnostics-item">
                       <strong>Error Details:</strong> {diagnostics.errorMessage}
+                    </div>
+                  )}
+                  {diagnostics.responseStatus && (
+                    <div className="diagnostics-item">
+                      <strong>Response Status:</strong> {diagnostics.responseStatus}
+                    </div>
+                  )}
+                  {diagnostics.fullResponse && (
+                    <div className="diagnostics-item">
+                      <strong>Full Response (first 2000 chars):</strong>
+                      <pre style={{ 
+                        marginTop: '0.5rem', 
+                        padding: '0.5rem', 
+                        background: 'rgba(0, 0, 0, 0.1)', 
+                        borderRadius: '0.25rem',
+                        fontSize: '0.75rem',
+                        overflow: 'auto',
+                        maxHeight: '200px'
+                      }}>
+                        {diagnostics.fullResponse.substring(0, 2000)}
+                        {diagnostics.fullResponse.length > 2000 && '... (truncated, see console for full response)'}
+                      </pre>
+                    </div>
+                  )}
+                  {diagnostics.errorStack && (
+                    <div className="diagnostics-item">
+                      <strong>Stack Trace:</strong>
+                      <pre style={{ 
+                        marginTop: '0.5rem', 
+                        padding: '0.5rem', 
+                        background: 'rgba(0, 0, 0, 0.1)', 
+                        borderRadius: '0.25rem',
+                        fontSize: '0.75rem',
+                        overflow: 'auto',
+                        maxHeight: '200px'
+                      }}>
+                        {diagnostics.errorStack}
+                      </pre>
                     </div>
                   )}
                 </div>
