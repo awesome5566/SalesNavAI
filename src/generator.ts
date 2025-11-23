@@ -36,12 +36,8 @@ import { normalizeForLookup } from "./sanitize.js";
 import { parseWithGPT, logGptConversation } from "./gpt-parser.js";
 import { isValidFacetId } from "./allowlists.js";
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { SalesNavigatorUrlBuilder } from '../URL builder v3/src/urlBuilder.js';
 import 'dotenv/config';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 /**
  * Generate a human-readable summary from matched facets
