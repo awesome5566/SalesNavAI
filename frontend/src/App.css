@@ -390,28 +390,18 @@ body {
 
 .loading-bar-progress {
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 114, 177, 0.3) 0%,
-    #0072b1 50%,
-    rgba(0, 114, 177, 0.3) 100%
-  );
-  background-size: 200% 100%;
-  animation: loading-slide 1.5s ease-in-out infinite;
+  background: #0072b1;
   border-radius: 0 0 1.75rem 1.75rem;
+  width: 0%;
+  animation: loading-fill 5s linear forwards;
 }
 
-@keyframes loading-slide {
-  0% {
-    background-position: -200% 0;
-    width: 30%;
+@keyframes loading-fill {
+  from {
+    width: 0%;
   }
-  50% {
-    width: 70%;
-  }
-  100% {
-    background-position: 200% 0;
-    width: 30%;
+  to {
+    width: 100%;
   }
 }
 
