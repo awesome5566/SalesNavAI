@@ -501,6 +501,13 @@ function App() {
             </div>
           </form>
 
+          {/* Loading Bar */}
+          {loading && (
+            <div className="loading-bar" role="progressbar" aria-label="Loading search results">
+              <div className="loading-bar-progress"></div>
+            </div>
+          )}
+
           {/* URL Display */}
           {result?.url && (
             <div className="result-url">

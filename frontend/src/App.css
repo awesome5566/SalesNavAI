@@ -375,6 +375,54 @@ body {
   animation: spin 0.8s linear infinite;
 }
 
+/* Loading Bar */
+.loading-bar {
+  width: 75%;
+  max-width: 39rem;
+  height: 3px;
+  background: rgba(0, 114, 177, 0.1);
+  border-radius: 0 0 1.75rem 1.75rem;
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+  animation: fadeIn 0.2s ease-in;
+}
+
+.loading-bar-progress {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 114, 177, 0.3) 0%,
+    #0072b1 50%,
+    rgba(0, 114, 177, 0.3) 100%
+  );
+  background-size: 200% 100%;
+  animation: loading-slide 1.5s ease-in-out infinite;
+  border-radius: 0 0 1.75rem 1.75rem;
+}
+
+@keyframes loading-slide {
+  0% {
+    background-position: -200% 0;
+    width: 30%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    background-position: 200% 0;
+    width: 30%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 /* Result URL Display */
 .result-url {
