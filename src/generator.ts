@@ -284,11 +284,15 @@ async function tryMultipleUrlVariations(
  * @throws Error if URL builder fails
  */
 async function buildUrlWithPython(gptOutput: string): Promise<string> {
+  console.log('🔍 buildUrlWithPython called with GPT output (first 200 chars):', gptOutput.substring(0, 200));
   try {
     // Determine the API endpoint URL
     // In local development, use localhost. In production, use relative URL
     const isLocalDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === undefined;
     const apiUrl = isLocalDev ? 'http://localhost:3000/api/build-url' : '/api/build-url';
+    
+    console.log('🔍 About to fetch Python API:', apiUrl);
+    console.log('🔍 Environment check - NODE_ENV:', process.env.NODE_ENV, 'VERCEL_ENV:', process.env.VERCEL_ENV);
     
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -297,6 +301,10 @@ async function buildUrlWithPython(gptOutput: string): Promise<string> {
       },
       body: JSON.stringify({ input: gptOutput }),
     });
+    
+    console.log('🔍 Fetch completed. Response status:', response.status, response.statusText);
+    console.log('🔍 Response ok:', response.ok);
+    console.log('🔍 Response headers:', Object.fromEntries(response.headers.entries()));
     
     if (!response.ok) {
       let errorDetails = `HTTP ${response.status}: ${response.statusText}`;
@@ -337,8 +345,14 @@ async function buildUrlWithPython(gptOutput: string): Promise<string> {
       throw new Error('Python URL builder returned no URL');
     }
     
+    console.log('🔍 Successfully got URL from Python API:', data.url?.substring(0, 100));
     return data.url;
   } catch (error) {
+    console.error('🔍 Raw error in buildUrlWithPython:', error);
+    console.error('🔍 Error type:', error?.constructor?.name);
+    console.error('🔍 Error message:', error instanceof Error ? error.message : String(error));
+    console.error('🔍 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    
     if (error instanceof Error) {
       throw error;
     }

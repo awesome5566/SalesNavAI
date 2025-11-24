@@ -138,3 +138,4 @@ class handler(BaseHTTPRequestHandler):
             'status': 'ready'
         }
         self.wfile.write(json.dumps(response).encode('utf-8'))
+

@@ -343,3 +343,4 @@ class SalesNavigatorURLBuilder:
         final_url = f"{base_url}?{'&'.join(url_parts)}"
         
         return final_url
+
