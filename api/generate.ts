@@ -38,6 +38,9 @@ function parseBody(body: RequestLike["body"]): Record<string, unknown> {
 }
 
 export default async function handler(req: RequestLike, res: ResponseLike) {
+  const routeHitTimestamp = new Date().toISOString();
+  console.log(`[TIMESTAMP] Route hit: ${routeHitTimestamp}`);
+
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
@@ -86,6 +89,9 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   try {
     const result = await generateUrlFromDescription(query);
     const payload = buildGeneratorJsonResponse(result);
+    
+    const beforeSendTimestamp = new Date().toISOString();
+    console.log(`[TIMESTAMP] Before sending response to browser: ${beforeSendTimestamp}`);
     
     // Add diagnostic information
     return res.status(200).json({

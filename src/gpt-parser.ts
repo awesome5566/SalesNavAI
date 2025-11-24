@@ -505,6 +505,9 @@ export async function parseWithGPT(
       console.log(`🤖 Processing query with ${DEFAULT_MODEL} via Responses API...`);
     }
 
+    const beforeOpenAICallTimestamp = new Date().toISOString();
+    console.log(`[TIMESTAMP] Before OpenAI API call: ${beforeOpenAICallTimestamp}`);
+
     const response = await client.responses.create({
       model: DEFAULT_MODEL,
       input: [
@@ -532,6 +535,9 @@ export async function parseWithGPT(
         effort: 'low',
       },
     } as any);
+
+    const afterOpenAIResponseTimestamp = new Date().toISOString();
+    console.log(`[TIMESTAMP] After OpenAI API response: ${afterOpenAIResponseTimestamp}`);
 
     const parsedQuery = response.output_text?.trim();
     
