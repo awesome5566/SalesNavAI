@@ -253,7 +253,7 @@ Keyword: <BOOLEAN_STRING>
 
 GENERAL BOOLEAN RULES
 
-- Boolean operators uppercase: AND, OR, NOT.
+- Boolean operators uppercase: OR, AND NOT.
 
 - Wrap multi-word phrases in "double quotes".
 
@@ -271,11 +271,11 @@ STRUCTURE (when applicable):
 
 (TITLE_GROUP)
 
-AND (CONTEXT_GROUP)
+OR (CONTEXT_GROUP)
 
-AND (LOCATION_GROUP)
+OR (LOCATION_GROUP)
 
-AND (COMPANY_TYPE_GROUP)
+OR (COMPANY_TYPE_GROUP)
 
 AND NOT (EXCLUSIONS_GROUP)
 
