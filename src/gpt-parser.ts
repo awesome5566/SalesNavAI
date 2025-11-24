@@ -265,6 +265,8 @@ GENERAL BOOLEAN RULES
 
 - Prefer a small, high-precision set of terms.
 
+- NEVER use location in boolean keywords unless you can not put it in the Location facet.
+
 STRUCTURE (when applicable):
 
 (TITLE_GROUP)
