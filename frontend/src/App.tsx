@@ -44,7 +44,6 @@ function App() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [diagnostics, setDiagnostics] = useState<SearchResult['diagnostics'] | null>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -81,23 +80,6 @@ function App() {
     }
   }, [])
 
-  // Trigger CSS transition when loading starts
-  useEffect(() => {
-    if (!loading) {
-      setProgress(0)
-      return
-    }
-
-    // Reset to 0% first, then trigger CSS transition to 95%
-    setProgress(0)
-    // Use setTimeout to ensure 0% is rendered before transitioning to 95%
-    const timeout = setTimeout(() => {
-      setProgress(95)
-    }, 10)
-
-    return () => clearTimeout(timeout)
-  }, [loading])
-
   const handleSubmit = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault()
     
@@ -111,7 +93,6 @@ function App() {
     if (!queryToSubmit.trim()) return
 
     setLoading(true)
-    setProgress(0)
     setResult(null)
     setError(null)
     setDiagnostics(null)
@@ -188,13 +169,7 @@ function App() {
         errorStack: errorStack?.substring(0, 2000), // Include stack trace (limited length)
       })
     } finally {
-      // Complete the progress bar before resetting
-      // Use a quick transition to 100%, then reset
-      setProgress(100)
-      setTimeout(() => {
-        setLoading(false)
-        setProgress(0)
-      }, 300)
+      setLoading(false)
     }
   }
 
@@ -524,17 +499,6 @@ function App() {
               </button>
               </div>
             </div>
-            {loading && (
-              <div className="loading-bar-container">
-                <div 
-                  className="loading-bar" 
-                  style={{ 
-                    width: `${progress}%`,
-                    transition: progress === 100 ? 'width 0.3s linear' : undefined
-                  }}
-                ></div>
-              </div>
-            )}
           </form>
 
           {/* URL Display */}
