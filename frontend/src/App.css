@@ -283,6 +283,10 @@ body {
   background: #FFFFFF;
 }
 
+.command-bar.loading {
+  border-radius: 1.75rem 1.75rem 0 0;
+}
+
 .search-input {
   flex: 1;
   height: 100%;

@@ -261,11 +261,13 @@ GENERAL BOOLEAN RULES
 
 - NEVER use double parentheses (e.g., avoid (("term"))).
 
-- NEVER use the word "of" in boolean keywords (e.g., use "Head" instead of "Head of", use "CRO" instead of "Chief Revenue Officer").
+- NEVER use the word "of" in boolean keywords (e.g., use "Head" instead of "Head of", use "CRO" instead of "Chief Revenue Officer").  Do not include common words in AND NOT that could wipe out al results; examples would be of, and, as, etc.
 
 - Prefer a small, high-precision set of terms.
 
 - NEVER use location in boolean keywords unless you can not put it in the Location facet.
+
+- NEVER solely use the AND keyword in boolean keywords.
 
 STRUCTURE (when applicable):
 
