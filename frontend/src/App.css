@@ -260,6 +260,7 @@ body {
   width: 75%;
   max-width: 39rem;
   position: relative;
+  overflow: visible;
 }
 
 .command-bar {
@@ -372,16 +373,18 @@ body {
 /* Loading Bar */
 .loading-bar-container {
   width: 100%;
-  height: 3px;
+  height: 4px;
   background: rgba(229, 229, 229, 0.5);
   border-radius: 0 0 1.75rem 1.75rem;
   overflow: hidden;
-  margin-top: -1px;
+  margin-top: 0.5rem;
   position: relative;
+  z-index: 1;
 }
 
 .loading-bar {
   height: 100%;
+  min-width: 2%;
   background: linear-gradient(90deg, #0072b1 0%, #00a0e6 50%, #0072b1 100%);
   background-size: 200% 100%;
   border-radius: 0 0 1.75rem 1.75rem;
