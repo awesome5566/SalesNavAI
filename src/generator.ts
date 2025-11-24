@@ -287,9 +287,12 @@ async function buildUrlWithPython(gptOutput: string): Promise<string> {
   console.log('🔍 buildUrlWithPython called with GPT output (first 200 chars):', gptOutput.substring(0, 200));
   try {
     // Determine the API endpoint URL
-    // In local development, use localhost. In production, use relative URL
+    // In local development, use localhost. In production, use absolute URL with VERCEL_URL
+    // (Node.js fetch requires absolute URLs, relative URLs only work in browsers)
     const isLocalDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === undefined;
-    const apiUrl = isLocalDev ? 'http://localhost:3000/api/build-url' : '/api/build-url';
+    const apiUrl = isLocalDev 
+      ? 'http://localhost:3000/api/build-url' 
+      : `https://${process.env.VERCEL_URL || 'localhost:3000'}/api/build-url`;
     
     console.log('🔍 About to fetch Python API:', apiUrl);
     console.log('🔍 Environment check - NODE_ENV:', process.env.NODE_ENV, 'VERCEL_ENV:', process.env.VERCEL_ENV);
