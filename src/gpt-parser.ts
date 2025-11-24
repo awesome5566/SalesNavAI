@@ -1,4 +1,4 @@
-/**
+/** okay now i am testing the 120b model
  * GPT-based Natural Language Parser
  * Converts natural language queries into structured Sales Navigator syntax
  */
@@ -10,7 +10,7 @@ import path from 'node:path';
 
 const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.csv');
 const CSV_HEADERS = ['email', 'timestamp', 'input', 'output', 'status', 'url'] as const;
-const DEFAULT_MODEL = 'openai/gpt-oss-20b';
+const DEFAULT_MODEL = 'openai/gpt-oss-120b';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -250,7 +250,7 @@ Keyword: <BOOLEAN_STRING>
 
 General Rules
 
-Boolean ops uppercase: AND, OR, NOT.
+Boolean ops uppercase: OR, AND, NOT.
 
 Multi-word terms in "double quotes".
 
@@ -260,16 +260,16 @@ No stopwords like of, and, as in NOT blocks.
 
 Keep the term set small + high-precision.
 
-Don’t put geography here if Location facet already covers it.
+Don’t put geography here.
+Don’t build a Boolean with AND. 
 
-Don’t build a Boolean with only AND.
+Don't 
 
 Group Structure
 
 Use groups only if needed:
 (TITLE_GROUP)
 OR (CONTEXT_GROUP)
-OR (LOCATION_GROUP) (rare)
 OR (COMPANY_TYPE_GROUP)
 AND NOT (EXCLUSIONS_GROUP)
 Remove empty groups; no dangling AND/OR.
