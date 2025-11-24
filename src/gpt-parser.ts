@@ -10,7 +10,7 @@ import path from 'node:path';
 
 const LOG_FILE_PATH = path.join(process.cwd(), 'logs', 'gpt-conversations.csv');
 const CSV_HEADERS = ['email', 'timestamp', 'input', 'output', 'status', 'url'] as const;
-const DEFAULT_MODEL = process.env.OPENAI_MODEL ?? 'gpt-5-mini';
+const DEFAULT_MODEL = 'openai/gpt-oss-20b';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -243,147 +243,99 @@ Guidelines (phrase → ranges):
 
 --------------------------------------------------
 
-5) Keyword (MANDATORY BOOLEAN STRING)
+5) Keyword (REQUIRED)
 
-The Keyword facet must always be present and must contain a single Boolean string.
-
-Line format:
-
+Output format:
 Keyword: <BOOLEAN_STRING>
 
-GENERAL BOOLEAN RULES
+General Rules
 
-- Boolean operators uppercase: OR, AND NOT.
+Boolean ops uppercase: AND, OR, NOT.
 
-- Wrap multi-word phrases in "double quotes".
+Multi-word terms in "double quotes".
 
-- Use parentheses for grouping.
+Use parentheses; never nested double parentheses.
 
-- NEVER use double parentheses (e.g., avoid (("term"))).
+No stopwords like of, and, as in NOT blocks.
 
-- NEVER use the word "of" in boolean keywords (e.g., use "Head" instead of "Head of", use "CRO" instead of "Chief Revenue Officer").  Do not include common words in AND NOT that could wipe out al results; examples would be of, and, as, etc.
+Keep the term set small + high-precision.
 
-- Prefer a small, high-precision set of terms.
+Don’t put geography here if Location facet already covers it.
 
-- NEVER use location in boolean keywords unless you can not put it in the Location facet.
+Don’t build a Boolean with only AND.
 
-- NEVER solely use the AND keyword in boolean keywords.
+Group Structure
 
-STRUCTURE (when applicable):
-
+Use groups only if needed:
 (TITLE_GROUP)
-
 OR (CONTEXT_GROUP)
-
-OR (LOCATION_GROUP)
-
+OR (LOCATION_GROUP) (rare)
 OR (COMPANY_TYPE_GROUP)
-
 AND NOT (EXCLUSIONS_GROUP)
+Remove empty groups; no dangling AND/OR.
 
-Remove any empty groups; no dangling AND/OR.
+5.1 Title Group
 
-5.1 TITLE GROUP
+Core role variants (2–4 items).
 
-- Identify core role(s).
+Example:
+("Sales Development Representative" OR "Business Development Representative" OR SDR OR BDR)
 
-- Use 2–4 realistic variants/synonyms if clearly aligned.
+OK to repeat/expand titles even if Title facet is set.
 
-- Example:
+5.2 Context Group (industry/product/vertical)
 
-  ("Sales Development Representative" OR "Business Development Representative" OR SDR OR BDR)
+2–5 domain terms if user implies sector/vertical.
 
-- Even if Title facet is used, you may repeat and expand title terms here.
+Examples:
+(SaaS OR "B2B software" OR fintech OR cybersecurity OR martech)
 
-5.2 CONTEXT GROUP (INDUSTRY / PRODUCT / MODEL)
+5.3 Location Group (optional)
 
-- Add 2–5 terms for SaaS/B2B/vertical/etc. when described.
+Only when user mentions informal location terms not suitable for the Location facet.
 
-- Examples:
+Example: ("SF Bay Area" OR "Bay Area")
 
-  (SaaS OR "Software as a Service" OR "B2B software")
+5.4 Seniority Rules
 
-  (fintech OR "financial technology")
+If explicitly entry-level/IC:
+AND NOT ("Senior" OR "Sr" OR "Manager" OR "Director" OR "VP" OR "CRO")
 
-  ("marketing technology" OR martech)
+If explicitly senior/leadership:
+("Head" OR "Director" OR "VP" OR "CRO") AND NOT ("Intern" OR "Junior")
 
-Use this for:
+If ambiguous → no seniority terms; rely on Seniority facet.
 
-- SaaS vs non-SaaS
+5.5 Company Type / Size Group
 
-- B2B vs B2C
+If small/startup stage is implied:
+("startup" OR "start-up" OR "early stage")
 
-- Specific verticals (fintech, cybersecurity, etc.)
+Keep to 2–4 terms max.
 
-5.3 LOCATION GROUP (OPTIONAL)
+5.6 Exclusions
 
-- Primary geography is controlled by Location facet.
+Only when user strongly implies sector exclusions.
+Example: AND NOT ("retail" OR "restaurant" OR "hospitality")
 
-- Add location tokens in Keyword ONLY if wording is important (e.g. "remote but based in San Francisco") or clearly helps precision.
+5.7 Quality Check
 
-- Example:
+Titles: 3–5
 
-  ("San Francisco" OR "SF Bay Area" OR "San Francisco Bay Area")
+Context: 3–5
 
-5.4 SENIORITY / LEVEL IN KEYWORD
+Location: 0–4
 
-Use NOT blocks only when level is explicit.
+Startup/size: 2–4
 
-Entry-level / junior / SDR / IC:
-
-- Add:
-
-  NOT ("Senior" OR "Sr" OR "Manager" OR "Head" OR "Director" OR "VP" OR "Vice President" OR "CRO")
-
-Senior / leadership:
-
-- Optionally:
-
-  ("Head" OR "Director" OR "VP" OR "Vice President" OR "CRO")
-
-  AND NOT ("Intern" OR "Junior" OR "Trainee")
-
-If level is ambiguous, do NOT add seniority NOT blocks; rely on Seniority Level facet when clearly implied.
-
-5.5 COMPANY TYPE / SIZE GROUP (OPTIONAL)
-
-- Headcount facet is primary.
-
-- If user clearly wants startups/small companies ("startup", "early stage", "under 50 employees", etc.), you may add:
-
-  ("startup" OR "start-up" OR "early stage")
-
-Keep this group small (2–4 terms).
-
-5.6 EXCLUSIONS GROUP
-
-- Use NOT to remove clearly wrong sectors only when strongly implied (e.g. pure B2B tech).
-
-- Example:
-
-  NOT ("retail" OR "restaurant" OR "hospitality")
-
-5.7 KEYWORD QUALITY CHECK
-
-Target limits:
-
-- 3–5 title variants
-
-- 3–5 context terms
-
-- 0–4 location tokens (if used)
-
-- 2–4 startup/size terms (if used)
-
-- 2–5 exclusions (if used)
-
+Exclusions: 2–5
 Ensure:
 
-- Balanced parentheses.
+Balanced parentheses
 
-- No trailing AND/OR.
+No trailing AND/OR
 
-- Every NOT wraps a parenthesized group.
+NOT always wraps a parenthesized list.
 
 --------------------------------------------------
 
@@ -396,8 +348,6 @@ Examples:
 Industry: Software Development
 
 Industry: Technology, Information and Internet
-
-Industry: Business Consulting and Services
 
 Guidelines:
 
@@ -433,11 +383,7 @@ Mappings:
 
 If level is ambiguous but clearly non-leadership, you may omit Seniority Level.
 
---------------------------------------------------
-
-STRATEGIC PRINCIPLES
-
---------------------------------------------------
+PRINCIPLES
 
 - Anchor on: role, company size, location, SaaS/vertical context.
 
@@ -453,47 +399,46 @@ STRATEGIC PRINCIPLES
 
   - Obvious non-target exclusions
 
-- Aim for precision over volume: slightly under-inclusive but highly relevant is better than broad/noisy.
-
-- If description is broad, choose one best-focused configuration representing the primary target persona.
-
 - Never explain your reasoning. Think internally.
 
 - Output only the facet lines, in order, with a high-quality Boolean string in the Keyword facet.`;
 
-let openaiClient: OpenAI | null = null;
+let groqClient: OpenAI | null = null;
 
 /**
- * Initialize the OpenAI client with API key from environment
+ * Initialize the Groq client with API key from environment
  */
-function getOpenAIClient(): OpenAI | null {
-  if (openaiClient) {
-    return openaiClient;
+function getGroqClient(): OpenAI | null {
+  if (groqClient) {
+    return groqClient;
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return null;
   }
 
-  openaiClient = new OpenAI({ apiKey });
-  return openaiClient;
+  groqClient = new OpenAI({ 
+    apiKey,
+    baseURL: 'https://api.groq.com/openai/v1'
+  });
+  return groqClient;
 }
 
 /**
- * Parse user query using OpenAI Responses API
+ * Parse user query using Groq API with openai/gpt-oss-20b
  * Falls back to original query if API fails or is not configured
  */
 export async function parseWithGPT(
   userQuery: string,
   options?: { silent?: boolean }
 ): Promise<ParseWithGPTResult> {
-  const client = getOpenAIClient();
+  const client = getGroqClient();
   
   // If no API key or client, silently fall back to original query
   if (!client) {
     if (!options?.silent) {
-      console.log('⚠️  OpenAI API key not found. Skipping GPT preprocessing.');
+      console.log('⚠️  Groq API key not found. Skipping GPT preprocessing.');
     }
     return {
       processedQuery: userQuery,
@@ -504,44 +449,33 @@ export async function parseWithGPT(
 
   try {
     if (!options?.silent) {
-      console.log(`🤖 Processing query with ${DEFAULT_MODEL} via Responses API...`);
+      console.log(`🤖 Processing query with ${DEFAULT_MODEL} via Groq...`);
     }
 
-    const beforeOpenAICallTimestamp = new Date().toISOString();
-    console.log(`[TIMESTAMP] Before OpenAI API call: ${beforeOpenAICallTimestamp}`);
+    const beforeCallTimestamp = new Date().toISOString();
+    console.log(`[TIMESTAMP] Before Groq API call: ${beforeCallTimestamp}`);
 
-    const response = await client.responses.create({
+    const response = await client.chat.completions.create({
       model: DEFAULT_MODEL,
-      input: [
+      messages: [
         {
           role: 'system',
-          content: [
-            {
-              type: 'input_text',
-              text: SYSTEM_PROMPT,
-            },
-          ],
+          content: SYSTEM_PROMPT,
         },
         {
           role: 'user',
-          content: [
-            {
-              type: 'input_text',
-              text: userQuery,
-            },
-          ],
+          content: userQuery,
         },
       ],
-      max_output_tokens: 1500,
-      reasoning: {
-        effort: 'low',
-      },
-    } as any);
+      temperature: 1,
+      max_tokens: 8192,
+      top_p: 1,
+    });
 
-    const afterOpenAIResponseTimestamp = new Date().toISOString();
-    console.log(`[TIMESTAMP] After OpenAI API response: ${afterOpenAIResponseTimestamp}`);
+    const afterCallTimestamp = new Date().toISOString();
+    console.log(`[TIMESTAMP] After Groq API response: ${afterCallTimestamp}`);
 
-    const parsedQuery = response.output_text?.trim();
+    const parsedQuery = response.choices[0]?.message?.content?.trim();
     
     if (!parsedQuery) {
       // Debug logging to investigate empty responses
@@ -549,15 +483,13 @@ export async function parseWithGPT(
         query: userQuery,
         responseType: typeof response,
         responseKeys: response ? Object.keys(response) : [],
-        responseOutputText: response?.output_text,
-        responseText: (response as any)?.text,
-        responseOutput: (response as any)?.output,
-        responseContent: (response as any)?.content,
+        choicesLength: response.choices?.length,
+        firstChoice: response.choices?.[0],
         fullResponse: response,
       };
       
       if (!options?.silent) {
-        console.log('⚠️  GPT returned empty response. Using original query.');
+        console.log('⚠️  Groq returned empty response. Using original query.');
         console.log('🔍 Debug info:', JSON.stringify(debugInfo, null, 2));
       }
       
@@ -582,7 +514,7 @@ export async function parseWithGPT(
   } catch (error) {
     // Silently fall back to original query on any error
     if (!options?.silent) {
-      console.log(`⚠️  GPT preprocessing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.log(`⚠️  Groq preprocessing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       console.log('   Falling back to original query.');
     }
     return {
