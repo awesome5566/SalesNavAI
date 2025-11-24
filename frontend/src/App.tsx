@@ -88,8 +88,8 @@ function App() {
       return
     }
 
-    // Start progress animation
-    const duration = 30000 // 30 seconds max
+    // Start progress animation - linear over 10 seconds
+    const duration = 10000 // 10 seconds
     const startTime = Date.now()
     let animationFrame: number
 
@@ -102,11 +102,8 @@ function App() {
       const elapsed = Date.now() - startTime
       const rawProgress = Math.min((elapsed / duration) * 100, 95) // Cap at 95% until done
       
-      // Apply ease-out curve for smoother animation
-      const easeOut = 1 - Math.pow(1 - rawProgress / 95, 3)
-      const finalProgress = easeOut * 95
-      
-      setProgress(finalProgress)
+      // Linear progress (no easing)
+      setProgress(rawProgress)
 
       if (rawProgress < 95) {
         animationFrame = requestAnimationFrame(updateProgress)
