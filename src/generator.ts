@@ -301,20 +301,39 @@ async function buildUrlWithPython(gptOutput: string): Promise<string> {
     if (!response.ok) {
       let errorDetails = `HTTP ${response.status}: ${response.statusText}`;
       try {
-        const errorData = await response.json();
+        // Read response as text first so we can log it
+        const responseText = await response.text();
+        console.error(`Python API error response (${response.status}):`, responseText);
+        
+        // Try to parse as JSON
+        const errorData = JSON.parse(responseText);
         errorDetails = errorData.error || errorDetails;
         if (errorData.details) {
           errorDetails += ` - ${errorData.details}`;
         }
-      } catch {
-        // If we can't parse the error response, use the status text
+      } catch (parseError) {
+        // If we can't parse the error response, the text was already logged above
+        console.error('Failed to parse error response as JSON:', parseError);
       }
       throw new Error(`Python URL builder API failed: ${errorDetails}`);
     }
     
-    const data = await response.json();
+    // Read response as text first so we can log it if parsing fails
+    const responseText = await response.text();
+    
+    let data: any;
+    try {
+      data = JSON.parse(responseText);
+    } catch (err) {
+      console.error('Failed to parse JSON response from Python API:', err);
+      console.error('Response status:', response.status);
+      console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+      console.error('Response text (first 1000 chars):', responseText.substring(0, 1000));
+      throw new Error(`Failed to parse JSON from Python API. Response was: ${responseText.substring(0, 200)}`);
+    }
     
     if (!data.url) {
+      console.error('Python API response missing URL field. Full response:', JSON.stringify(data, null, 2));
       throw new Error('Python URL builder returned no URL');
     }
     
