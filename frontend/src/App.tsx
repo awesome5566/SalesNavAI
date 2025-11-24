@@ -44,6 +44,7 @@ function App() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [loading, setLoading] = useState(false)
+  const [progress, setProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [diagnostics, setDiagnostics] = useState<SearchResult['diagnostics'] | null>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -80,6 +81,47 @@ function App() {
     }
   }, [])
 
+  // Animate progress bar while loading
+  useEffect(() => {
+    if (!loading) {
+      setProgress(0)
+      return
+    }
+
+    // Start progress animation
+    const duration = 30000 // 30 seconds max
+    const startTime = Date.now()
+    let animationFrame: number
+
+    const updateProgress = () => {
+      if (!loading) {
+        setProgress(0)
+        return
+      }
+
+      const elapsed = Date.now() - startTime
+      const rawProgress = Math.min((elapsed / duration) * 100, 95) // Cap at 95% until done
+      
+      // Apply ease-out curve for smoother animation
+      const easeOut = 1 - Math.pow(1 - rawProgress / 95, 3)
+      const finalProgress = easeOut * 95
+      
+      setProgress(finalProgress)
+
+      if (rawProgress < 95) {
+        animationFrame = requestAnimationFrame(updateProgress)
+      }
+    }
+
+    animationFrame = requestAnimationFrame(updateProgress)
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
+    }
+  }, [loading])
+
   const handleSubmit = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault()
     
@@ -93,6 +135,7 @@ function App() {
     if (!queryToSubmit.trim()) return
 
     setLoading(true)
+    setProgress(0)
     setResult(null)
     setError(null)
     setDiagnostics(null)
@@ -169,7 +212,12 @@ function App() {
         errorStack: errorStack?.substring(0, 2000), // Include stack trace (limited length)
       })
     } finally {
-      setLoading(false)
+      // Complete the progress bar before resetting
+      setProgress(100)
+      setTimeout(() => {
+        setLoading(false)
+        setProgress(0)
+      }, 200)
     }
   }
 
@@ -499,6 +547,11 @@ function App() {
               </button>
               </div>
             </div>
+            {loading && (
+              <div className="loading-bar-container">
+                <div className="loading-bar" style={{ width: `${progress}%` }}></div>
+              </div>
+            )}
           </form>
 
           {/* URL Display */}
