@@ -290,17 +290,32 @@ async function buildUrlWithPython(gptOutput: string): Promise<string> {
     // In local development, use localhost. In production, use absolute URL with VERCEL_URL
     // (Node.js fetch requires absolute URLs, relative URLs only work in browsers)
     const isLocalDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === undefined;
-    const apiUrl = isLocalDev 
-      ? 'http://localhost:3000/api/build-url' 
-      : `https://${process.env.VERCEL_URL || 'localhost:3000'}/api/build-url`;
     
-    console.log('🔍 About to fetch Python API:', apiUrl);
+    // Get the bypass token for Vercel Deployment Protection
+    // Vercel automatically creates this as VERCEL_AUTOMATION_BYPASS_SECRET when Protection Bypass is enabled
+    const bypassToken = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+    
+    let apiUrl: string;
+    if (isLocalDev) {
+      apiUrl = 'http://localhost:3000/api/build-url';
+    } else {
+      const baseUrl = `https://${process.env.VERCEL_URL || 'localhost:3000'}/api/build-url`;
+      // Add bypass token as query parameter if available (for Deployment Protection)
+      apiUrl = bypassToken 
+        ? `${baseUrl}?x-vercel-protection-bypass=${bypassToken}`
+        : baseUrl;
+    }
+    
+    console.log('🔍 About to fetch Python API:', apiUrl.replace(bypassToken || '', '***TOKEN***'));
     console.log('🔍 Environment check - NODE_ENV:', process.env.NODE_ENV, 'VERCEL_ENV:', process.env.VERCEL_ENV);
+    console.log('🔍 Bypass token present:', !!bypassToken);
     
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // Also add bypass token as header for additional compatibility
+        ...(bypassToken && { 'x-vercel-protection-bypass': bypassToken }),
       },
       body: JSON.stringify({ input: gptOutput }),
     });
