@@ -81,42 +81,21 @@ function App() {
     }
   }, [])
 
-  // Animate progress bar while loading
+  // Trigger CSS transition when loading starts
   useEffect(() => {
     if (!loading) {
       setProgress(0)
       return
     }
 
-    // Start progress animation - linear over 10 seconds
-    const duration = 10000 // 10 seconds
-    const startTime = Date.now()
-    let animationFrame: number
+    // Reset to 0% first, then trigger CSS transition to 95%
+    setProgress(0)
+    // Use setTimeout to ensure 0% is rendered before transitioning to 95%
+    const timeout = setTimeout(() => {
+      setProgress(95)
+    }, 10)
 
-    const updateProgress = () => {
-      if (!loading) {
-        setProgress(0)
-        return
-      }
-
-      const elapsed = Date.now() - startTime
-      const rawProgress = Math.min((elapsed / duration) * 100, 95) // Cap at 95% until done
-      
-      // Linear progress (no easing)
-      setProgress(rawProgress)
-
-      if (rawProgress < 95) {
-        animationFrame = requestAnimationFrame(updateProgress)
-      }
-    }
-
-    animationFrame = requestAnimationFrame(updateProgress)
-
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame)
-      }
-    }
+    return () => clearTimeout(timeout)
   }, [loading])
 
   const handleSubmit = async (e?: React.FormEvent, searchQuery?: string) => {
@@ -210,11 +189,12 @@ function App() {
       })
     } finally {
       // Complete the progress bar before resetting
+      // Use a quick transition to 100%, then reset
       setProgress(100)
       setTimeout(() => {
         setLoading(false)
         setProgress(0)
-      }, 200)
+      }, 300)
     }
   }
 
@@ -546,7 +526,13 @@ function App() {
             </div>
             {loading && (
               <div className="loading-bar-container">
-                <div className="loading-bar" style={{ width: `${progress}%` }}></div>
+                <div 
+                  className="loading-bar" 
+                  style={{ 
+                    width: `${progress}%`,
+                    transition: progress === 100 ? 'width 0.3s linear' : undefined
+                  }}
+                ></div>
               </div>
             )}
           </form>

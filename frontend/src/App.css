@@ -390,7 +390,7 @@ body {
   background: linear-gradient(90deg, #0072b1 0%, #00a0e6 50%, #0072b1 100%);
   background-size: 200% 100%;
   border-radius: 0 0 1.75rem 1.75rem;
-  transition: none;
+  transition: width 10s linear;
   animation: shimmer 2s ease-in-out infinite;
   box-shadow: 0 0 8px rgba(0, 114, 177, 0.4);
 }

@@ -259,6 +259,10 @@ GENERAL BOOLEAN RULES
 
 - Use parentheses for grouping.
 
+- NEVER use double parentheses (e.g., avoid (("term"))).
+
+- NEVER use the word "of" in boolean keywords (e.g., use "Head" instead of "Head of", use "CRO" instead of "Chief Revenue Officer").
+
 - Prefer a small, high-precision set of terms.
 
 STRUCTURE (when applicable):
@@ -325,13 +329,13 @@ Entry-level / junior / SDR / IC:
 
 - Add:
 
-  NOT ("Senior" OR "Sr" OR "Manager" OR "Head of" OR "Director" OR "VP" OR "Vice President" OR "CRO" OR "Chief Revenue Officer")
+  NOT ("Senior" OR "Sr" OR "Manager" OR "Head" OR "Director" OR "VP" OR "Vice President" OR "CRO")
 
 Senior / leadership:
 
 - Optionally:
 
-  ("Head of" OR "Director" OR "VP" OR "Vice President" OR "CRO" OR "Chief Revenue Officer")
+  ("Head" OR "Director" OR "VP" OR "Vice President" OR "CRO")
 
   AND NOT ("Intern" OR "Junior" OR "Trainee")
 
