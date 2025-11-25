@@ -393,7 +393,7 @@ body {
   background: #0072b1;
   border-radius: 0 0 1.75rem 1.75rem;
   width: 0%;
-  animation: loading-fill 2s linear forwards;
+  animation: loading-fill 3s linear forwards;
 }
 
 @keyframes loading-fill {
