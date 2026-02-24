@@ -6,6 +6,12 @@ dist/
 
 /dist-frontend
 /.local-node
+.pnpm-store/
 
 .env
 .env.local
+.env.*
+!.env.example
+
+logs/
+url-changes-*.csv
